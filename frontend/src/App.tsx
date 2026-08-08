@@ -4,10 +4,9 @@ import Nav from './components/App/Nav-menu';
 import Home from './components/Home';
 import Login from './components/auth/Login';
 import Register from "./components/auth/Register";
-import Dashboard from "./components/App/Dashboard-app";
+import GaleriaArte from "./components/App/GaleriaArte-app";
 import Amigos from "./components/App/Amigos-app";
-import Grupos from "./components/App/Grupos-app";
-
+import Teams from "./components/App/Teams-app";
 
 const Router = createBrowserRouter([
     {
@@ -27,16 +26,16 @@ const Router = createBrowserRouter([
         element : <Nav />
     },
     {
-        path : '/Dashboard',
-        element : <Dashboard />
+        path : '/Arte',
+        element : <GaleriaArte />
     },
     {
         path : '/Amigos',
         element : <Amigos />
     },
     {
-        path : '/Grupos',
-        element : <Grupos />
+        path : '/Teams',
+        element : <Teams />
     }
 ]);
 

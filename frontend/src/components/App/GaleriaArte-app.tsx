@@ -13,8 +13,12 @@ function CrearEvento( { funsBtns } : CreateToolProps ){
       eventDate : ""
     },
 
+    tipo : 'get',
+    
     urlApi : 'http://localhost:8080/api/Auth/login',
     
+    filter : "",
+
     eMsg : "Datos del Evento invalidos",
     
     onSuccess : (eventData) => {
@@ -68,7 +72,7 @@ function OpcionesEventos( { funsBtns } : CreateToolProps ){
   );
 }
 
-function Dashboard() {
+function GaleriaArte() {
   const [esVisibleOpt, setVisibilidadOpt] = useState<boolean>(false);
 
   const showEventOptionsBox = () => {
@@ -107,4 +111,4 @@ function Dashboard() {
   );
 }
   
-export default Dashboard;
+export default GaleriaArte;

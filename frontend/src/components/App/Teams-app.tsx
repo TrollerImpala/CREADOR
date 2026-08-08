@@ -1,17 +1,17 @@
 import CreateTool from "./Create-tool";
 import type { CreateToolProps } from "../tools/types";
 
-function crearGrupo(){
+function crearTeam(){
   alert("Crea tu grupito");
 }
 
-function Grupos() {
+function Teams() {
 
   return (
     <>
-      <CreateTool funcionSeccion={crearGrupo}/>
+      <CreateTool funcionSeccion={crearTeam}/>
     </>
   );
 }
   
-export default Grupos;
+export default Teams;
