@@ -7,7 +7,7 @@ interface UseFormConfig<T> {
   valoresIniciales : T;
   tipo : string;
   urlApi : string;
-  filter : string;
+  filter ?: string;
   eMsg : string;
   onSuccess: (data: any) => void;
 }

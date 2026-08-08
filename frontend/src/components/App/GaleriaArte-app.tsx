@@ -16,8 +16,6 @@ function CrearEvento( { funsBtns } : CreateToolProps ){
     tipo : 'get',
     
     urlApi : 'http://localhost:8080/api/Auth/login',
-    
-    filter : "",
 
     eMsg : "Datos del Evento invalidos",
     
