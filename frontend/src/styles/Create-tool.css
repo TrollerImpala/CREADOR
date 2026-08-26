@@ -1,0 +1,322 @@
+/* =========================================================
+   1. ESTILOS DE MODAL Y HERRAMIENTAS GENERALES
+   ========================================================= */
+
+/* Botón flotante para crear (CreateTool) */
+.btn-create-tool {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: lightseagreen;
+  color: white;
+  border: none;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-create-tool:hover {
+  transform: scale(1.08);
+  background-color: #179b93;
+}
+
+/* Modal Overlay genérico */
+.modal-overlay {
+  position: relative;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 30px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Botones de control del modal (Cerrar y Volver) */
+.btn-cerrar-modal {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+}
+
+.btn-cerrar-modal:hover {
+  color: lightseagreen;
+}
+
+.btn-volver-modal {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  color: lightseagreen;
+  cursor: pointer;
+  margin-bottom: 10px;
+  padding: 0;
+}
+
+
+/* =========================================================
+   2. COMPONENTE CREAR GRUPOS Y SELECCIONAR AMIGOS
+   ========================================================= */
+
+.contenedor-crear-grupo {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-crear-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.label-grupo {
+  font-size: 22px;
+  font-weight: bold;
+  color: lightseagreen;
+  margin-bottom: 5px;
+}
+
+.input-grupo {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-grupo:focus {
+  border-color: lightseagreen;
+}
+
+.btn-submit-grupo {
+  background-color: lightseagreen;
+  color: white;
+  border: 2px solid lightseagreen;
+  padding: 12px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-submit-grupo:hover {
+  opacity: 0.9;
+}
+
+.seccion-invitar-amigos h3 {
+  color: lightseagreen;
+  margin-top: 0;
+}
+
+.lista-amigos {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.tarjeta-amigo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 15px;
+  background-color: whitesmoke;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.tarjeta-amigo:hover {
+  border-color: lightseagreen;
+}
+
+.avatar-amigo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Estilo para los amigos seleccionados/clickeados en el grupo */
+.tarjeta-amigo.amigo-apagado {
+  background-color: #e0e0e0;
+  opacity: 0.5;
+  filter: grayscale(80%);
+  border-color: transparent;
+}
+
+.btn-invitar {
+  width: 100%;
+  background-color: lightseagreen;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-invitar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   3. COMPONENTE AGREGAR AMIGOS POR TAG
+   ========================================================= */
+
+.contenedor-agregar-amigo {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-agregar-amigo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.label-amigo {
+  font-size: 20px;
+  font-weight: bold;
+  color: lightseagreen;
+}
+
+.input-amigo {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-amigo:focus {
+  border-color: lightseagreen;
+}
+
+.btn-submit-amigo {
+  background-color: lightseagreen;
+  color: white;
+  border: 2px solid lightseagreen;
+  padding: 12px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.btn-submit-amigo:hover {
+  opacity: 0.9;
+}
+
+
+/* =========================================================
+   4. COMPONENTE EVENTOS (OPCIONES Y FORMULARIO)
+   ========================================================= */
+
+.contenedor-opciones-eventos {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 15px;
+}
+
+.btn-opcion-evento {
+  padding: 14px 20px;
+  border-radius: 999px;
+  border: 2px solid lightseagreen;
+  background-color: white;
+  color: lightseagreen;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-opcion-evento:hover {
+  background-color: lightseagreen;
+  color: white;
+}
+
+.btn-opcion-bloqueado {
+  border-color: #bbb;
+  color: #888;
+  background-color: whitesmoke;
+}
+
+.btn-opcion-bloqueado:hover {
+  background-color: #eee;
+  color: #666;
+}
+
+.contenedor-crear-evento {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-crear-evento {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.label-evento {
+  font-size: 20px;
+  font-weight: bold;
+  color: lightseagreen;
+}
+
+.input-evento {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: none;
+}
+
+.input-evento:focus {
+  border-color: lightseagreen;
+}
+
+.btn-submit-evento {
+  background-color: lightseagreen;
+  color: white;
+  border: 2px solid lightseagreen;
+  padding: 12px;
+  border-radius: 999px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.btn-submit-evento:hover {
+  opacity: 0.9;
+}

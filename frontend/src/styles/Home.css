@@ -1,0 +1,215 @@
+html, body{
+    margin: 0;
+    padding: 0 0;
+    background-color: whitesmoke;
+    font-family:Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+header, #Ini-Reg{
+    background-color: white;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+#title-head{
+    padding-left: 50px;
+    color:lightseagreen
+}
+
+#Ini-Reg button {
+    padding: 10px 20px;
+    border-radius: 999px;
+    
+}
+
+#btn-log{
+
+    border: 2px solid lightseagreen;
+    background-color: white;
+    color: lightseagreen;
+
+}
+
+#btn-reg{
+
+    background-color: lightseagreen;
+    color: white;
+    border:2px solid lightseagreen;
+
+}
+
+#Ini-Reg{
+    padding-right: 40px;
+    height: 75px;
+    align-items: center;
+    gap: 5px;
+    
+}
+
+
+#titulo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-height: 500px;
+    /*
+    background-image: url(../public/METTIA-logo.png);
+    background-position: center center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    */
+}
+
+#titulo-txt{
+    margin-right: auto;
+    padding-left: 50px;
+    font-size: xx-large;
+}
+
+#titulo-txt > h1{
+    margin-bottom: 0;
+}
+
+#titulo-txt > p{
+    font-size: 25px;
+}
+
+#logo{
+    margin-left: auto;
+    padding-right: 50px;
+    max-width: 500px;
+}
+
+#logo > img{
+    max-width: 500px;
+}
+
+
+.sub-titulo{
+    text-align: center;
+    font-size: x-large;
+}
+
+.info-boxes{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 100px;
+}
+
+.info-boxes > div:nth-child(odd){
+    flex-direction: row-reverse;
+    align-self: flex-end;
+    margin-right: 7%;
+}
+
+.info-boxes > div{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    width: 60%;
+    height: 300px;
+    margin: 10px;
+    margin-left: 7%;
+    background-color: white;
+    box-shadow: 0 10px 40px rgba(0,0,0,.15);
+    border-radius: 20px;
+
+
+}
+
+.info-boxes > div > div{
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-boxes > div > img{
+    min-width: 100px;
+    width: auto;
+    max-width: 90%;
+    padding: 13px;
+    border-radius: 20px;
+}
+
+.info-boxes h2{
+
+    text-align: center;
+
+}
+
+#info-cards, #info-cards-fun{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 25px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+#info-cards > li, #info-cards-fun > li{
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding:30px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,.15);
+}
+
+#info-cards > li{
+    background:lightseagreen;
+    color: white;
+}
+
+#info-cards-fun > li{
+    background:lightseagreen;
+    color: white;
+}
+
+footer{
+    background-color: white;
+    display: flex;
+}
+footer > div{
+    margin-left: 5%;
+}
+
+@media (max-width: 1000px){
+
+    #info-cards, #info-cards-fun, .info-boxes > div, .info-boxes > div:nth-child(odd){
+        flex-direction: column;
+        align-items: center;
+    }
+    .info-boxes > div{
+        text-align: center;
+        height: auto;
+        padding: 5px 5px;
+    }
+
+    .info-boxes > div, .info-boxes > div:nth-child(odd) {
+        align-self: center; 
+        margin: 0 0;
+    }
+
+    .info-boxes > div > div{
+        max-width: 100%;
+    }
+
+    .info-boxes > div > img{
+        padding: 0;
+    }
+
+    #titulo{
+        flex-direction: column;
+        align-items: center;
+    }
+    #titulo-txt, #logo{
+        text-align: center;
+        font-size: x-large;
+        margin: 0 0;
+        padding: 0 0;
+    }
+}

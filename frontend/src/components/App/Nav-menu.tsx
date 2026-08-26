@@ -1,5 +1,5 @@
-import '../../styles/Nav-menu.css';
-import logo from '../../assets/METTIA-logo.png';
+//import '../../styles/Nav-menu.css';
+//import logo from '../../assets/METTIA-logo.png';
 
 function Nav() {
   return (

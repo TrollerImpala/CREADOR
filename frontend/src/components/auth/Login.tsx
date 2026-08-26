@@ -21,20 +21,18 @@ function Login(){
 
   const {setFormData, formData, handleChange, handleSubmit} = useForm({
     valoresIniciales : {
-      mail : "",
+      email : "",
       password : ""
     },
 
-    tipo : 'post',
-
-    urlApi : 'http://localhost:8080/auth/login',
+    urlApi : 'http://localhost:8080/api/Auth/Login',
 
     eMsg : "Error en las credenciales",
 
     onSuccess : (userData) => {
       console.log("Usuario logeado con exito:", userData);
       alert("¡Logeo exitoso!");
-      Navigate("/Dashboard");
+      Navigate("/");
     }
   });
 
@@ -44,7 +42,7 @@ function Login(){
             <h1>Login</h1>
             <form onSubmit={handleSubmit}>
              <label>Email: </label>
-             <input type="email" name="mail" value={formData.mail} onChange={handleChange} placeholder="Ingrese su mail" className="for-border"></input>
+             <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Ingrese su mail" className="for-border"></input>
              <br></br>
              <label>Contraseña: </label>
              <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="******" className="for-border"></input>

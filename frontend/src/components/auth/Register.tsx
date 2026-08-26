@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { useForm } from "../hooks/useForm";
 
-import "../../styles/Auth.css";
+//import "../../styles/Auth.css";
 
 function Register(){
     useEffect(() => {
@@ -19,72 +19,83 @@ function Register(){
 
   const {setFormData, formData, handleChange, handleSubmit} = useForm({
     valoresIniciales : {
-      name: '',
-      surname: '',
-      mail: '',
-      password: '',
-      birth: '',
-      phone: '',
-      docData: { dni: '' }
+      email : '',
+      password : '',
+      userTag : '',
+      userName : '',
+      userDescription : '',
+      avatarUrl : '',
+      socialMedias : []
     },
 
-    tipo : 'post',
-
-    urlApi : 'http://localhost:8080/auth/register',
+    urlApi : 'http://localhost:8080/api/Auth/Register',
     
     eMsg : "Error en los datos ingresados",
     
     onSuccess : (userData) => {
       console.log("Usuario registrado con exito:", userData);
       alert("¡Registro exitoso!");
-      Navigate("/Dashboard");
+      Navigate("/");
     }
   });
 
-  const handleDniChange = (e : ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setFormData( (prev) => ({
-      ...prev,
-      docData: { dni: value }
-    }));
+  const [step2Visible, setStep2Visible] = useState<boolean>(false);
+
+  // const handleDniChange = (e : ChangeEvent<HTMLInputElement>) => {
+  //   const { value } = e.target;
+  //   setFormData( (prev) => ({
+  //     ...prev,
+  //     docData: { dni: value }
+  //   }));
     
-  };
+  // };
 
     return (
         <>
             <div id = "reg-box">
-                <h1>Register</h1>
-                <form onSubmit={handleSubmit}>
-                    <label>Nombre: </label>
-                    <input onChange={handleChange} type="text" name="name" placeholder="Ingrese su nombre" className="for-border"></input>
-                    <br></br>
+              {!step2Visible ? <h1>Registrarse</h1> : <h1>Perfil</h1>}
+              <form onSubmit={handleSubmit}>
+              {!step2Visible ? (
+                <>
+                  <label>E-mail: </label>
+                  <input onChange={handleChange} type="email" name="email" value={formData.email} placeholder="Ingrese su correo" className="for-border"></input>
+                  <br></br>
 
-                    <label>Apellido: </label>
-                    <input onChange={handleChange} type="text" name="surname" placeholder="Ingrese su nombre" className="for-border"></input>
-                    <br></br>
+                  <label>Contraseña: </label>
+                  <input onChange={handleChange} type="password" name="password" value={formData.password} placeholder="******" className="for-border"></input>
+                  <br></br>
+                      
+                  <button id = "next-step" onClick={ () => setStep2Visible(true) }>Siguiente</button>      
+                </>
+              ) : (
+                <>
+                  <button onClick={() => setStep2Visible(false)} className="btn-volver-modal">&lt;</button>
+                
+                  <label>Tag: </label>
+                  <input onChange={handleChange} type="text" name="userTag" value={formData.userTag} placeholder="Artista_epico_123" className="for-border"></input>
+                  <br></br>
 
-                    <label>E-mail: </label>
-                    <input onChange={handleChange} type="email" name="mail" placeholder="Ingrese su correo" className="for-border"></input>
-                    <br></br>
+                  <label>Nombre: </label>
+                  <input onChange={handleChange} type="text" name="userName" value={formData.userName} placeholder="Pepe Art" className="for-border"></input>
+                  <br></br>
 
-                    <label>Contraseña: </label>
-                    <input onChange={handleChange} type="password" name="password" placeholder="******" className="for-border"></input>
-                    <br></br>
+                  <label>Descripcion: </label>
+                  <input onChange={handleChange} type="text" name="userDescription" value={formData.userDescription} placeholder="Hola, soy..." className="for-border"></input>
+                  <br></br>
 
-                    <label>Fecha de Nacimiento: </label>
-                    <input onChange={handleChange} type="text" name="birth" placeholder="DD-MM-YYYY" className="for-border"></input>
-                    <br></br>
+                  <label>Avatar: </label>
+                  <input onChange={handleChange} type="text" name="avatarUrl" value={formData.avatarUrl} placeholder="(imagen)" className="for-border" disabled></input>
+                  <br></br>
 
-                    <label>Telefono: </label>
-                    <input onChange={handleChange} type="text" name="phone" placeholder="Ingrese su telefono" className="for-border"></input>
-                    <br></br>
-
-                    <label>DNI: </label>
-                    <input onChange={handleDniChange} type="text" name="dni" placeholder="Ingrese su DNI" className="for-border"></input>
-                    <br></br>
-                    
-                    <input type="submit" value="Registrarse" id = "boton-envio"></input>
-                </form>
+                  <label>Redes sociales: </label>
+                  <input onChange={handleChange} type="text" name="socialMedias" value={formData.socialMedias} placeholder="[YT: @pepeart, X: @artpepe, IG: @pepitoart...]" className="for-border" disabled></input>
+                  <br></br>
+                      
+                  <input type="submit" value="Registrarse" id = "boton-envio"></input>
+                </>
+              )}
+              </form>
+                
             </div>
         </>
     );

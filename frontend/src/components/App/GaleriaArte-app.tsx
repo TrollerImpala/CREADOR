@@ -6,6 +6,7 @@ import type { CreateToolProps } from "../tools/types";
 import { useForm } from "../hooks/useForm";
 
 function CrearEvento( { funsBtns } : CreateToolProps ){
+  /*
   const {formData, handleChange, handleSubmit} = useForm({
     valoresIniciales : {
       eventName : "",
@@ -26,11 +27,11 @@ function CrearEvento( { funsBtns } : CreateToolProps ){
       funsBtns[1](); // Ocultar Opciones
     }
   });
-
+  */
   return (
     <>
       <div>
-        <button onClick={funsBtns[0]}>X</button>
+        {/* <button onClick={funsBtns[0]}>X</button>
       
         <form onSubmit = {handleSubmit}>
 
@@ -40,7 +41,7 @@ function CrearEvento( { funsBtns } : CreateToolProps ){
           <input type="date" name="eventDate" value={formData.eventDate} onChange={handleChange}></input>
 
           <input type="submit" value="Enviar solicitud"></input>
-        </form>
+        </form> */}
       </div>
     </>
   );
