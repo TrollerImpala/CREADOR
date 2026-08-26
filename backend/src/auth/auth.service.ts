@@ -9,10 +9,10 @@ import { mergeInternals } from "rxjs/internal/operators/mergeInternals";
 @Injectable()
 export class AuthService{
 
-   // private readonly supabase : SupabaseClient;
+   private readonly supabase : SupabaseClient;
 
     constructor(
-        private readonly supabase : SupabaseClient,
+        //private readonly supabase : SupabaseClient,
         private readonly supabaseService : SupabaseService
     ){
         this.supabase = this.supabaseService.getClient();
@@ -25,28 +25,37 @@ export class AuthService{
 
         const { data : authData, error : authError } = await this.supabase.auth.signUp({
             email,
-            password
+            password,
+            options : {
+                data : {
+                    user_tag: userTag,
+                    user_name: userName,
+                    user_description: userDescription || '',
+                    user_avatar_url: avatarUrl || 'https://img.magnific.com/vector-gratis/icono-herramienta-pincel-arte_24877-83203.jpg?semt=ais_hybrid&w=740&q=80',
+                    social_medias: socialMedias || []
+                },
+            },
         });
 
         if (authError) throw new BadRequestException(authError.message);
 
-        const authUserId = authData.user?.id;
+        // const authUserId = authData.user?.id;
 
-        if (!authUserId) throw new Error('No se pudo obtener el id del auth.user');
+        // if (!authUserId) throw new Error('No se pudo obtener el id del auth.user');
         
-        const { error } = await this.supabase
-        .from('USERS')
-        .insert( {
-            id_user : authUserId,
-            user_tag: userTag,
-            user_name: userName,
-            user_description: userDescription || '',
-            user_avatar_url: avatarUrl || '',
-            social_medias: socialMedias || []
+        // const { error } = await this.supabase
+        // .from('USERS')
+        // .insert( {
+        //     id_user : authUserId,
+        //     user_tag: userTag,
+        //     user_name: userName,
+        //     user_description: userDescription || '',
+        //     user_avatar_url: avatarUrl || '',
+        //     social_medias: socialMedias || []
             
-        } );
+        // } );
         
-        if (error) throw new BadRequestException(error.message);
+        // if (error) throw new BadRequestException(error.message);
         
         return {
             mensaje : 'Usuario registrado con exito',
