@@ -6,7 +6,7 @@ import type { ArtPrev, CreateToolProps } from "../tools/types";
 import { useForm } from "../hooks/useForm";
 import { errorMsg } from "../tools/errorUtils";
 
-import ArtPost from "../../templates/ArtTemplate";
+import ArtPostPrev from "../templates/ArtTemplate";
 
 function GaleriaArte() {
   const [posts, setPosts] = useState<ArtPrev[]>([]);
@@ -14,9 +14,10 @@ function GaleriaArte() {
   const obtenerPosts = async () => {
     try{
       const response = await fetch('http://localhost:8080/api/Art/ArtPosts');
-      errorMsg(response, 'Error al cargar el Arte');
+      if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
       
       const data = await response.json();
+      
       setPosts(data.art);
     
     }catch (error){
@@ -29,7 +30,7 @@ function GaleriaArte() {
   return (
     <>
       {posts.map((post) =>
-        <ArtPost
+        <ArtPostPrev
           artpost_id={post.artpost_id}
           title={post.title}
           art_img_url={post.art_img_url}
@@ -37,6 +38,8 @@ function GaleriaArte() {
            />
         
       )}
+
+      { (posts.length == 0) && <h3>Cargando...</h3>}
     </>
   );
 }

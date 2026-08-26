@@ -29,7 +29,7 @@ export class ArtService{
         const {data, error} = await this.supabase
         .from('ARTPOSTS')
         .select()
-        .eq('id_art', id_art)
+        .eq('artpost_id', id_art)
         .single();
 
         if (error) throw new Error('Error al obtener post de arte' + error.message);
