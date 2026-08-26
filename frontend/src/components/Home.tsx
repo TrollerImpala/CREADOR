@@ -30,6 +30,8 @@ function Boton_register() {
 
 function Home() {
 
+  const Navigate = useNavigate();
+
   return (
     <>
 
@@ -44,6 +46,8 @@ function Home() {
           <Boton_register />
         </div>
       </header>
+
+       <button onClick={() => Navigate('/Arte')}>Galeria Arte</button>
 
       <footer>
         <div>

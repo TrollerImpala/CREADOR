@@ -3,9 +3,13 @@ import { ConfigModule } from '@nestjs/config';
 
 import * as path from 'path';
 
+import { SupabaseService } from './config/supabaseClient';
+
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
-import { SupabaseService } from './config/supabaseClient';
+
+import { ArtService } from './art/art.service';
+import { ArtController } from './art/art.controller';
 
 @Module({
   imports: [
@@ -14,7 +18,14 @@ import { SupabaseService } from './config/supabaseClient';
       envFilePath : path.resolve(process.cwd(), '.env'),
     } ),
   ],
-  controllers: [AuthController],
-  providers: [AuthService, SupabaseService],
+  controllers: [
+    AuthController,
+    ArtController
+  ],
+  providers: [
+    SupabaseService,
+    AuthService,
+    ArtService
+  ],
 })
 export class AppModule {}
