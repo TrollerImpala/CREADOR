@@ -35,7 +35,7 @@ function Register(){
     onSuccess : (userData) => {
       console.log("Usuario registrado con exito:", userData);
       alert("¡Registro exitoso!");
-      Navigate("/");
+      Navigate("/Login");
     }
   });
 

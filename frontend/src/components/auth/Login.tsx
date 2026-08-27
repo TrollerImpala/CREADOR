@@ -31,6 +31,11 @@ function Login(){
 
     onSuccess : (userData) => {
       console.log("Usuario logeado con exito:", userData);
+      
+      if (userData.user_token) localStorage.setItem('access_token', userData.user_token);
+      localStorage.setItem('usuario', JSON.stringify(userData.user));
+
+
       alert("¡Logeo exitoso!");
       Navigate("/");
     }

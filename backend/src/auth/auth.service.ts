@@ -74,9 +74,9 @@ export class AuthService{
 
         const { data : profile } = await this.supabase
             .from('USERS')
-            .select('*')
+            .select('user_name, user_avatar_url')
             .eq('id_user', data.user.id)
-            .single()
+            .single();
         
         return {
             mensaje : 'Usuario logeado con exito',

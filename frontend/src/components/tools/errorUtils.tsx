@@ -12,5 +12,5 @@ export async function errorMsg(response : Response, msg : string){
     }
 
   console.error("Error del servidor:", errorData);
-  throw new Error("Error en la peticion: " + (typeof errorData === "object" ? JSON.stringify(errorData) : errorData));
+  alert("Error en la peticion: " + (typeof errorData === "object" ? JSON.stringify(errorData) : errorData));
 }

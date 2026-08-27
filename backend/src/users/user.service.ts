@@ -5,12 +5,19 @@ import { SupabaseService } from "../config/supabaseClient";
 
 
 @Injectable()
-export class userDataService{
+export class UserService{
     constructor(
         private readonly supabase : SupabaseClient,
         private readonly supabaseService : SupabaseService
     ){
         this.supabase = this.supabaseService.getClient();
+    }
+
+    async getUserData(user_id){
+        return {
+            user : 'Nada',
+            mensaje : 'lol'
+        };
     }
 
     async updateData(user_token : string, body : any){

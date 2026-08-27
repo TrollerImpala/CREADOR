@@ -39,12 +39,21 @@ function Home() {
         <div id=  'title-head'>
           <h1>CREADOR</h1>
         </div>
+        {!localStorage.getItem('access_token') ? (
+          <>          
+            <div id='Ini-Reg'>
+              <Boton_login />
+              <br></br>
+              <Boton_register />
+            </div>          
+          </>
+          ) : (
+            <>
+              <h3>Hola {JSON.parse(localStorage.getItem('usuario')!).user_name}</h3>
+            </>
+          )
+        }
 
-        <div id='Ini-Reg'>
-          <Boton_login />
-          <br></br>
-          <Boton_register />
-        </div>
       </header>
 
        <button onClick={() => Navigate('/Arte')}>Galeria Arte</button>
