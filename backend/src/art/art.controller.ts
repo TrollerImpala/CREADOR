@@ -1,4 +1,6 @@
-import { Controller, Post, Get, Body, Param } from "@nestjs/common";
+import { Controller, Post, Get, Body, Param, UseGuards } from "@nestjs/common";
+
+import { SupabaseAuthGuard } from "../auth/auth.guard";
 
 import { ArtService } from "./art.service";
 
@@ -8,6 +10,7 @@ export class ArtController{
     constructor(private readonly artService : ArtService){}
 
     @Get('ArtPosts')
+    //@UseGuards(SupabaseAuthGuard)
     async getArtPosts(){
         return await this.artService.getArtPosts();
     }

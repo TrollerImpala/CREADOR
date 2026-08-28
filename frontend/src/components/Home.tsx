@@ -1,4 +1,10 @@
+import { useEffect } from 'react';
+
 import { Link, useNavigate } from 'react-router-dom';
+
+import { refreshToken } from './tools/refresh_token';
+
+import { logout } from './tools/logout';
 
 //import '../styles/Home.css'
 //import logo from '../assets/METTIA-logo.png'
@@ -28,10 +34,28 @@ function Boton_register() {
 
 }
 
+function Boton_logout() {
+  const Navigate = useNavigate();
+
+  const click = () => {
+    logout();
+    Navigate(0);  
+  }
+
+  return (<button id='logout-btn' onClick={click}>Cerrar sesion</button>);
+}
+
 function Home() {
 
   const Navigate = useNavigate();
 
+  
+  useEffect(() => {
+    //localStorage.clear();
+    //refreshToken();
+  }, []);
+
+  
   return (
     <>
 
@@ -50,6 +74,7 @@ function Home() {
           ) : (
             <>
               <h3>Hola {JSON.parse(localStorage.getItem('usuario')!).user_name}</h3>
+              <Boton_logout />
             </>
           )
         }

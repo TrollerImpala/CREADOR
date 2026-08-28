@@ -13,7 +13,13 @@ function GaleriaArte() {
 
   const obtenerPosts = async () => {
     try{
-      const response = await fetch('http://localhost:8080/api/Art/ArtPosts');
+      const response = await fetch('http://localhost:8080/api/Art/ArtPosts', {
+        method : 'GET',
+        headers : {
+          'Content-Type' : 'application/json',
+          'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
+        }}
+      );
       if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
       
       const data = await response.json();

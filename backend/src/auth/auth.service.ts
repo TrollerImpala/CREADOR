@@ -84,4 +84,24 @@ export class AuthService{
             user : profile
         };
     }
+
+    async refresh_token(){
+        const {data : { session }, error} = await this.supabase.auth.getSession();
+
+        //console.log(localStorage.getItem('access_token'));
+
+        if (!session) throw new Error('No se ha iniciado');
+
+        if (error || !session) throw new Error('No se ha iniciado sesion o no se pudo refrescar el token');
+
+        return { access_token : session.access_token };
+    }
+
+    async log_out(){
+        const { error } = await this.supabase.auth.signOut();
+
+        return {
+            mensaje : 'Cierre de sesion exitante'
+        };
+    }
 }
