@@ -1,0 +1,82 @@
+/* Contenedor principal del post completo (80% del ancho) */
+.main-post-container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 40px auto;
+    border: 2px solid #333;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* 1. Encabezado (Rating y Título) */
+.main-post-header {
+    background-color: darkslategrey;
+    padding: 16px 20px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    border-bottom: 2px solid #333;
+}
+
+/* 2. Cuerpo del post (Imagen a la izquierda, Descripción a la derecha) */
+.main-post-body {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* 2/3 para la imagen, 1/3 para la descripción */
+    gap: 20px;
+    padding: 20px;
+    background-color: #242424;
+}
+
+.main-post-img-container {
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-post-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Muestra la obra de arte completa sin recortar */
+}
+
+.main-post-desc-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    line-height: 1.6;
+    color: #e0e0e0;
+}
+
+.main-post-desc-container p {
+    margin: 0;
+}
+
+/* 3. Footer (Sección de Tags) */
+.main-post-footer {
+    padding: 15px 20px;
+    background-color: darkslategrey;
+    border-top: 1px solid #333;
+}
+
+.main-post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.main-post-tags p {
+    margin: 0;
+    padding: 4px 12px;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    font-size: 0.85rem;
+    color: #ffffff;
+}

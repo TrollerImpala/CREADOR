@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { errorMsg } from "../../tools/errorUtils";
 import type { ArtInfo } from "../../tools/types";
 
+import '../../../styles/single-posts-styles/ArtPost.css'
+
 function ArtPost(){
     const Navigate = useNavigate();
 
@@ -34,7 +36,7 @@ function ArtPost(){
             setCargando(false);
     
         }catch (error){
-            throw new Error('No se han podido cargar los posts de arte');
+            throw new Error('No se ha podido cargar el post de arte');
         }
     }
 
@@ -49,31 +51,30 @@ function ArtPost(){
                 </>
             ) : (
                 <>
-                    <table>
-                        <thead>
-                            <tr>{post.rating} - {post.title}</tr>
-                        </thead>
+                    <div className="main-post-container">
+                        <div className="main-post-header">
+                            <div>{post.rating} - {post.title}</div>
+                        </div>
 
-                        <tbody>
-                            <tr>
+                        <div className="main-post-body">
+                            <div className="main-post-img-container">
                                 <img src={post.art_img_url} alt={post.title}></img>
-                            </tr>
-                            <tr>
+                            </div>
+                            <div className="main-post-desc-container">
                                 <p>{post.description}</p>
-                            </tr>
-                        </tbody>
+                            </div>
+                        </div>
 
-                        <tfoot>
-                            <tr>
+                        <div className="main-post-footer">
+                            <div className="main-post-tags">
                                 {post.tags.map((tag) => (
                                     <>
                                         <p>{tag}</p>
                                     </>
                                 ))}
-                            </tr>
-                        </tfoot>
-                    </table>    
-   
+                            </div>
+                        </div>
+                    </div> 
                 </>
             )}
         </>

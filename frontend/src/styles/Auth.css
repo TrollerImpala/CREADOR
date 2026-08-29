@@ -20,6 +20,8 @@
     height: auto;
     font-size: large;
 
+    cursor: pointer;
+
 }
 
 #log-box, #reg-box{

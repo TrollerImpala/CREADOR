@@ -6,7 +6,7 @@ import { refreshToken } from './tools/refresh_token';
 
 import { logout } from './tools/logout';
 
-//import '../styles/Home.css'
+import '../styles/Home.css'
 //import logo from '../assets/METTIA-logo.png'
 //import rick from '../assets/rickroll.gif'
 
@@ -42,7 +42,7 @@ function Boton_logout() {
     Navigate(0);  
   }
 
-  return (<button id='logout-btn' onClick={click}>Cerrar sesion</button>);
+  return (<button id='btn-logout' onClick={click}>Cerrar sesion</button>);
 }
 
 function Home() {
@@ -60,7 +60,7 @@ function Home() {
     <>
 
       <header>
-        <div id=  'title-head'>
+        <div id = 'title-head'>
           <h1>CREADOR</h1>
         </div>
         {!localStorage.getItem('access_token') ? (
@@ -80,8 +80,10 @@ function Home() {
         }
 
       </header>
-
-       <button onClick={() => Navigate('/Arte')}>Galeria Arte</button>
+      
+      <nav>
+       <button onClick={() => Navigate('/Arte')} className='btn-seccion'>Galeria Arte</button>
+      </nav>
 
       <footer>
         <div>
