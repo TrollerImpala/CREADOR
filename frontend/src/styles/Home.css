@@ -37,6 +37,8 @@ nav{
     background-color: white;
     color: lightseagreen;
 
+    cursor: pointer;
+
 }
 
 .btn-seccion{
@@ -47,6 +49,8 @@ nav{
     border-radius: 999px;
 
     padding: 10px 20px;
+
+    cursor: pointer;
 }
 /*
 #btn-reg{

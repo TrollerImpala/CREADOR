@@ -1,11 +1,12 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import Nav from './components/App/Nav-menu';
+import Nav from './components/App/Nav';
 import Home from './components/Home';
 import Login from './components/auth/Login';
 import Register from "./components/auth/Register";
 import GaleriaArte from "./components/App/GaleriaArte-app";
 import ArtPost from "./components/App/Single/ArtePost-app";
+import { PostearArte } from "./components/App/Posts/Postear-Arte";
 import Amigos from "./components/App/Amigos-app";
 import Teams from "./components/App/Teams-app";
 
@@ -33,6 +34,10 @@ const Router = createBrowserRouter([
     {
         path : '/Arte/:artpost_id',
         element : <ArtPost />
+    },
+    {
+        path : 'Arte/PostearArte',
+        element : <PostearArte />
     },
     {
         path : '/Amigos',

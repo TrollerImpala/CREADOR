@@ -1,29 +1,29 @@
 import { useNavigate, Link} from "react-router-dom";
 
-import type { ArtPrev } from "../tools/types";
+import type { ArtInfo } from "../tools/types";
 
 import '../../styles/templates-styles/ArtTemplate.css';
 
-function ArtPostPrev( {artpost_id, title, art_img_url, rating} : ArtPrev ){
+function ArtPostPrev ( { post } : { post: ArtInfo } ) {
     const Navigate = useNavigate();
     
     return (
         <>
-            <Link to={`/Arte/${artpost_id}`}>
+            <Link to={`/Arte/${post.artpost_id}`}>
             
             <div className="prev-art-post">
                 <div className="prev-art-info">
                     <h3>
-                        {rating}
+                        {post.rating}
                     </h3>
                             
                     <h3>
-                        {title}
+                        {post.title}
                     </h3>                         
                 </div>
                 
                 <div className="prev-art-container">               
-                    <img src={art_img_url} alt={title}></img>    
+                    <img src={post.art_img_url} alt={post.title}></img>    
                 </div>
             </div>    
             

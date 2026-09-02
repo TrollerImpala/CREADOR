@@ -3,13 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 
 import * as path from 'path';
 
-import { SupabaseService } from './config/supabaseClient';
+import { SupabaseService } from './sub_services/supabaseClient';
 
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 
 import { ArtService } from './art/art.service';
 import { ArtController } from './art/art.controller';
+import { StorageService } from './sub_services/storage.service';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ArtController } from './art/art.controller';
   providers: [
     SupabaseService,
     AuthService,
+    StorageService,
     ArtService
   ],
 })

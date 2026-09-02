@@ -8,9 +8,10 @@ interface UseFormConfig<T> {
   urlApi : string;
   eMsg : string;
   onSuccess: (data: any) => void;
+  opc ?: boolean;
 }
 
-export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess }: UseFormConfig<T>) {
+export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, opc = false }: UseFormConfig<T>) {
   const [formData, setFormData] = useState<T>(valoresIniciales);
   //const [loading, setLoading] = useState(false);
 
@@ -21,6 +22,26 @@ export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess }: UseFor
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    
+    setFormData( (prev) => ({
+      ...prev,
+      [name]: value
+    }));
+    console.log(formData);
+  };
+
+  const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    
+    setFormData( (prev) => ({
+      ...prev,
+      [name]: value
+    }));
+    console.log(formData);
   };
 
   const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
@@ -51,10 +72,23 @@ export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess }: UseFor
     }*/
   };
 
+  if (!opc){
+    return {
+      setFormData,
+      formData,
+      handleChange,
+      handleSubmit
+    };
+  }
+  
   return {
     setFormData,
     formData,
+    
     handleChange,
+    handleTextAreaChange,
+    handleSelectChange,
+
     handleSubmit,
     //loading
   };

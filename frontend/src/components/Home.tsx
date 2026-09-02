@@ -84,11 +84,21 @@ function Home() {
       <nav>
        <button onClick={() => Navigate('/Arte')} className='btn-seccion'>Galeria Arte</button>
       </nav>
+      
+      <section>
+        <h1>Bienvenidos a la pagina!</h1>
+        
+        <h2>
+          En la pagina principal, tendria que haber un tablon mostrando un poco de todas las creaciones
+          (por ejemplo, dibujos, musica, proyectos de teams, etc)
+        </h2>
+      </section>
+
 
       <footer>
         <div>
           <h2>CREADOR</h2>
-          <p>©CREADOR</p>
+          <p>©CREADOR - Pagina hecha por el team 01</p>
         </div>
       </footer>
     </>

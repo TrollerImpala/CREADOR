@@ -67,7 +67,7 @@ function ArtPost(){
 
                         <div className="main-post-footer">
                             <div className="main-post-tags">
-                                {post.tags.map((tag) => (
+                                {post.tags!.map((tag) => (
                                     <>
                                         <p>{tag}</p>
                                     </>

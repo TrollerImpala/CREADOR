@@ -2,7 +2,7 @@ import { Injectable, BadRequestException, UnauthorizedException } from "@nestjs/
 
 import { SupabaseClient } from "@supabase/supabase-js";
 //import { supabase } from "../config/supabaseClient";
-import { SupabaseService } from "../config/supabaseClient";
+import { SupabaseService } from "../sub_services/supabaseClient";
 
 import { mergeInternals } from "rxjs/internal/operators/mergeInternals";
 

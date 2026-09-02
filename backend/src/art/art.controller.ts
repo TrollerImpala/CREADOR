@@ -1,8 +1,22 @@
-import { Controller, Post, Get, Body, Param, UseGuards } from "@nestjs/common";
+import { Controller,
+    Post,
+    Get,
+    Body,
+    Param,
+    UseGuards,
+    Req, 
+    UseInterceptors, 
+    UploadedFile, 
+    BadRequestException
+} from "@nestjs/common";
+
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { SupabaseAuthGuard } from "../auth/auth.guard";
 
 import { ArtService } from "./art.service";
+
+import type { CreateArtPostDto, UploadedFileDto } from "../DTO/art.dto";
 
 
 @Controller('Art')
@@ -19,4 +33,26 @@ export class ArtController{
     async getArtPost(@Param('id') id : string){
         return await this.artService.getArtPost(id);
     }
+
+    @Post('PostArt')
+    @UseGuards(SupabaseAuthGuard)
+    @UseInterceptors(FileInterceptor('art_img'))
+    async createArtPost(
+        @Req() req : any,
+        @Body() body : CreateArtPostDto,
+        @UploadedFile() file : UploadedFileDto
+    ) {
+        if (!file) {
+            throw new BadRequestException('El archivo de imagen es obligatorio');
+        }
+
+        const userId = req.user.id;
+
+        const postPayload = {
+            ...body,
+            art_img : file
+        };
+
+    return this.artService.postArt(userId, postPayload);
+  }
 }

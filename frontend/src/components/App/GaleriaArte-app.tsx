@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import CreateTool from "./Create-tool";
-import type { ArtPrev, CreateToolProps } from "../tools/types";
+import type { ArtInfo, CreateToolProps } from "../tools/types";
 
 import { useForm } from "../hooks/useForm";
 import { errorMsg } from "../tools/errorUtils";
@@ -9,7 +9,7 @@ import { errorMsg } from "../tools/errorUtils";
 import ArtPostPrev from "../templates/ArtTemplate";
 
 function GaleriaArte() {
-  const [posts, setPosts] = useState<ArtPrev[]>([]);
+  const [posts, setPosts] = useState<ArtInfo[]>([]);
 
   const obtenerPosts = async () => {
     try{
@@ -36,12 +36,7 @@ function GaleriaArte() {
   return (
     <>
       {posts.map((post) =>
-        <ArtPostPrev
-          artpost_id={post.artpost_id}
-          title={post.title}
-          art_img_url={post.art_img_url}
-          rating={post.rating}
-           />
+        <ArtPostPrev post={post} />
         
       )}
 
