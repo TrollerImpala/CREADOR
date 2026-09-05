@@ -39,6 +39,17 @@ function Register(){
     }
   });
 
+  const handleTagChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    const cleanValue = value.replace(/["' <>;/@#$-]/g, "");
+    
+    setFormData( (prev) => ({
+      ...prev,
+      [name]: cleanValue
+    }));
+  }
+
   const [step2Visible, setStep2Visible] = useState<boolean>(false);
 
   // const handleDniChange = (e : ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +83,7 @@ function Register(){
                   <button onClick={() => setStep2Visible(false)} className="btn-volver-modal">&lt;</button>
                 
                   <label>Tag: </label>
-                  <input onChange={handleChange} type="text" name="userTag" value={formData.userTag} placeholder="Artista_epico_123" className="for-border"></input>
+                  <input onChange={handleTagChange} type="text" name="userTag" value={formData.userTag} placeholder="Artista_epico_123" className="for-border"></input>
                   <br></br>
 
                   <label>Nombre: </label>

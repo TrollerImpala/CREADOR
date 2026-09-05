@@ -37,8 +37,8 @@ function Boton_register() {
 function Boton_logout() {
   const Navigate = useNavigate();
 
-  const click = () => {
-    logout();
+  const click = async () => {
+    await logout();
     Navigate(0);  
   }
 

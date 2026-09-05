@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import CreateTool from "./Create-tool";
 import type { ArtInfo, CreateToolProps } from "../tools/types";
@@ -9,6 +10,8 @@ import { errorMsg } from "../tools/errorUtils";
 import ArtPostPrev from "../templates/ArtTemplate";
 
 function GaleriaArte() {
+  const Navigate = useNavigate();
+
   const [posts, setPosts] = useState<ArtInfo[]>([]);
 
   const obtenerPosts = async () => {
@@ -35,6 +38,7 @@ function GaleriaArte() {
 
   return (
     <>
+      <button onClick={() => Navigate('PostearArte')}>Postear Arte</button>
       {posts.map((post) =>
         <ArtPostPrev post={post} />
         

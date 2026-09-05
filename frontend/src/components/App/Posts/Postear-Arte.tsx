@@ -11,7 +11,7 @@ interface ArtPostForm {
   rating: string;
 }
 
-export function PostearArte() {
+function PostearArte() {
   const [artImg, setArtImg] = useState<File | null>(null);
 
   const { formData, handleChange, handleTextAreaChange, handleSelectChange } = useForm<ArtPostForm>({
@@ -147,3 +147,5 @@ export function PostearArte() {
     </form>
   );
 }
+
+export default PostearArte;
