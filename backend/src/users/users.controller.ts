@@ -7,15 +7,24 @@ import { SupabaseAuthGuard } from "../auth/auth.guard";
 export class AuthController{
     constructor(private readonly userService : UserService) {};
 
-    @Get('Perfil')
+    @Post('Perfil')
     @UseGuards(SupabaseAuthGuard)
-    async getProfile(@Req() req){
+    async getProfile(@Req() req : any){
         
         const userId = req.user.id_user;
 
         return this.userService.getUserData(userId);
     }
-    // async register(@Body() body : any){
-    //     return this.authService.register(body);
-    // }
+
+    @Post('ActualizarPerfil')
+    @UseGuards(SupabaseAuthGuard)
+    async updateProfile(
+        @Req() req : any,
+        @Body() body : any
+    ){
+
+        const userId = req.user.id_user;
+
+        return this.userService.updateUser(userId, body);
+    }
 }

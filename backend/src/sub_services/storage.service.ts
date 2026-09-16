@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 import { SupabaseService } from './supabaseClient';
 
-import type { UploadedFileDto } from '../DTO/art.dto';
+import type { UploadedFileDto } from '../DTO/file.dto';
 
 @Injectable()
 export class StorageService {

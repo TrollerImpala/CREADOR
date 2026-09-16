@@ -36,7 +36,8 @@ function Register(){
       console.log("Usuario registrado con exito:", userData);
       alert("¡Registro exitoso!");
       Navigate("/Login");
-    }
+    },
+
   });
 
   const handleTagChange = (e: ChangeEvent<HTMLInputElement>) => {

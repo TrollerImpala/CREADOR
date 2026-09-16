@@ -16,8 +16,8 @@ import { SupabaseAuthGuard } from "../auth/auth.guard";
 
 import { ArtService } from "./art.service";
 
-import type { CreateArtPostDto, UploadedFileDto } from "../DTO/art.dto";
-
+import type { CreateArtPostDto } from "../DTO/art.dto";
+import type { UploadedFileDto } from "../DTO/file.dto";
 
 @Controller('Art')
 export class ArtController{

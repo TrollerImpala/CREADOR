@@ -18,7 +18,7 @@ export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, opc = fa
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    const cleanValue = value.replace(/["'<>;/@#$-]/g, "");
+    const cleanValue = value.replace(/["'<>;/#$-]/g, "");
 
     setFormData( (prev) => ({
       ...prev,

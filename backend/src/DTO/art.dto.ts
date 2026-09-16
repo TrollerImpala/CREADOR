@@ -1,22 +1,11 @@
 import { IsString, IsNotEmpty, IsOptional, IsArray, IsEnum } from 'class-validator';
 
-
-
 export enum ArtRating {
   G = 'G',
   PG = 'PG',
   PG_13 = 'PG-13',
   R = 'R',
   NC = 'NC',
-}
-
-export interface UploadedFileDto {
-  fieldname: string;
-  originalname: string;
-  encoding: string;
-  mimetype: string;
-  size: number;
-  buffer: Buffer;
 }
 
 export class CreateArtPostDto {
