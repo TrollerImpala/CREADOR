@@ -80,6 +80,7 @@ function PostearArte() {
 
       if (response.status === 401) {
         await refreshToken();
+//        console.log(localStorage.getItem('access_token'));
         const newAccessToken = localStorage.getItem('access_token');
 
         if (newAccessToken) {

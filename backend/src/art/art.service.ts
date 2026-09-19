@@ -3,6 +3,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseService } from "../sub_services/supabaseClient";
 
+import { GeneralPostsService } from "../sub_services/general-posts.service";
 import { StorageService } from "../sub_services/storage.service";
 
 @Injectable()
@@ -11,7 +12,8 @@ export class ArtService{
     
     constructor(
         private readonly supabaseService : SupabaseService,
-        private readonly storageService : StorageService
+        private readonly storageService : StorageService,
+        private readonly generalPostsService : GeneralPostsService
     ){
         this.supabase = this.supabaseService.getClient();
     }
@@ -69,6 +71,11 @@ export class ArtService{
 
 
     async postArt(user_id : string, body : any){
+        const {stat, mensaje} = await this.generalPostsService.createStat();
+        console.log(mensaje);
+        console.log(stat);
+        const stats_id = stat.stats_id;
+
         const {title, art_img, description, tags, rating} = body;
 
         const fileExtension = art_img.originalname.split('.').pop() || 'png';
@@ -85,12 +92,17 @@ export class ArtService{
             description,
             tags,
             rating,
-            user_id
+            user_id,
+            stats_id
         })
         .select()
         .single();
 
-        if ( error ) throw new BadRequestException('Error al subir info del post de Arte');
+        if ( error ) {
+            this.generalPostsService.deleteStat(stats_id);
+            console.log(error);
+            throw new BadRequestException('Error al subir info del post de Arte');
+        } 
 
         return {
             mensaje : 'Subida de arte exitosa',

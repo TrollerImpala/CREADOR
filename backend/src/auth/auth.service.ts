@@ -81,11 +81,12 @@ export class AuthService{
         return {
             mensaje : 'Usuario logeado con exito',
             user_token : data.session.access_token,
+            refresh_token : data.session.refresh_token,
             user : profile
         };
     }
 
-    async refresh_token(){
+    async verify_session(){
         const {data : { session }, error} = await this.supabase.auth.getSession();
 
         //console.log(localStorage.getItem('access_token'));
@@ -95,6 +96,21 @@ export class AuthService{
         if (error || !session) throw new Error('No se ha iniciado sesion o no se pudo refrescar el token');
 
         return { access_token : session.access_token };
+    }
+
+    async refresh_token(refresh_token : string){
+        if (!refresh_token) throw new Error('No se proporciono refresh token');
+
+        const {data, error} = await this.supabase.auth.refreshSession({refresh_token : refresh_token});
+
+        if (error || !data.session) {
+            throw new UnauthorizedException('No se pudo refrescar el token, la sesión ha expirado');
+        }
+
+        return { 
+            access_token: data.session.access_token,
+            refresh_token: data.session.refresh_token
+        };
     }
 
     async log_out(){

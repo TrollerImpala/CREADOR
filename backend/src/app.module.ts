@@ -5,6 +5,8 @@ import * as path from 'path';
 
 import { SupabaseService } from './sub_services/supabaseClient';
 
+import { GeneralPostsService } from './sub_services/general-posts.service';
+
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 
@@ -25,6 +27,7 @@ import { StorageService } from './sub_services/storage.service';
   ],
   providers: [
     SupabaseService,
+    GeneralPostsService,
     AuthService,
     StorageService,
     ArtService
