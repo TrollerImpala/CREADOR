@@ -1,0 +1,37 @@
+header {
+  background-color: white;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+#title-head {
+  padding-left: 50px;
+  color: lightseagreen;
+}
+
+#Ini-Reg {
+  background-color: white;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding-right: 40px;
+  height: 75px;
+  align-items: center;
+  gap: 5px;
+}
+
+#Ini-Reg button,
+#btn-logout {
+  padding: 10px 20px;
+  border-radius: 999px;
+}
+
+#btn-log,
+#btn-reg,
+#btn-logout {
+  border: 2px solid lightseagreen;
+  background-color: white;
+  color: lightseagreen;
+  cursor: pointer;
+}

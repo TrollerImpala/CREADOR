@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import Header from "./Header";
 import CreateTool from "./Create-tool";
+
+import Nav from "./Nav";
+
 import type { ArtInfo, CreateToolProps } from "../tools/types";
 
 import { useForm } from "../hooks/useForm";
@@ -38,6 +41,10 @@ function GaleriaArte() {
 
   return (
     <>
+      
+      <Header/>
+      <Nav/>
+
       <button onClick={() => Navigate('PostearArte')}>Postear Arte</button>
       {posts.map((post) =>
         <ArtPostPrev post={post} />

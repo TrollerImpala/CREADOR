@@ -12,9 +12,16 @@ import GaleriaArte from "./components/App/GaleriaArte-app";
 import ArtPost from "./components/App/Single/ArtePost-app";
 import PostearArte from "./components/App/Posts/Postear-Arte";
 
+
+import GaleriaMusica from "./components/App/GaleriaMusica-app";
+//import MusicPost from "./components/App/Single/ArtePost-app";
+//import PostearArte from "./components/App/Posts/Postear-Arte";
+
+
 import Amigos from "./components/App/Amigos-app";
 
 import Teams from "./components/App/Teams-app";
+
 
 function ProtectedRoute() {
   const usuarioAutenticado = localStorage.getItem('usuario');
@@ -46,6 +53,10 @@ const Router = createBrowserRouter([
     {
         path : '/Arte',
         element : <GaleriaArte />
+    },
+    {
+        path : '/Musica',
+        element : <GaleriaMusica />
     },
     {
         path : '/Arte/:artpost_id',
