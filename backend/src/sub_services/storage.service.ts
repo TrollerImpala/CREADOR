@@ -22,7 +22,7 @@ export class StorageService {
         upsert: true,
       });
 
-    if (error) throw new BadRequestException(`Error al subir imagen: ${error.message}`);
+    if (error) throw new BadRequestException(`Error al subir archivo: ${error.message}`);
 
     return this.getPublicUrl(bucket, path);
   }

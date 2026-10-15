@@ -100,6 +100,7 @@ export class ArtService{
 
         if ( error ) {
             this.generalPostsService.deleteStat(stats_id);
+            this.storageService.deleteFile('ART', filePath);
             console.log(error);
             throw new BadRequestException('Error al subir info del post de Arte');
         } 
