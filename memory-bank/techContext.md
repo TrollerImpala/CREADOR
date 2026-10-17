@@ -13,6 +13,14 @@
 - Framework principal y dependencias clave: [backend/package.json](../backend/package.json)
 - Swagger habilitado y prefijo global `/api`: [backend/src/main.ts](../backend/src/main.ts)
 
+### Gestores de paquetes y runtimes por entorno
+- Desarrollo local: Bun, respaldado por [backend/bun.lock](../backend/bun.lock) y [frontend/bun.lock](../frontend/bun.lock)
+- Despliegue / producción: Yarn, documentado en [render.yaml](../render.yaml)
+
+Esto implica una separación clara de entornos:
+- Local: usar Bun para velocidad de instalación y ejecución durante desarrollo
+- Deploy: usar Yarn para desarrollo del pipeline de Render y producción
+
 ## Dependencias clave
 
 ### Backend
@@ -79,7 +87,12 @@ La configuración del despliegue está en [render.yaml](../render.yaml):
 - build y start commands definidos en la misma configuración
 
 ## Docker y contenedores
-No existe `docker-compose.yml`, `docker-compose.yaml` ni `Dockerfile` en el repositorio. La búsqueda del proyecto no encontró esos archivos, por lo tanto la ejecución real se apoya en npm + Render y no en Docker Compose para este estado del repositorio.
+No existe `docker-compose.yml`, `docker-compose.yaml` ni `Dockerfile` en el repositorio. La búsqueda del proyecto no encontró esos archivos. La ejecución local del repositorio se basa en Bun y la configuración de despliegue usa Yarn en [render.yaml](../render.yaml), no en contenedores Docker.
+
+## Impacto en Developer Experience
+- Bun acelera la instalación y ejecución local con lockfiles presentes: [backend/bun.lock](../backend/bun.lock), [frontend/bun.lock](../frontend/bun.lock)
+- Yarn se usa como estándar de despliegue y pipeline para Render, evitando que el entorno productivo dependa de herramientas de desarrollo local
+- La separación explícita de entorno reduce ambigüedad y evita mezclar `install` y `start` de distintos gestores en la misma etapa
 
 ## Resumen técnico
-El proyecto es un monorepo de dos servicios con frontend y backend separados, conectados por HTTP sobre localhost en desarrollo y por Render en despliegue, usando Supabase como capa de autenticación, base de datos y storage.
+El proyecto es un monorepo de dos servicios con frontend y backend separados, conectados por HTTP sobre localhost en desarrollo y por Render en despliegue, usando Supabase como capa de autenticación, base de datos y storage. La dualidad de paquetes está documentada de forma intencional: Bun para desarrollo local y Yarn para despliegue/produción.

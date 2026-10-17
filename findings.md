@@ -24,7 +24,7 @@
 
 - Evidencia: no hay `docker-compose.yml`, `Dockerfile` o un manifiesto raíz de orquestación; la ejecución está dividida entre [frontend/package.json](frontend/package.json#L1-L34), [backend/package.json](backend/package.json#L1-L77) y [render.yaml](render.yaml#L1-L20).
 - Riesgo: el onboarding es frágil; cada desarrollador debe recordar dos procesos distintos, con distintos comandos y variables de entorno.
-- Regla accionable: añadir scripts root (`npm run dev`, `npm run build`, `npm run test`) y un archivo de entorno base para un flujo único de arranque.
+- Regla accionable: añadir scripts root del workspace para desarrollo y build, usando la herramienta del entorno correcto, y un archivo de entorno base para un flujo único de arranque.
 
 ---
 
@@ -90,7 +90,7 @@
 
 - Evidencia: la configuración de despliegue está bien definida en [render.yaml](render.yaml#L1-L20), pero no hay documentación ni script de validación local para arrancar ambos servicios juntos y comprobar rutas reales.
 - Riesgo: la integración front-back se valida sólo por lectura del código, no por ejecución.
-- Regla accionable: añadir un comando de integración local (`npm run dev:all` o equivalente) y un smoke test HTTP para endpoints clave.
+- Regla accionable: añadir un comando de integración local del entorno correcto y un smoke test HTTP para endpoints clave.
 
 ---
 

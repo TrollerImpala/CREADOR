@@ -2,75 +2,89 @@
 
 ## Instrucciones de Ejecución
 
-### 1) Backend (API NestJS)
+### 1) Desarrollo local con Bun
+El repositorio contiene lockfiles de Bun en [backend/bun.lock](backend/bun.lock) y [frontend/bun.lock](frontend/bun.lock), lo que respalda el uso de Bun como gestor de paquetes y runtime para el trabajo local.
 
-La app backend está configurada como un servicio Node en [render.yaml](render.yaml#L1-L20), con `rootDir: backend` y `startCommand: npm start`.
+#### Backend (NestJS)
+La app backend escucha por `process.env.PORT || 8080` en [backend/src/main.ts](backend/src/main.ts#L7-L33).
 
-Comandos reales respaldados por el código:
-
-```bash
-cd backend
-npm install
-npm run start:dev
-```
-
-También es posible arrancarlo en producción:
+Comandos de desarrollo local respaldados por el proyecto:
 
 ```bash
 cd backend
-npm install
-npm run build
-npm run start:prod
+bun install
+bun run start:dev
 ```
 
-La entrada real del backend está en [backend/src/main.ts](backend/src/main.ts#L7-L33):
+Comandos de compilación local:
 
-- activa CORS
-- monta el prefijo global `api`
-- habilita `ValidationPipe`
-- crea Swagger en `/secret`
-- usa `process.env.PORT || 8080`
+```bash
+cd backend
+bun install
+bun run build
+bun run start:prod
+```
 
-Eso implica que la API real del proyecto, en ejecución local, es:
-
+Valores reales locales:
 - API base: `http://localhost:8080/api`
 - Swagger: `http://localhost:8080/secret`
 
-La evidencia de que el backend se conecta a Supabase y usa variables de entorno aparece en [backend/src/sub_services/supabaseClient.ts](backend/src/sub_services/supabaseClient.ts#L1-L23) y en [backend/.env](backend/.env#L1-L4), donde se definen `SUPABASE_URL`, `SUPABASE_ANON_KEY` y `PORT=8080`.
+#### Frontend (React + Vite)
+La configuración del frontend se define en [frontend/vite.config.ts](frontend/vite.config.ts#L1-L11) y el proyecto usa Vite por defecto en desarrollo.
 
-### 2) Frontend (React + Vite)
-
-La configuración de despliegue del frontend aparece en [render.yaml](render.yaml#L1-L8): es un servicio estático con `rootDir: frontend`, `buildCommand: npm ci && npm run build` y `staticPublishPath: dist`.
-
-Comandos reales respaldados por el código:
+Comandos de desarrollo local:
 
 ```bash
 cd frontend
-npm install
-npm run dev -- --host 0.0.0.0
+bun install
+bun run dev -- --host 0.0.0.0
 ```
 
-La configuración de Vite en [frontend/vite.config.ts](frontend/vite.config.ts#L1-L11) no define un puerto explícito, así que en desarrollo Vite usa el valor por defecto (`5173`) si no se sobreescribe desde la línea de comandos. Eso coincide con la forma en que el frontend realiza llamadas hardcodeadas al backend en `http://localhost:8080`.
+La ruta típica en desarrollo es:
+
+```text
+http://localhost:5173
+```
+
+El frontend realiza llamadas locales a la API mediante `fetch('http://localhost:8080/api/...')` desde [frontend/src/components/auth/Login.tsx](frontend/src/components/auth/Login.tsx#L18-L48) y [frontend/src/components/App/GaleriaArte-app.tsx](frontend/src/components/App/GaleriaArte-app.tsx#L12-L42).
+
+### 2) Despliegue / Producción con Yarn
+La configuración de Render en [render.yaml](render.yaml#L1-L20) usa Yarn para las instalacions y start commands del despliegue. Esa es la configuración validada para producción/deploy.
+
+#### Frontend en Render
+```bash
+cd frontend
+yarn install --frozen-lockfile
+yarn build
+```
+
+#### Backend en Render
+```bash
+dcd backend
+yarn install --frozen-lockfile
+yarn build
+yarn start
+```
+
+Notas:
+- El despliegue es compatible con el servicio Node y el servicio estático definidos en [render.yaml](render.yaml#L1-L20).
+- No se utiliza Docker Compose ni un Dockerfile en este repositorio.
 
 ### 3) Verificación funcional básica
-
 Se puede comprobar la API levantada con:
 
 ```bash
 curl http://localhost:8080/api/Art/ArtPosts
 ```
 
-La ruta del frontend en desarrollo suele ser:
+Y la SPA en desarrollo normalmente estará disponible en:
 
 ```text
 http://localhost:5173
 ```
 
-Y la autenticación del frontend apunta explícitamente al backend local en [frontend/src/components/auth/Login.tsx](frontend/src/components/auth/Login.tsx#L18-L48), [frontend/src/components/auth/Register.tsx](frontend/src/components/auth/Register.tsx), y [frontend/src/components/App/GaleriaArte-app.tsx](frontend/src/components/App/GaleriaArte-app.tsx#L12-L42), donde se hace `fetch('http://localhost:8080/api/...')`.
-
 ### 4) Docker / contenedores
-
-Se verificó que no existe ningún `docker-compose.yml`, `docker-compose.yaml`, ni `Dockerfile` en el repositorio. La búsqueda del proyecto no encontró archivos de ese tipo. Por tanto, la ejecución local documentada aquí se basa en los scripts de npm y la configuración de Render, no en contenedores Docker.
+Se verificó que no existe ningún `docker-compose.yml`, `docker-compose.yaml`, ni `Dockerfile` en el repositorio. La ejecución local documentada aquí se basa en Bun y la configuración de Render usa Yarn para despliegue, no en contenedores Docker.
 
 ---
 
@@ -119,7 +133,7 @@ La arquitectura sugiere una red social / plataforma de creadores con contenido m
 | El frontend es una SPA React + Vite. | ✅ Verificado | [frontend/package.json](frontend/package.json#L1-L34) y [frontend/vite.config.ts](frontend/vite.config.ts#L1-L11). |
 | El frontend llama al backend en `http://localhost:8080`. | ✅ Verificado | [frontend/src/components/auth/Login.tsx](frontend/src/components/auth/Login.tsx#L18-L48), [frontend/src/components/App/GaleriaArte-app.tsx](frontend/src/components/App/GaleriaArte-app.tsx#L12-L42) y otras pantallas hacen `fetch('http://localhost:8080/api/...')`. |
 | La aplicación usa Supabase para autenticación y almacenamiento. | ✅ Verificado | [backend/src/sub_services/supabaseClient.ts](backend/src/sub_services/supabaseClient.ts#L1-L23), [backend/src/auth/auth.service.ts](backend/src/auth/auth.service.ts#L1-L92), [backend/src/art/art.service.ts](backend/src/art/art.service.ts#L1-L98), [backend/src/sub_services/storage.service.ts](backend/src/sub_services/storage.service.ts#L1-L41). |
-| El proyecto incluye Docker Compose para levantar servicios. | ❌ Incorrecto / Corregido | No existe `docker-compose.yml` ni `Dockerfile` en el repositorio. La ejecución real está basada en `npm` y en [render.yaml](render.yaml#L1-L20). |
+| El proyecto incluye Docker Compose para levantar servicios. | ❌ Incorrecto / Corregido | No existe `docker-compose.yml` ni `Dockerfile` en el repositorio. La ejecución real está basada en Bun para desarrollo local y en Yarn para despliegue en [render.yaml](render.yaml#L1-L20). |
 | El frontend se levanta en el puerto 3000. | ❌ Incorrecto / Corregido | No hay configuración explícita de puerto 3000; el frontend usa Vite y no sobreescribe el puerto en [frontend/vite.config.ts](frontend/vite.config.ts#L1-L11). El valor estándar de Vite es 5173, no 3000. |
 | El proyecto está desplegado con Render como frontend estático y backend Node. | ✅ Verificado | [render.yaml](render.yaml#L1-L20) define dos servicios: `ecobite-frontend` y `ecobite-backend`. |
 | El frontend tiene un panel completo de “Amigos”, “Teams”, música, juegos y ofertas. | ❓ Sin verificar | Existen rutas y módulos para esas áreas en [frontend/src/App.tsx](frontend/src/App.tsx#L8-L62) y [backend/src/app.module.ts](backend/src/app.module.ts#L18-L55), pero no hay evidencia de flujo completo y verificado de UI para todas ellas en este repositorio. |
@@ -130,4 +144,4 @@ La arquitectura sugiere una red social / plataforma de creadores con contenido m
 
 ## Conclusión corta
 
-El repositorio se puede levantar localmente con `npm` en [backend](backend) y [frontend](frontend), y la conexión real de la app está fijada por la API local en `http://localhost:8080`. No hay Docker ni Compose en el proyecto; la configuración de ejecución y despliegue real está en los scripts de npm y en [render.yaml](render.yaml#L1-L20). La parte más sólida y verificada es la autenticación con Supabase y la gestión de arte con almacenamiento de imágenes.
+El repositorio se puede levantar localmente con Bun en [backend](backend) y [frontend](frontend), y la conexión real de la app está fijada por la API local en `http://localhost:8080`. No hay Docker ni Compose en el proyecto; la configuración de ejecución y despliegue real está definida en [render.yaml](render.yaml#L1-L20) con Yarn para producción. La parte más sólida y verificada es la autenticación con Supabase y la gestión de arte con almacenamiento de imágenes.
