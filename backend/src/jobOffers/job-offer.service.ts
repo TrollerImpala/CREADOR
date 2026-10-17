@@ -46,4 +46,30 @@ export class JobOfferService{
             job_offer : data
         };
     }
+
+    async postJobOffer(user_id : string, body : any){
+        const {project_title, project_info, email, tags} = body;
+
+        const {data, error} = await this.supabase
+        .from('PROJECTPOSTS')
+        .insert({
+            project_title,
+            project_info,
+            email,
+            tags,
+            user_id,
+        })
+        .select()
+        .single();
+
+        if ( error ) {
+            console.log(error);
+            throw new BadRequestException('Error al subir info de oferta de trabajo');
+        } 
+
+        return {
+            mensaje : 'Subida de oferta exitosa',
+            job_offer : data
+        }
+    }
 }
