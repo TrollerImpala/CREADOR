@@ -1,12 +1,10 @@
-import { useNavigate, Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import type { ArtInfo } from "../tools/types";
 
 import '../../styles/templates-styles/ArtTemplate.css';
 
 function ArtPostPrev ( { post } : { post: ArtInfo } ) {
-    const Navigate = useNavigate();
-    
     return (
         <>
             <Link to={`/Arte/${post.artpost_id}`}>

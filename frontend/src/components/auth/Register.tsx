@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { ChangeEvent, SyntheticEvent } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import type { ChangeEvent } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import { useForm } from "../hooks/useForm";
 

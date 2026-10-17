@@ -1,7 +1,5 @@
 import { errorMsg } from "./errorUtils";
 
-import { useNavigate } from "react-router-dom";
-
 export async function logout() {
     const response = await fetch('http://localhost:8080/api/Auth/LogOut');
 

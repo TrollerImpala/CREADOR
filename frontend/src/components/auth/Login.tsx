@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import type { ChangeEvent, SyntheticEvent } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import { useForm } from "../hooks/useForm";
 
@@ -19,7 +18,7 @@ function Login(){
 
   const Navigate = useNavigate();
 
-  const {setFormData, formData, handleChange, handleSubmit} = useForm({
+  const { formData, handleChange, handleSubmit } = useForm({
     valoresIniciales : {
       email : "",
       password : ""

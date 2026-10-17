@@ -28,8 +28,6 @@ export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, opc = fa
 
   const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-
-    const cleanValue = value.replace(/["' <>;/@#$-]/g, "");
     
     setFormData( (prev) => ({
       ...prev,

@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 
-import { Link, useNavigate } from 'react-router-dom';
-
-import { refreshToken } from './tools/refresh_token';
+import { useNavigate } from 'react-router-dom';
 
 import { logout } from './tools/logout';
 

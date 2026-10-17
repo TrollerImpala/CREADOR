@@ -1,4 +1,4 @@
-import { useNavigate, Link, useParams} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import { errorMsg } from "../../tools/errorUtils";
@@ -7,7 +7,7 @@ import type { ArtInfo } from "../../tools/types";
 import '../../../styles/single-posts-styles/ArtPost.css'
 
 function ArtPost(){
-    const Navigate = useNavigate();
+    const navigate = useNavigate();
 
     const { artpost_id } = useParams();
 
@@ -42,6 +42,7 @@ function ArtPost(){
 
     useEffect(() => { obtenerPost(); }, []);
 
+    void navigate;
 
     return (
         <>
