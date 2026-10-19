@@ -27,7 +27,7 @@ function ArtPost(){
 
     const obtenerPost = async () => {
         try{
-            const response = await fetch(`http://localhost:8080/api/Art/ArtPost/${artpost_id}`);
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPost/${artpost_id}`);
             if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
       
             const data = await response.json();

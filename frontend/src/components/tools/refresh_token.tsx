@@ -6,7 +6,7 @@ export async function refreshToken(){
     console.log("Token de refresco actual:", current_refresh_token);
 
     if (current_refresh_token){
-        const response = await fetch('http://localhost:8080/api/Auth/Refresh', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/Auth/Refresh`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

@@ -24,7 +24,7 @@ function Login(){
       password : ""
     },
 
-    urlApi : 'http://localhost:8080/api/Auth/Login',
+    urlApi : `${import.meta.env.VITE_API_URL}/Auth/Login`,
 
     eMsg : "Error en las credenciales",
 

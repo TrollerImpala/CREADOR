@@ -28,7 +28,7 @@ function Register(){
       socialMedias : []
     },
 
-    urlApi : 'http://localhost:8080/api/Auth/Register',
+    urlApi : `${import.meta.env.VITE_API_URL}/Auth/Register`,
     
     eMsg : "Error en los datos ingresados",
     

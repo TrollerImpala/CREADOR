@@ -14,7 +14,7 @@ function GaleriaArte() {
 
   const obtenerPosts = async () => {
     try{
-      const response = await fetch('http://localhost:8080/api/Art/ArtPosts');//, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPosts`);//, {
       //   method : 'GET',
       //   headers : {
       //     'Content-Type' : 'application/json',
