@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import type { ChangeEvent, SyntheticEvent } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import { useForm } from "../hooks/useForm";
 
@@ -19,20 +18,21 @@ function Login(){
 
   const Navigate = useNavigate();
 
-  const {setFormData, formData, handleChange, handleSubmit} = useForm({
+  const { formData, handleChange, handleSubmit } = useForm({
     valoresIniciales : {
       email : "",
       password : ""
     },
 
-    urlApi : 'http://localhost:8080/api/Auth/Login',
+    urlApi : `${import.meta.env.VITE_API_URL}/Auth/Login`,
 
     eMsg : "Error en las credenciales",
 
     onSuccess : (userData) => {
       console.log("Usuario logeado con exito:", userData);
       
-      if (userData.user_token) localStorage.setItem('access_token', userData.user_token);
+      localStorage.setItem('access_token', userData.user_token);
+      localStorage.setItem('refresh_token', userData.refresh_token);
       localStorage.setItem('usuario', JSON.stringify(userData.user));
 
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { ChangeEvent, SyntheticEvent } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import type { ChangeEvent } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import { useForm } from "../hooks/useForm";
 
@@ -28,7 +28,7 @@ function Register(){
       socialMedias : []
     },
 
-    urlApi : 'http://localhost:8080/api/Auth/Register',
+    urlApi : `${import.meta.env.VITE_API_URL}/Auth/Register`,
     
     eMsg : "Error en los datos ingresados",
     

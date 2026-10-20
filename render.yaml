@@ -2,9 +2,9 @@ services:
   - type: web
     runtime: static
     name: ecobite-frontend
-    plan: free
+    plan: starter
     rootDir: frontend
-    buildCommand: npm ci && npm run build
+    buildCommand: yarn install --frozen-lockfile && yarn build
     staticPublishPath: dist
     routes:
       - type: rewrite
@@ -14,7 +14,7 @@ services:
   - type: web
     runtime: node
     name: ecobite-backend
-    plan: free
+    plan: starter
     rootDir: backend
-    buildCommand: npm ci
-    startCommand: npm start
+    buildCommand: yarn install --frozen-lockfile
+    startCommand: yarn start

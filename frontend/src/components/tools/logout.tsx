@@ -1,9 +1,7 @@
 import { errorMsg } from "./errorUtils";
 
-import { useNavigate } from "react-router-dom";
-
 export async function logout() {
-    const response = await fetch('http://localhost:8080/api/Auth/LogOut');
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/Auth/LogOut`);
 
     if (response.ok){
         localStorage.clear();

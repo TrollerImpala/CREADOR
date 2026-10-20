@@ -46,4 +46,54 @@ export class MusicService{
             song : data
         };
     }
+
+
+    async postSong(user_id : string, body : any){
+        const {stat, mensaje} = await this.generalPostsService.createStat();
+        console.log(mensaje);
+        const stats_id = stat.stats_id;
+
+        const {song_name, song_file, song_description, song_cover_img, tags, rating} = body;
+
+        const coverFileExtension = song_cover_img.originalname.split('.').pop() || 'png';
+
+        const coverFilePath = `SONGCOVERS/${song_name}Cover-${Date.now()}.${coverFileExtension}`;
+
+        const song_cover_url = await this.storageService.uploadFile('MUSIC', coverFilePath, song_cover_img);
+
+
+        const songFileExtension = song_file.originalname.split('.').pop() || 'png';
+
+        const songFilePath = `SONGS/${song_name}Song-${Date.now()}.${songFileExtension}`;
+
+        const song_url = await this.storageService.uploadFile('MUSIC', songFilePath, song_file);
+
+        const {data, error} = await this.supabase
+        .from('MUSICPOSTS')
+        .insert({
+            song_url,
+            song_name,
+            song_description,
+            user_id,
+            song_cover_url,
+            stats_id,
+            tags,
+            rating
+        })
+        .select()
+        .single();
+
+        if ( error ) {
+            this.generalPostsService.deleteStat(stats_id);
+            this.storageService.deleteFile('MUSIC', coverFilePath);
+            this.storageService.deleteFile('MUSIC', songFilePath);
+
+            throw new BadRequestException('Error al subir info del post de Musica: ' + error.message);
+        } 
+
+        return {
+            mensaje : 'Subida de musica exitosa',
+            song : data
+        }
+    }
 }

@@ -55,7 +55,7 @@ function PostearArte() {
       dataForm.append('art_img', artImg);
     }
 
-    return await fetch('http://localhost:8080/api/Art/PostArt', {
+    return await fetch(`${import.meta.env.VITE_API_URL}/Art/PostArt`, {
       method: 'POST',
       
       headers: {
