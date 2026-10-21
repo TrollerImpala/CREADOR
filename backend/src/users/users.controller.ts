@@ -9,8 +9,8 @@ import { FileInterceptor } from "@nestjs/platform-express";
 
 import { UserDto } from "../DTO/user.dto";
 
-@Controller('Auth')
-export class AuthController{
+@Controller('Users')
+export class UsersController{
     constructor(private readonly userService : UserService) {};
 
     @Post('Perfil')
