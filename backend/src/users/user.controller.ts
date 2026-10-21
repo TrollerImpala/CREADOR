@@ -17,7 +17,7 @@ export class UsersController{
     @UseGuards(SupabaseAuthGuard)
     async getProfile(@Req() req : any){
         
-        const userId = req.user.id_user;
+        const userId = req.user.id;
 
         return this.userService.getUserData(userId);
     }
@@ -31,7 +31,7 @@ export class UsersController{
         @UploadedFile() file : Express.Multer.File
     ){
 
-        const userId = req.user.id_user;
+        const userId = req.user.id;
 
         const postPayLoad = {
             userTag : body.userTag,
