@@ -44,7 +44,7 @@ export class UserService{
 
         if (errorTagVerif) throw new BadRequestException('Error al verificar tag', errorTagVerif.message);
 
-        if (userTagVerif) throw new BadRequestException('Tag ya existente, elije otro'); 
+        if (userTagVerif && userTagVerif.length > 0) throw new BadRequestException('Tag ya existente, elije otro'); 
 
         let avatarUrl;
 
