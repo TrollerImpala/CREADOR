@@ -11,7 +11,7 @@ import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 
 import { UserService } from './users/user.service';
-import { UsersController } from './users/users.controller';
+import { UsersController } from './users/user.controller';
 
 import { ArtService } from './art/art.service';
 import { ArtController } from './art/art.controller';

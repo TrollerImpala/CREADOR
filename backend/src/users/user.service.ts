@@ -9,8 +9,9 @@ import { UserDto } from "../DTO/user.dto";
 
 @Injectable()
 export class UserService{
+    private readonly supabase : SupabaseClient;
+
     constructor(
-        private readonly supabase : SupabaseClient,
         private readonly supabaseService : SupabaseService,
         private readonly storageService : StorageService
     ){
