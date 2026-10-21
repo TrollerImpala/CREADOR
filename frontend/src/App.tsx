@@ -3,6 +3,7 @@ import {
     Navigate, Outlet
  } from "react-router-dom";
 
+import ProfilePage from "./components/App/User";
 import Nav from './components/App/Nav';
 import Home from './components/Home';
 import Login from './components/auth/Login';
@@ -37,6 +38,10 @@ const Router = createBrowserRouter([
     {
         path : '/',
         element : <Home />
+    },
+    {
+        path : '/User',
+        element : <ProfilePage />
     },
     {
         path : '/Login',

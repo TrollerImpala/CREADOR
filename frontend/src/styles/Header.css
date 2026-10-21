@@ -35,3 +35,34 @@ header {
   color: lightseagreen;
   cursor: pointer;
 }
+
+#btn-user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: transparent; /* Quitamos el fondo gris por defecto si hay imagen */
+  color: #fff;
+  border: none; /* Elimina cualquier borde */
+  outline: none; /* Elimina el borde de enfoque del navegador */
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  overflow: hidden; /* Recorta perfectamente la imagen en círculo */
+  padding: 0; /* Elimina espacios internos del botón */
+}
+
+/* Si no tiene imagen y usa la inicial, le dejamos un fondito gris */
+#btn-user-avatar:not(:has(img)) {
+  background-color: #6c757d; 
+}
+
+.header-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: none;
+}

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../tools/logout';
 import '../../styles/Header.css';
+import '../../styles/Userboton.css'; // Importamos los estilos del botón
 
 function BotonLogin() {
   const navigate = useNavigate();
@@ -34,10 +35,72 @@ function BotonLogout() {
   );
 }
 
+function BotonUser() {
+  const navigate = useNavigate();
+  const [avatarUrl, setAvatarUrl] = useState('');
+  const [inicial, setInicial] = useState('U');
+
+  // Consultamos el endpoint del backend para extraer la imagen de perfil actual
+  useEffect(() => {
+    const fetchUserAvatar = async () => {
+      try {
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) return;
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/Users/Perfil`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const resJson = await response.json();
+          const userData = resJson.user || resJson;
+
+          const fetchedAvatar = userData.user_avatar_url || userData.userAvatarUrl || '';
+          setAvatarUrl(fetchedAvatar);
+
+          const userName = userData.userName || userData.user_name || '';
+          if (userName) {
+            setInicial(userName.charAt(0).toUpperCase());
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar la imagen en el header:', error);
+      }
+    };
+
+    fetchUserAvatar();
+  }, []);
+
+  return (
+    <button 
+      id="btn-user-avatar" 
+      onClick={() => navigate('/User')}
+      title="Ver perfil"
+    >
+      {avatarUrl ? (
+        <img 
+          src={avatarUrl} 
+          alt="Avatar" 
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            objectFit: 'cover'
+          }} 
+        />
+      ) : (
+        inicial
+      )}
+    </button>
+  );
+}
+
 export function Header() {
   const accessToken = localStorage.getItem('access_token');
-  const usuarioRaw = localStorage.getItem('usuario');
-  const usuario = usuarioRaw ? JSON.parse(usuarioRaw) : null;
 
   return (
     <header>
@@ -52,10 +115,10 @@ export function Header() {
           <BotonRegister />
         </div>
       ) : (
-        <>
-          <h3>Hola {usuario?.user_name}</h3>
+        <div className="user-actions-container">
+          <BotonUser />
           <BotonLogout />
-        </>
+        </div>
       )}
     </header>
   );
