@@ -21,7 +21,7 @@ export class AuthService{
 
     //                                  REGISTRO
     async register(body : any){
-        const { email, password, userTag, userName, userDescription, avatarUrl, socialMedias } = body;
+        const { email, password, userTag, userName, userDescription, socialMedias } = body;
 
         const { data : authData, error : authError } = await this.supabase.auth.signUp({
             email,
@@ -31,7 +31,6 @@ export class AuthService{
                     user_tag: userTag,
                     user_name: userName,
                     user_description: userDescription || '',
-                    user_avatar_url: avatarUrl || 'https://img.magnific.com/vector-gratis/icono-herramienta-pincel-arte_24877-83203.jpg?semt=ais_hybrid&w=740&q=80',
                     social_medias: socialMedias || []
                 },
             },

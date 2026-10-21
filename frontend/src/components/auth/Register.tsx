@@ -24,7 +24,6 @@ function Register(){
       userTag : '',
       userName : '',
       userDescription : '',
-      avatarUrl : '',
       socialMedias : []
     },
 
@@ -93,10 +92,6 @@ function Register(){
 
                   <label>Descripcion: </label>
                   <input onChange={handleChange} type="text" name="userDescription" value={formData.userDescription} placeholder="Hola, soy..." className="for-border"></input>
-                  <br></br>
-
-                  <label>Avatar: </label>
-                  <input onChange={handleChange} type="text" name="avatarUrl" value={formData.avatarUrl} placeholder="(imagen)" className="for-border" disabled></input>
                   <br></br>
 
                   <label>Redes sociales: </label>

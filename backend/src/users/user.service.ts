@@ -32,15 +32,24 @@ export class UserService{
         };
     }
 
-    async updateUser(user_id : string, body : UserDto){
-        const { userTag, userName, userDescription, avatarUrl, socialMedias } = body;
+    async updateUser(user_id : string, body : any){
+        const { userTag, userName, userDescription, avatar_img, socialMedias } = body;
 
         const {data : userTagVerif, error : errorTagVerif} = await this.supabase
         .from('USERS')
         .select()
         .eq('user_tag', userTag);
 
+        if (errorTagVerif) throw new BadRequestException('Error al verificar tag', errorTagVerif.message);
+
         if (userTagVerif) throw new BadRequestException('Tag ya existente, elije otro'); 
+
+        let avatarUrl;
+
+        if (avatar_img) {
+            const avatarPath = `AVATARS/${user_id}_${avatar_img.originalname}`;
+            avatarUrl = await this.storageService.uploadFile('USERS', avatarPath, avatar_img);
+        }
 
         const { data, error } = await this.supabase
         .from('USERS')
@@ -48,7 +57,7 @@ export class UserService{
             user_tag: userTag,
             user_name: userName,
             user_description: userDescription || '',
-            user_avatar_url: avatarUrl || '',
+            user_avatar_url: avatarUrl,
             social_medias: socialMedias || []
         })
         .eq('id_user', user_id)
@@ -57,7 +66,8 @@ export class UserService{
         if (error) throw new BadRequestException('Error al actualizar perfil', error.message);
 
         return {
-            mensaje : `Usuario ${userTag} Actualizado`
+            mensaje : `Usuario ${userTag} Actualizado`,
+            user : data
         };
     }
 }

@@ -1,7 +1,13 @@
-import { Controller, Post, Get, Body, Req, UseGuards } from "@nestjs/common";
+import { Controller, Post, Get, Put, Body, Req, UseGuards, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { UserService } from "./user.service";
 
 import { SupabaseAuthGuard } from "../auth/auth.guard";
+
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+
+import { FileInterceptor } from "@nestjs/platform-express";
+
+import { UserDto } from "../DTO/user.dto";
 
 @Controller('Auth')
 export class AuthController{
@@ -16,15 +22,26 @@ export class AuthController{
         return this.userService.getUserData(userId);
     }
 
-    @Post('ActualizarPerfil')
+    @Put('ActualizarPerfil')
     @UseGuards(SupabaseAuthGuard)
+    @UseInterceptors(FileInterceptor('profile_img'))
     async updateProfile(
         @Req() req : any,
-        @Body() body : any
+        @Body() body : UserDto,
+        @UploadedFile() file : Express.Multer.File
     ){
 
         const userId = req.user.id_user;
 
-        return this.userService.updateUser(userId, body);
+        const postPayLoad = {
+            userTag : body.userTag,
+            userName : body.userName,
+            userDescription : body.userDescription,
+            avatar_img : file ? file : null,
+            socialMedias : body.socialMedias || []
+        };
+
+        return this.userService.updateUser(userId, postPayLoad);
     }
+
 }
