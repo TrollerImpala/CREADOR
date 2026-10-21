@@ -10,13 +10,17 @@ import { Controller,
     BadRequestException
 } from "@nestjs/common";
 
+import { Roles } from "../decorators/role.decorator";
+import { Role } from "../enum/roles.enum";
+
 import 'multer';
 
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 
-import { SupabaseAuthGuard } from "../auth/auth.guard";
+import { SupabaseAuthGuard } from "../guards/auth.guard";
+import { RolesGuard } from "../guards/roles.guard";
 
 import { ArtService } from "./art.service";
 

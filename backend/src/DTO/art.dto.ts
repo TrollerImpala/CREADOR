@@ -4,13 +4,8 @@ import { IsString, IsNotEmpty, IsOptional, IsArray, IsEnum } from 'class-validat
 
 import { Transform } from 'class-transformer';
 
-export enum ArtRating {
-  G = 'G',
-  PG = 'PG',
-  PG_13 = 'PG-13',
-  R = 'R',
-  NC = 'NC',
-}
+import { Rating } from '../enum/post-rating.enum';
+
 
 export class CreateArtPostDto {
   @ApiProperty({
@@ -43,9 +38,9 @@ export class CreateArtPostDto {
 
   @ApiProperty({
     description: 'Rating del arte',
-    example: ArtRating.G,
+    example: Rating.G,
   })
-  @IsEnum(ArtRating, { message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)' })
+  @IsEnum(Rating, { message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)' })
   @IsNotEmpty({ message: 'El rating es obligatorio' })
-  rating!: ArtRating;
+  rating!: Rating;
 }

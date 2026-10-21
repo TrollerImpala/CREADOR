@@ -13,10 +13,6 @@ export class UserDto {
   @IsOptional()
   userDescription?: string;
 
-  @IsString({ message : 'El avatar tiene que ser una cadena de texto Url' })
-  @IsNotEmpty({ message : 'La foto de perfil es obligatoria' })
-  avatarUrl! : string;
-
   @IsArray({ message : 'Las redes deben ser un Array de Urls' })
   @IsOptional()
   socialMedias ?: string[];
