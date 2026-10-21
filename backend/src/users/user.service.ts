@@ -39,7 +39,8 @@ export class UserService{
         const {data : userTagVerif, error : errorTagVerif} = await this.supabase
         .from('USERS')
         .select()
-        .eq('user_tag', userTag);
+        .eq('user_tag', userTag)
+        .neq('id_user', user_id);
 
         if (errorTagVerif) throw new BadRequestException('Error al verificar tag', errorTagVerif.message);
 
