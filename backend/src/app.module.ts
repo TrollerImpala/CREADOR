@@ -10,6 +10,9 @@ import { GeneralPostsService } from './sub_services/general-posts.service';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 
+import { UserService } from './users/user.service';
+import { UsersController } from './users/users.controller';
+
 import { ArtService } from './art/art.service';
 import { ArtController } from './art/art.controller';
 
@@ -36,10 +39,13 @@ import { StorageService } from './sub_services/storage.service';
   ],
   controllers: [
     AuthController,
+    UsersController,
+
     ArtController,
     MusicController,
     FilmController,
     GameController,
+    
     JobOfferController
   ],
   providers: [
@@ -47,6 +53,7 @@ import { StorageService } from './sub_services/storage.service';
     GeneralPostsService,
 
     AuthService,
+    UserService,
 
     StorageService,
 
