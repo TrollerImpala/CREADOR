@@ -1,7 +1,7 @@
 import { Controller, Post, Get, Put, Body, Req, UseGuards, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { UserService } from "./user.service";
 
-import { SupabaseAuthGuard } from "../auth/auth.guard";
+import { SupabaseAuthGuard } from "../guards/auth.guard";
 
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 

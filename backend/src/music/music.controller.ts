@@ -19,7 +19,7 @@ import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express
 
 import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 
-import { SupabaseAuthGuard } from "../auth/auth.guard";
+import { SupabaseAuthGuard } from "../guards/auth.guard";
 
 import { MusicService } from "./music.service";
 

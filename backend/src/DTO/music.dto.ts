@@ -4,13 +4,7 @@ import { IsString, IsNotEmpty, IsOptional, IsArray, IsEnum } from 'class-validat
 
 import { Transform } from 'class-transformer';
 
-export enum SongRating {
-  G = 'G',
-  PG = 'PG',
-  PG_13 = 'PG-13',
-  R = 'R',
-  NC = 'NC',
-}
+import { Rating } from '../enum/post-rating.enum';
 
 export class CreateMusicPostDto {
     @ApiProperty({
@@ -43,9 +37,9 @@ export class CreateMusicPostDto {
 
     @ApiProperty({
         description: 'Rating de la canción',
-        example: SongRating.G,
+        example: Rating.G,
     })
-    @IsEnum(SongRating, { message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)' })
+    @IsEnum(Rating, { message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)' })
     @IsNotEmpty({ message: 'El rating es obligatorio' })
-    rating!: SongRating;
+    rating!: Rating;
 }

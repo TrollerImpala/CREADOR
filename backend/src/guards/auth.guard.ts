@@ -27,7 +27,12 @@ export class SupabaseAuthGuard implements CanActivate{
         throw new UnauthorizedException('Token inválido o expirado');
         }
 
-        request.user = user; // Para uso de controladores
+        request.user = {
+            id: user.id,
+            email: user.email,
+            role: user.app_metadata?.role || 'user'
+        }; // Para uso de controladores
+
         return true;
     }
 }

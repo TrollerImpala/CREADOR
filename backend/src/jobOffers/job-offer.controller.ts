@@ -12,7 +12,7 @@ import { Controller,
 
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { SupabaseAuthGuard } from "../auth/auth.guard";
+import { SupabaseAuthGuard } from "../guards/auth.guard";
 
 import { JobOfferService } from "./job-offer.service";
 
