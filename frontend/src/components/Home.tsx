@@ -81,6 +81,7 @@ function Home() {
       
       <nav>
        <button onClick={() => Navigate('/Arte')} className='btn-seccion'>Galeria Arte</button>
+       <button onClick={() => Navigate('/JobOffer')} className='btn-seccion'>Ofertas de Trabajo</button>
       </nav>
       
       <section>

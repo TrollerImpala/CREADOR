@@ -14,6 +14,16 @@ export interface ArtInfo {
     user_id ?: string;
 }
 
+export interface JobOfferInfo {
+    project_id: string;
+    project_title: string;
+    project_info?: string;
+    email?: string;
+    tags?: string[];
+    user_id?: string;
+    created_at?: string;
+}
+
 // export interface ArtPrev {
 //     artpost_id : string;
 //     title : string;

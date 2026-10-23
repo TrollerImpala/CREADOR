@@ -21,7 +21,7 @@ export class JobOfferService{
 
     async getJobOfferPosts(){
         const {data, error} = await this.supabase
-        .from('PROYECTPOSTS')
+        .from('PROJECTPOSTS')
         .select('project_id, project_title, tags')
         .order('created_at', {ascending : false});
 
@@ -35,7 +35,7 @@ export class JobOfferService{
 
     async getJobOfferPost(id_project : string){
         const {data, error} = await this.supabase
-        .from('PROYECTPOSTS')
+        .from('PROJECTPOSTS')
         .select()
         .eq('project_id', id_project)
         .single();

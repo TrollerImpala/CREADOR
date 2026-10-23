@@ -12,6 +12,10 @@ import GaleriaArte from "./components/App/GaleriaArte-app";
 import ArtPost from "./components/App/Single/ArtePost-app";
 import PostearArte from "./components/App/Posts/Postear-Arte";
 
+import JobOffers from "./components/App/JobOffers";
+import JobOfferPost from "./components/App/Single/JobOfferPost";
+import PostJobOffer from "./components/App/Posts/Post-JobOffer";
+
 import Amigos from "./components/App/Amigos-app";
 
 import Teams from "./components/App/Teams-app";
@@ -52,11 +56,23 @@ const Router = createBrowserRouter([
         element : <ArtPost />
     },
     {
+        path : '/JobOffer',
+        element : <JobOffers />
+    },
+    {
+        path : '/JobOffer/:project_id',
+        element : <JobOfferPost />
+    },
+    {
         element : <ProtectedRoute />,
         children : [
             {
                 path : 'Arte/PostearArte',
                 element : <PostearArte />
+            },
+            {
+                path : 'JobOffer/PostJobOffer',
+                element : <PostJobOffer />
             },
         ]
     },    
