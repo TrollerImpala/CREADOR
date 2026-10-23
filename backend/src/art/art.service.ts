@@ -22,7 +22,8 @@ export class ArtService{
     async getArtPosts(){
         const {data, error} = await this.supabase
         .from('ARTPOSTS')
-        .select('artpost_id, title, art_img_url, rating');
+        .select('artpost_id, title, art_img_url, rating')
+        .order('created_at', {ascending : false});
 
         if (error) throw new BadRequestException('Error al obtener posts de arte' + error.message);
 

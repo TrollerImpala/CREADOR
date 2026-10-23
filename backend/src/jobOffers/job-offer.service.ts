@@ -22,7 +22,8 @@ export class JobOfferService{
     async getJobOfferPosts(){
         const {data, error} = await this.supabase
         .from('PROYECTPOSTS')
-        .select('project_id, project_title, tags');
+        .select('project_id, project_title, tags')
+        .order('created_at', {ascending : false});
 
         if (error) throw new BadRequestException('Error al obtener posts de ofertas de trabajo' + error.message);
 
