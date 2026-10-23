@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
 
 import { useForm } from "../hooks/useForm";
 
@@ -7,6 +8,8 @@ import "../../styles/Auth.css"
 
 
 function Login(){
+
+  const [mensajeError, setMensajeError] = useState('');
 
   useEffect(() => {
     document.body.className = 'body-login';
@@ -36,8 +39,16 @@ function Login(){
       localStorage.setItem('usuario', JSON.stringify(userData.user));
 
 
-      alert("¡Logeo exitoso!");
+      //alert("¡Logeo exitoso!");
       Navigate("/");
+    },
+    onFailure : (response) => {
+      console.error("Error en la solicitud:", response);
+      if (response.status === 400) {
+        setMensajeError("Error en las credenciales");
+      } else {
+        setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
+      }
     }
   });
 
@@ -54,6 +65,8 @@ function Login(){
              <br></br>
              <input type="submit" value="Iniciar Sesion" id = "boton-envio"></input>
             </form>
+            {mensajeError && <p className="error-message">{mensajeError}</p>}
+            <p>¿No tienes cuenta? <a href="/Register">Registrate</a></p>
         </div>
       </>
   );

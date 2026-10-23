@@ -1,19 +1,21 @@
 import { Link } from "react-router-dom";
 
 import type { JobOfferInfo } from "../tools/types";
+import '../../styles/templates-styles/JobOfferTemplate.css';
 
 function JobOfferTemplate({ post }: { post: JobOfferInfo }) {
     return (
-        <Link to={`/JobOffer/${post.project_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            <div style={{ border: '1px solid #ddd', borderRadius: '12px', padding: '16px', margin: '12px 0' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '12px', alignItems: 'center' }}>
+        <Link to={`/JobOffers/${post.project_id}`} className="job-offer-link">
+            
+            <div className="prev-job-post">
+                <div className="prev-job-header">
                     <h3>{post.project_title}</h3>
-                    {post.email && <span>{post.email}</span>}
+                    {post.email && <span className="prev-job-email">{post.email}</span>}
                 </div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                <div className="prev-job-tags">
                     {(post.tags ?? []).map((tag, index) => (
-                        <span key={`${tag}-${index}`} style={{ background: '#f0f0f0', borderRadius: '999px', padding: '4px 8px', fontSize: '12px' }}>
+                        <span key={`${tag}-${index}`} className="prev-job-tag">
                             {tag}
                         </span>
                     ))}

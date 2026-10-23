@@ -16,6 +16,7 @@ function Register(){
   }, []);
 
   const Navigate = useNavigate();
+  const [mensajeError, setMensajeError] = useState('');
 
   const {setFormData, formData, handleChange, handleSubmit} = useForm({
     valoresIniciales : {
@@ -33,9 +34,17 @@ function Register(){
     
     onSuccess : (userData) => {
       console.log("Usuario registrado con exito:", userData);
-      alert("¡Registro exitoso!");
+      //alert("¡Registro exitoso!");
       Navigate("/Login");
     },
+    onFailure : (response) => {
+      console.error("Error en la solicitud:", response);
+      if (response.status === 400) {
+        setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
+      } else {
+        setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
+      }
+    }
 
   });
 
@@ -76,7 +85,7 @@ function Register(){
                   <input onChange={handleChange} type="password" name="password" value={formData.password} placeholder="******" className="for-border"></input>
                   <br></br>
                       
-                  <button id = "next-step" onClick={ () => setStep2Visible(true) }>Siguiente</button>      
+                  <button id = "next-step" onClick={ () => setStep2Visible(true) }>Siguiente</button>
                 </>
               ) : (
                 <>
@@ -99,6 +108,7 @@ function Register(){
                   <br></br>
                       
                   <input type="submit" value="Registrarse" id = "boton-envio"></input>
+                  {mensajeError && <h2 className="error-message">{mensajeError}</h2>}
                 </>
               )}
               </form>

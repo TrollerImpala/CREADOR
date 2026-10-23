@@ -1,0 +1,72 @@
+/* Link sin subrayado */
+.job-offer-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+/* Tarjeta contenedora de la oferta de trabajo */
+.prev-job-post {
+    background-color: #ffffff;
+    border: 1px solid rgba(139, 92, 246, 0.1);
+    border-radius: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 4px 15px rgba(111, 78, 255, 0.04);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    cursor: pointer;
+    min-height: 120px;
+    box-sizing: border-box;
+}
+
+/* Efecto Hover idéntico a las tarjetas de música y arte */
+.prev-job-post:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.12);
+    border-color: rgba(139, 92, 246, 0.3);
+}
+
+/* Encabezado con título y mail */
+.prev-job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.prev-job-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.3;
+}
+
+.prev-job-email {
+    font-size: 0.85rem;
+    color: #8b5cf6;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: #f5f3ff;
+    padding: 4px 10px;
+    border-radius: 999px;
+}
+
+/* Lista de etiquetas (Tags) */
+.prev-job-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.prev-job-tag {
+    background-color: #f1f5f9;
+    color: #475569;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}

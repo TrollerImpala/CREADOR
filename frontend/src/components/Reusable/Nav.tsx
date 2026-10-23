@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/Nav.css';
 
@@ -28,6 +27,7 @@ function Nav() {
           ART
         </li>
 
+        {/*
         <span className="separator">|</span>
 
         <li 
@@ -36,7 +36,7 @@ function Nav() {
         >
           FILM
         </li>
-
+        */}
         <span className="separator">|</span>
 
         <li 

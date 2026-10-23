@@ -1,0 +1,123 @@
+.job-offer-post-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.job-offer-post-container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 35px;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  box-shadow: 0 4px 20px rgba(111, 78, 255, 0.06);
+}
+
+.job-offer-post-header h2 {
+  margin: 0 0 20px 0;
+  font-size: 1.8rem;
+  color: #1e293b;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 12px;
+}
+
+.job-offer-post-info {
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.job-offer-post-info .contact-email {
+  color: #8b5cf6;
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}
+
+.job-offer-post-info .project-description {
+  color: #475569;
+}
+
+.job-offer-post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+
+.job-tag {
+  background-color: #f1f5f9;
+  color: #475569;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* Formulario de contacto */
+.job-offer-contact-form {
+  background-color: #f8fafc;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.job-offer-contact-form h3 {
+  margin: 0 0 8px 0;
+  color: #1e293b;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #1e293b;
+  box-sizing: border-box;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+.btn-submit-contact {
+  align-self: flex-start;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
+}
+
+.btn-submit-contact:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
+  opacity: 0.95;
+}

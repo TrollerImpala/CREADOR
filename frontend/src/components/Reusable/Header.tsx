@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../tools/logout';
 import '../../styles/Header.css';
@@ -40,6 +40,7 @@ function BotonUser() {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [inicial, setInicial] = useState('U');
 
+  /*
   useEffect(() => {
     const fetchUserAvatar = async () => {
       try {
@@ -72,6 +73,12 @@ function BotonUser() {
     };
 
     fetchUserAvatar();
+  }, []);
+  */
+  useEffect(() => {
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    setAvatarUrl(usuario?.user_avatar_url || '');
+    setInicial(usuario?.user_name?.charAt(0).toUpperCase() || 'U');
   }, []);
 
   return (

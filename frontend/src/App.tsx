@@ -4,7 +4,7 @@ import {
  } from "react-router-dom";
 
 import ProfilePage from "./components/App/User";
-import Nav from './components/App/Nav';
+import Nav from './components/Reusable/Nav';
 import Home from './components/Home';
 import Login from './components/auth/Login';
 import Register from "./components/auth/Register";
@@ -18,8 +18,8 @@ import JobOfferPost from "./components/App/Single/JobOfferPost";
 import PostJobOffer from "./components/App/Posts/Post-JobOffer";
 
 import GaleriaMusica from "./components/App/GaleriaMusica-app";
-//import MusicPost from "./components/App/Single/ArtePost-app";
-//import PostearArte from "./components/App/Posts/Postear-Arte";
+import MusicPost from "./components/App/Single/MusicPost-app";
+import PostSong from "./components/App/Posts/Post-Song";
 
 
 import Amigos from "./components/App/Amigos-app";
@@ -67,6 +67,10 @@ const Router = createBrowserRouter([
         element : <GaleriaMusica />
     },
     {
+        path : '/Musica/:song_id',
+        element : <MusicPost />
+    },
+    {
         path : '/Arte/:artpost_id',
         element : <ArtPost />
     },
@@ -75,7 +79,7 @@ const Router = createBrowserRouter([
         element : <JobOffers />
     },
     {
-        path : '/JobOffer/:project_id',
+        path : '/JobOffers/:project_id',
         element : <JobOfferPost />
     },
     {
@@ -86,7 +90,11 @@ const Router = createBrowserRouter([
                 element : <PostearArte />
             },
             {
-                path : 'JobOffer/PostJobOffer',
+                path : 'Musica/PostearCancion',
+                element : <PostSong />
+            },
+            {
+                path : 'JobOffers/PostJobOffer',
                 element : <PostJobOffer />
             },
         ]

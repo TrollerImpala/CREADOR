@@ -8,10 +8,11 @@ interface UseFormConfig<T> {
   urlApi : string;
   eMsg : string;
   onSuccess: (data: any) => void;
+  onFailure: (response: Response) => void;
   opc ?: boolean;
 }
 
-export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, opc = false }: UseFormConfig<T>) {
+export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, onFailure, opc = false }: UseFormConfig<T>) {
   const [formData, setFormData] = useState<T>(valoresIniciales);
   //const [loading, setLoading] = useState(false);
 
@@ -65,6 +66,7 @@ export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, opc = fa
         onSuccess(data);
     
       } else {
+        onFailure(response);
         await errorMsg(response, eMsg);
       }
     } catch (error) {

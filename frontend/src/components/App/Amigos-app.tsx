@@ -1,4 +1,4 @@
-import CreateTool from "./Create-tool";
+import CreateTool from "../Reusable/Create-tool";
 import { useState } from "react";
 
 import { useForm } from "../hooks/useForm";

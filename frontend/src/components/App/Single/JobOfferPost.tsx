@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { errorMsg } from "../../tools/errorUtils";
 import type { JobOfferInfo } from "../../tools/types";
 
+import '../../../styles/single-posts-styles/JobOfferPost.css';
+
 function JobOfferPost() {
     const navigate = useNavigate();
     const { project_id } = useParams();
@@ -41,49 +43,50 @@ function JobOfferPost() {
     void navigate;
 
     return (
-        <>
+        <div className="job-offer-post-page">
             {cargando ? (
-                <h3>Cargando oferta...</h3>
+                <h3 className="cargando-texto">Cargando oferta...</h3>
             ) : (
-                <div style={{ maxWidth: '900px', margin: '0 auto', padding: '24px' }}>
-                    <div>
+                <div className="job-offer-post-container">
+                    <div className="job-offer-post-header">
                         <h2>{offer.project_title}</h2>
                     </div>
 
-                    <div style={{ margin: '16px 0' }}>
-                        <p><strong>Email de contacto:</strong> {offer.email}</p>
-                        <p><strong>Descripción:</strong> {offer.project_info ?? 'Sin descripción disponible.'}</p>
+                    <div className="job-offer-post-info">
+                        <p className="contact-email"><strong>Email de contacto:</strong> {offer.email}</p>
+                        <p className="project-description"><strong>Descripción:</strong> {offer.project_info ?? 'Sin descripción disponible.'}</p>
                     </div>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+                    <div className="job-offer-post-tags">
                         {(offer.tags ?? []).map((tag, index) => (
-                            <span key={`${tag}-${index}`} style={{ background: '#f0f0f0', borderRadius: '999px', padding: '4px 8px' }}>
+                            <span key={`${tag}-${index}`} className="job-tag">
                                 {tag}
                             </span>
                         ))}
                     </div>
 
-                    <form target="_blank" action={`https://formsubmit.co/${offer.email}`} method="POST">
-                        <div>
+                    <form className="job-offer-contact-form" target="_blank" action={`https://formsubmit.co/${offer.email}`} method="POST">
+                        <h3>Contactar para este proyecto</h3>
+                        <div className="form-group">
                             <label>Tu nombre:</label>
-                            <input type="text" name="name" placeholder="Nombre completo" required style={{ display: 'block', width: '100%', marginBottom: '12px' }} />
+                            <input type="text" name="name" placeholder="Nombre completo" required />
                         </div>
 
-                        <div>
+                        <div className="form-group">
                             <label>Tu email:</label>
-                            <input type="email" name="email" placeholder="correo@ejemplo.com" required style={{ display: 'block', width: '100%', marginBottom: '12px' }} />
+                            <input type="email" name="email" placeholder="correo@ejemplo.com" required />
                         </div>
 
-                        <div>
+                        <div className="form-group">
                             <label>Mensaje:</label>
-                            <textarea name="message" rows={8} placeholder="Cuéntanos por qué te interesa esta oferta" required style={{ display: 'block', width: '100%', marginBottom: '12px' }} />
+                            <textarea name="message" rows={6} placeholder="Cuéntanos por qué te interesa esta oferta" required />
                         </div>
 
-                        <button type="submit">Enviar solicitud</button>
+                        <button type="submit" className="btn-submit-contact">Enviar solicitud</button>
                     </form>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import Header from './App/Header'; 
-import Nav from './App/Nav';
+import Header from './Reusable/Header'; 
+import Nav from './Reusable/Nav';
 import '../styles/Home.css';
 
 function Home() {

@@ -1,5 +1,5 @@
-/* Contenedor general del formulario para centrarlo y darle fondo */
-form {
+/* Contenedor wrapper para centrar el formulario */
+.postear-form-wrapper {
   max-width: 500px;
   margin: 40px auto;
   padding: 35px;
@@ -7,23 +7,37 @@ form {
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(111, 78, 255, 0.06);
   border: 1px solid rgba(139, 92, 246, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
+.postear-form-wrapper h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+  color: #1e293b;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 10px;
+}
+
+/* Formulario principal */
+.postear-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
 /* Etiquetas */
-label {
+.postear-form label {
   font-size: 14px;
   font-weight: 600;
   color: #475569;
 }
 
 /* Campos de texto y selector */
-input[type="text"],
-textarea,
-select {
+.postear-form input[type="text"],
+.postear-form input[type="email"],
+.postear-form textarea,
+.postear-form select {
   padding: 12px 15px;
   border-radius: 10px;
   border: 1px solid #cbd5e1;
@@ -32,22 +46,25 @@ select {
   color: #1e293b;
   outline: none;
   transition: all 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-input[type="text"]:focus,
-textarea:focus,
-select:focus {
+.postear-form input[type="text"]:focus,
+.postear-form input[type="email"]:focus,
+.postear-form textarea:focus,
+.postear-form select:focus {
   border-color: #8b5cf6;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
 }
 
-textarea {
+.postear-form textarea {
   resize: vertical;
   min-height: 90px;
 }
 
-/* Input de tipo archivo personalizado */
-input[type="file"] {
+/* Input de tipo archivo */
+.postear-form input[type="file"] {
   font-size: 14px;
   color: #64748b;
   padding: 10px;
@@ -56,14 +73,16 @@ input[type="file"] {
   background-color: #f8fafc;
   cursor: pointer;
   transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  width: 100%;
 }
 
-input[type="file"]:hover {
+.postear-form input[type="file"]:hover {
   border-color: #8b5cf6;
 }
 
-/* Botón de envío con degradado azul, violeta y rosado */
-button[type="submit"] {
+/* Botón de envío */
+.btn-postear-submit {
   margin-top: 10px;
   padding: 13px;
   border-radius: 999px;
@@ -77,8 +96,25 @@ button[type="submit"] {
   box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
 }
 
-button[type="submit"]:hover {
+.btn-postear-submit:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
   opacity: 0.95;
+}
+
+.btn-postear-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#error-message {
+  margin-top: 15px;
+  padding: 10px 14px;
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
 }
