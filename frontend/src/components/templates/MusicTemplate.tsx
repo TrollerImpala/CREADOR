@@ -4,7 +4,7 @@ import type { MusicInfo } from "../tools/types";
 
 import '../../styles/templates-styles/MusicTemplate.css';
 
-function MusicPostPrev ( { post } : { post: MusicInfo } ) {
+function MusicPostPrev ( { post } : { post: MusicInfo }) {
     const Navigate = useNavigate();
     
     return (

@@ -4,6 +4,8 @@ import { useForm } from '../../hooks/useForm';
 import { errorMsg } from '../../tools/errorUtils';
 import { refreshToken } from '../../tools/refresh_token';
 
+import '../../../styles/Postear.css';
+
 interface ArtPostForm {
   title: string;
   description: string;
@@ -80,7 +82,7 @@ function PostearArte() {
 
       if (response.status === 401) {
         await refreshToken();
-//        console.log(localStorage.getItem('access_token'));
+//       console.log(localStorage.getItem('access_token'));
         const newAccessToken = localStorage.getItem('access_token');
 
         if (newAccessToken) {

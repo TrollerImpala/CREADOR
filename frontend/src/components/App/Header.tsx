@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../tools/logout';
 import '../../styles/Header.css';
-import '../../styles/Userboton.css'; // Importamos los estilos del botón
+import '../../styles/Userboton.css';
 
 function BotonLogin() {
   const navigate = useNavigate();
@@ -40,7 +40,6 @@ function BotonUser() {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [inicial, setInicial] = useState('U');
 
-  // Consultamos el endpoint del backend para extraer la imagen de perfil actual
   useEffect(() => {
     const fetchUserAvatar = async () => {
       try {
@@ -85,12 +84,7 @@ function BotonUser() {
         <img 
           src={avatarUrl} 
           alt="Avatar" 
-          style={{
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            objectFit: 'cover'
-          }} 
+          className="header-avatar-img"
         />
       ) : (
         inicial
@@ -111,7 +105,6 @@ export function Header() {
       {!accessToken ? (
         <div id="Ini-Reg">
           <BotonLogin />
-          <br />
           <BotonRegister />
         </div>
       ) : (

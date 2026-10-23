@@ -2,14 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import CreateTool from "./Create-tool";
-
 import Nav from "./Nav";
-
 import type { ArtInfo, CreateToolProps } from "../tools/types";
-
 import { errorMsg } from "../tools/errorUtils";
-
 import ArtPostPrev from "../templates/ArtTemplate";
+import '../../styles/GaleriaArte.css'; // <-- Única adición para aplicar los estilos
 
 function GaleriaArte() {
   const Navigate = useNavigate();
@@ -18,13 +15,7 @@ function GaleriaArte() {
 
   const obtenerPosts = async () => {
     try{
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPosts`);//, {
-      //   method : 'GET',
-      //   headers : {
-      //     'Content-Type' : 'application/json',
-      //     'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
-      //   }}
-      // );
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPosts`);
       if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
       
       const data = await response.json();
@@ -40,17 +31,20 @@ function GaleriaArte() {
 
   return (
     <>
-      
       <Header/>
       <Nav/>
 
-      <button onClick={() => Navigate('PostearArte')}>Postear Arte</button>
-      {posts.map((post) =>
-        <ArtPostPrev post={post} />
+      <div className="galeria-content">
+        <button className="btn-postear" onClick={() => Navigate('PostearArte')}>Postear Arte</button>
         
-      )}
+        <div className="posts-container">
+          {posts.map((post) =>
+            <ArtPostPrev post={post} />
+          )}
+        </div>
 
-      { (posts.length == 0) && <h3>Cargando...</h3>}
+        { (posts.length == 0) && <h3 className="cargando-texto">Cargando...</h3>}
+      </div>
     </>
   );
 }

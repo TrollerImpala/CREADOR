@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import CreateTool from "./Create-tool";
+import '../../styles/GaleriaMusica.css';
 
 import Nav from "./Nav";
 
@@ -11,6 +12,7 @@ import { useForm } from "../hooks/useForm";
 import { errorMsg } from "../tools/errorUtils";
 
 import MusicPostPrev from "../templates/MusicTemplate";
+
 function GaleriaMusica() {
   const Navigate = useNavigate();
 
@@ -18,13 +20,7 @@ function GaleriaMusica() {
 
   const obtenerPosts = async () => {
     try{
-      const response = await fetch('http://localhost:8080/api/Music/MusicPosts');//, {
-      //   method : 'GET',
-      //   headers : {[]
-      //     'Content-Type' : 'application/json',
-      //     'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
-      //   }}
-      // );
+      const response = await fetch('http://localhost:8080/api/Music/MusicPosts');
       if (!response.ok) await errorMsg(response, 'Error al cargar la cancion');
       
       const data = await response.json();
@@ -39,19 +35,26 @@ function GaleriaMusica() {
   useEffect(() => { obtenerPosts(); }, []);
 
   return (
-    <>
-      
+    <div className="galeria-musica-page">
       <Header/>
       <Nav/>
 
-      <button onClick={() => Navigate('PostearCancion')}>Postear Cancion</button>
-      {posts.map((post) =>
-        <MusicPostPrev post={post} />
-        
-      )}
+      <div className="galeria-musica-content">
+        <button className="btn-postear-cancion" onClick={() => Navigate('PostearCancion')}>
+          Postear Cancion
+        </button>
 
-      { (posts.length == 0) && <h3>Cargando...</h3>}
-    </>
+        <div className="music-grid">
+          {posts.map((post) =>
+            <div className="music-card-wrapper">
+              <MusicPostPrev post={post} />
+            </div>
+          )}
+        </div>
+
+        { (posts.length == 0) && <h3 className="cargando-musica">Cargando...</h3>}
+      </div>
+    </div>
   );
 }
   

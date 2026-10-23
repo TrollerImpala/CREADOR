@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Header from './App/Header'; // Ajusta la ruta según la carpeta donde guardes Header.tsx
+import Header from './App/Header'; 
 import Nav from './App/Nav';
 import '../styles/Home.css';
 
@@ -10,27 +10,34 @@ function Home() {
   }, []);
 
   return (
-    <>
+    <div className="home-container">
       <Header />
-
       <Nav />
 
-      <section>
-        <h1>¡Bienvenidos a la página!</h1>
+      <main className="home-main">
+        <section className="welcome-hero">
+          <h1>¡Bienvenidos a la página!</h1>
+          <p className="welcome-subtitle">
+            En la página principal, tendría que haber un tablón mostrando un poco de todas las creaciones 
+            <span>(por ejemplo, dibujos, música, proyectos de teams, etc.)</span>
+          </p>
+        </section>
 
-        <h2>
-          En la página principal, tendría que haber un tablón mostrando un poco de todas las creaciones
-          (por ejemplo, dibujos, música, proyectos de teams, etc.)
-        </h2>
-      </section>
+        {/* Espacio reservado para cuando implementes el tablón */}
+        <section className="dashboard-grid">
+          <div className="placeholder-card">
+            <p>🎨 Próximamente: Tablón de creaciones</p>
+          </div>
+        </section>
+      </main>
 
-      <footer>
-        <div>
+      <footer className="home-footer">
+        <div className="footer-content">
           <h2>CREADOR</h2>
-          <p>©CREADOR - Página hecha por el team 01</p>
+          <p>© CREADOR - Página hecha por el team 01</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
 

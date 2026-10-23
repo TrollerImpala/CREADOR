@@ -1,0 +1,84 @@
+/* Contenedor general del formulario para centrarlo y darle fondo */
+form {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 35px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(111, 78, 255, 0.06);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+/* Etiquetas */
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+}
+
+/* Campos de texto y selector */
+input[type="text"],
+textarea,
+select {
+  padding: 12px 15px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  background-color: #fff;
+  color: #1e293b;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+/* Input de tipo archivo personalizado */
+input[type="file"] {
+  font-size: 14px;
+  color: #64748b;
+  padding: 10px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+input[type="file"]:hover {
+  border-color: #8b5cf6;
+}
+
+/* Botón de envío con degradado azul, violeta y rosado */
+button[type="submit"] {
+  margin-top: 10px;
+  padding: 13px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
+}
+
+button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
+  opacity: 0.95;
+}
