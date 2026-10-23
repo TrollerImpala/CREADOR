@@ -1,0 +1,63 @@
+/* Contenedor general */
+.galeria-musica-page {
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.galeria-musica-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+/* Botón específico de Postear Canción (con degradado azul, violeta y rosado) */
+.btn-postear-cancion {
+  display: inline-block;
+  margin-bottom: 30px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.25);
+}
+
+.btn-postear-cancion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
+  opacity: 0.95;
+}
+
+/* Cuadrícula para los posts de música */
+.music-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.music-card-wrapper {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(111, 78, 255, 0.04);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.music-card-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.12);
+}
+
+/* Texto de Cargando */
+.cargando-musica {
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+  margin-top: 50px;
+}

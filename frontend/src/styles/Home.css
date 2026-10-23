@@ -1,87 +1,115 @@
-html, body{
-    margin: 0;
-    padding: 0 0;
-    background-color: whitesmoke;
-    font-family:Arial, Helvetica, sans-serif;
-    overflow-x: hidden;
-}
-header, #Ini-Reg{
-    background-color: white;
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
+/* --- Estilos Generales --- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f8fafc; /* Un gris/blanco azulado muy moderno */
+  font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+  color: #1e293b;
+  overflow-x: hidden;
 }
 
-nav{
-    background-color: lightblue;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
-#title-head{
-    padding-left: 50px;
-    color:lightseagreen
+/* --- Contenido Principal (Hero / Sección de bienvenida) --- */
+.home-main {
+  flex: 1;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  box-sizing: border-box;
 }
 
-#Ini-Reg button, #btn-logout {
-    padding: 10px 20px;
-    border-radius: 999px;
-    
+.welcome-hero {
+  background: white;
+  padding: 45px 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(111, 78, 255, 0.05);
+  text-align: center;
+  border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
-#btn-log, #btn-reg, #btn-logout{
-
-    border: 2px solid lightseagreen;
-    background-color: white;
-    color: lightseagreen;
-
-    cursor: pointer;
-
+.welcome-hero h1 {
+  margin: 0 0 15px 0;
+  font-size: 32px;
+  font-weight: 800;
+  /* Degradado de azul a violeta y rosado en sintonía con el Header */
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.btn-seccion{
-    background-color: lightblue;
-    color: blue;
-
-    border: 2px solid darkblue;
-    border-radius: 999px;
-
-    padding: 10px 20px;
-
-    cursor: pointer;
-}
-/*
-#btn-reg{
-
-    background-color: lightseagreen;
-    color: white;
-    border:2px solid lightseagreen;
-
+.welcome-subtitle {
+  font-size: 16px;
+  color: #64748b;
+  line-height: 1.6;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-#btn-logout{
-
-    background-color: lightseagreen;
-    color: white;
-    border:2px solid lightseagreen;
-
-}
-*/
-#Ini-Reg{
-    padding-right: 40px;
-    height: 75px;
-    align-items: center;
-    gap: 5px;
-    
+.welcome-subtitle span {
+  display: block;
+  margin-top: 5px;
+  font-style: italic;
+  color: #94a3b8;
 }
 
-
-footer{
-    background-color: white;
-    display: flex;
+/* --- Sección del Tablón (Placeholder temporal) --- */
+.dashboard-grid {
+  margin-top: 30px;
 }
-footer > div{
-    margin-left: 5%;
+
+.placeholder-card {
+  background: white;
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  color: #64748b;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s ease;
+}
+
+.placeholder-card:hover {
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+}
+
+/* --- Footer Mejorado --- */
+.home-footer {
+  background-color: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 30px 0;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.footer-content h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.5px;
+}
+
+.footer-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #64748b;
 }

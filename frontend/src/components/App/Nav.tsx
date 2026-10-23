@@ -1,25 +1,61 @@
-//import '../../styles/Nav-menu.css';
-//import logo from '../../assets/METTIA-logo.png';
-
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../../styles/Nav.css';
 
-import { useNavigate } from 'react-router-dom';
-
 function Nav() {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Función para detectar cuál botón está activo
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <nav className="navbar">
+    <div className="subnav-container">
+      <ul className="subnav-menu">
+        <li 
+          className={`subnav-item ${isActive('/') ? 'active' : ''}`}
+          onClick={() => navigate('/')}
+        >
+          HOME
+        </li>
 
-      <div className="nav-container">
-      
-        <ul className="nav-links">
-          <li><a onClick={() => Navigate('/Arte')}>Galeria Arte</a></li>
-        </ul>
-      
-      </div>
+        <span className="separator">|</span>
 
-    </nav>
+        <li 
+          className={`subnav-item ${isActive('/Arte') ? 'active' : ''}`}
+          onClick={() => navigate('/Arte')}
+        >
+          ART
+        </li>
+
+        <span className="separator">|</span>
+
+        <li 
+          className={`subnav-item ${isActive('/film') ? 'active' : ''}`}
+          onClick={() => navigate('/film')}
+        >
+          FILM
+        </li>
+
+        <span className="separator">|</span>
+
+        <li 
+          className={`subnav-item ${isActive('/Musica') ? 'active' : ''}`}
+          onClick={() => navigate('/Musica')}
+        >
+          MUSIC
+        </li>
+
+        <span className="separator">|</span>
+
+        <li 
+          className={`subnav-item ${isActive('/JobOffers') ? 'active' : ''}`}
+          onClick={() => navigate('/JobOffers')}
+        >
+          OFFERS / PROJECTS
+        </li>
+      </ul>
+    </div>
   );
 }
 

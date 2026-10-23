@@ -3,6 +3,7 @@ import {
     Navigate, Outlet
  } from "react-router-dom";
 
+import ProfilePage from "./components/App/User";
 import Nav from './components/App/Nav';
 import Home from './components/Home';
 import Login from './components/auth/Login';
@@ -16,9 +17,15 @@ import JobOffers from "./components/App/JobOffers";
 import JobOfferPost from "./components/App/Single/JobOfferPost";
 import PostJobOffer from "./components/App/Posts/Post-JobOffer";
 
+import GaleriaMusica from "./components/App/GaleriaMusica-app";
+//import MusicPost from "./components/App/Single/ArtePost-app";
+//import PostearArte from "./components/App/Posts/Postear-Arte";
+
+
 import Amigos from "./components/App/Amigos-app";
 
 import Teams from "./components/App/Teams-app";
+
 
 function ProtectedRoute() {
   const usuarioAutenticado = localStorage.getItem('usuario');
@@ -34,6 +41,10 @@ const Router = createBrowserRouter([
     {
         path : '/',
         element : <Home />
+    },
+    {
+        path : '/User',
+        element : <ProfilePage />
     },
     {
         path : '/Login',
@@ -52,11 +63,15 @@ const Router = createBrowserRouter([
         element : <GaleriaArte />
     },
     {
+        path : '/Musica',
+        element : <GaleriaMusica />
+    },
+    {
         path : '/Arte/:artpost_id',
         element : <ArtPost />
     },
     {
-        path : '/JobOffer',
+        path : '/JobOffers',
         element : <JobOffers />
     },
     {
