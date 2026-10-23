@@ -63,7 +63,8 @@ export class UserService{
             social_medias: socialMedias || []
         })
         .eq('id_user', user_id)
-        .select();
+        .select()
+        .single();
 
         if (error) throw new BadRequestException('Error al actualizar perfil', error.message);
 

@@ -107,6 +107,11 @@ export function User() {
       const responseData = await response.json();
 
       if (response.ok) {
+        const user = {
+          user_name: responseData.user.userName,
+          user_avatar_url: responseData.user.user_avatar_url
+        };
+        localStorage.setItem('usuario', JSON.stringify(user));
         setMensaje('¡Perfil actualizado con éxito!');
       } else {
         setErrorServer(responseData.message || 'Error al actualizar el perfil en el servidor.');
