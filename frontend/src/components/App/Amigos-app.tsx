@@ -18,7 +18,8 @@ function AgregarAmigoHtml({ funsBtns } : CreateToolProps){
     onSuccess : (friendData) => {
       console.log("Solicitud enviada con exito:", friendData);
       alert("¡Solicitud enviada a" + formData.friendTag + "!");
-    }
+    },
+    onFailure : () => {}
   });
 
   return (
