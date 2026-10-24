@@ -27,7 +27,7 @@ export async function refreshToken(){
         
         }else {
             await errorMsg(response, 'Error al actualizar el token');
-            
+            localStorage.clear();
             window.location.href = '/Login';
         }
     } else window.location.href = '/Login';
