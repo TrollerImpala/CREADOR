@@ -44,13 +44,19 @@ function Login(){
     },
     onFailure : (response) => {
       console.error("Error en la solicitud:", response);
-      if (response.status === 400) {
+      if (response.status === 401) {
         setMensajeError("Error en las credenciales");
       } else {
         setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
       }
     }
   });
+  const sendInit = () => {
+    setMensajeError('');
+    if (!formData.email.trim() || !formData.password.trim()) {
+      setMensajeError("Por favor, complete todos los campos.");
+    }
+  }
 
   return (
       <>
@@ -63,9 +69,9 @@ function Login(){
              <label>Contraseña: </label>
              <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="******" className="for-border"></input>
              <br></br>
-             <input type="submit" value="Iniciar Sesion" id = "boton-envio"></input>
+             <input type="submit" value="Iniciar Sesion" id = "boton-envio" onClick={sendInit}></input>
             </form>
-            {mensajeError && <p className="error-message">{mensajeError}</p>}
+            {mensajeError && <p id="error-message">{mensajeError}</p>}
             <p>¿No tienes cuenta? <a href="/Register">Registrate</a></p>
         </div>
       </>

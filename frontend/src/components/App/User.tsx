@@ -44,7 +44,7 @@ export function User() {
           setAvatarUrl(avatarUrl);
         } else {
           setErrorServer('No se pudo obtener la información del perfil desde el servidor.');
-          refreshToken();
+          await refreshToken();
           fetchProfile(); // Reintentar después de refrescar el token
         }
       } catch (error) {
