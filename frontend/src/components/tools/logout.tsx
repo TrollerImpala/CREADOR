@@ -6,7 +6,7 @@ export async function logout() {
     if (response.ok){
         localStorage.clear();
         const exito = await response.json();
-        alert(exito.mensaje);
+        console.log(exito.mensaje);
         
     }else {
         await errorMsg(response, 'Error al actualizar el token');
