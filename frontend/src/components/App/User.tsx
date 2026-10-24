@@ -67,6 +67,16 @@ export function User() {
     }
   };
 
+  const enviarActualización = async (token: string, dataToSend: FormData) => {
+    return await fetch(`${import.meta.env.VITE_API_URL}/Users/ActualizarPerfil`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      body: dataToSend
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje('');
@@ -78,7 +88,6 @@ export function User() {
     }
 
     try {
-      const accessToken = localStorage.getItem('access_token');
       const dataToSend = new FormData();
 
       dataToSend.append('userTag', formData.userTag);
@@ -87,8 +96,8 @@ export function User() {
       
       if (formData.socialMedias) {
         const socialArray = formData.socialMedias.split(',').map(s => s.trim()).filter(Boolean);
-        socialArray.forEach((social, index) => {
-          dataToSend.append(`socialMedias[${index}]`, social);
+        socialArray.forEach((social) => {
+          dataToSend.append('socialMedias[]', social);
         });
       }
 
@@ -96,13 +105,18 @@ export function User() {
         dataToSend.append('profile_img', profileImg);
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Users/ActualizarPerfil`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        },
-        body: dataToSend
-      });
+      let accessToken = localStorage.getItem('access_token') || '';
+      let response = await enviarActualización(accessToken, dataToSend);
+
+      // Si el token expiró (401), intentamos refrescarlo y reintentar la petición
+      if (response.status === 401) {
+        await refreshToken();
+        const newAccessToken = localStorage.getItem('access_token');
+
+        if (newAccessToken) {
+          response = await enviarActualización(newAccessToken, dataToSend);
+        }
+      }
 
       const responseData = await response.json();
 
