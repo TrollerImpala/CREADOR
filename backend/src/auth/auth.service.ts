@@ -3,6 +3,9 @@ import { Injectable, BadRequestException, UnauthorizedException } from "@nestjs/
 import { SupabaseClient } from "@supabase/supabase-js";
 //import { supabase } from "../config/supabaseClient";
 import { SupabaseService } from "../sub_services/supabaseClient";
+import { createClient } from "@supabase/supabase-js";
+
+import { ConfigService } from "@nestjs/config";
 
 import { mergeInternals } from "rxjs/internal/operators/mergeInternals";
 
@@ -13,7 +16,8 @@ export class AuthService{
 
     constructor(
         //private readonly supabase : SupabaseClient,
-        private readonly supabaseService : SupabaseService
+        private readonly supabaseService : SupabaseService,
+
     ){
         this.supabase = this.supabaseService.getClient();
     }
@@ -112,11 +116,22 @@ export class AuthService{
         };
     }
 
-    async log_out(){
-        const { error } = await this.supabase.auth.signOut();
+    // En auth.service.ts
+    async log_out(token: string) {
+        if (!token) {
+            throw new UnauthorizedException('No se proporcionó el token de acceso');
+        }
+
+        const supabaseUser = this.supabaseService.getUserClient(token);
+
+        const { error } = await supabaseUser.auth.signOut();
+
+        if (error) {
+            throw new UnauthorizedException(`Error al cerrar sesión: ${error.message}`);
+        }
 
         return {
-            mensaje : 'Cierre de sesion exitante'
+            mensaje: 'Cierre de sesión exitoso'
         };
     }
 }
