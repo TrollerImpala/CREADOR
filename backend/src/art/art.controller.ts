@@ -5,6 +5,7 @@ import { Controller,
     Param,
     UseGuards,
     Req, 
+    Query,
     UseInterceptors, 
     UploadedFile, 
     BadRequestException
@@ -38,8 +39,11 @@ export class ArtController{
     
     @Get('ArtPosts')
     //@UseGuards(SupabaseAuthGuard)
-    async getArtPosts(){
-        return await this.artService.getArtPosts();
+    async getArtPosts(
+        @Query('from') from: number,
+        @Query('limit') limit: number
+    ){
+        return await this.artService.getArtPosts(from, limit);
     }
 
 

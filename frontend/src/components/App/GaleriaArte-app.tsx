@@ -12,13 +12,27 @@ function GaleriaArte() {
 
   const [posts, setPosts] = useState<ArtInfo[]>([]);
 
+  const [page, setPage] = useState<number>(0);
+  const limit = 10;
+  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+
   const obtenerPosts = async () => {
     try{
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPosts`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPosts?from=${page * limit}&limit=${limit}`);
       if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
       
       const data = await response.json();
       
+      if (data.art.length > limit){
+        //console.log('hay mas songs q limite');
+        setHasNextPage(true);
+        data.art.pop();
+
+      } else{
+        //console.log('hasta ahi');
+        setHasNextPage(false);
+      }
+
       setPosts(data.art);
     
     }catch (error){
@@ -26,7 +40,7 @@ function GaleriaArte() {
     }
   }
 
-  useEffect(() => { obtenerPosts(); }, []);
+  useEffect(() => { obtenerPosts(); }, [page]);
 
   return (
     <>
@@ -44,6 +58,8 @@ function GaleriaArte() {
 
         { (posts.length == 0) && <h3 className="cargando-texto">Cargando...</h3>}
       </div>
+      <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
+      <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
     </>
   );
 }

@@ -19,14 +19,15 @@ export class MusicService{
     }
 
 
-    async getMusicPosts(){
+    async getMusicPosts(from: number, limit: number){
         const {data, error} = await this.supabase
         .from('MUSICPOSTS')
         .select('song_id, song_name, song_url, song_cover_url, rating')
-        .order('created_at', {ascending : false});
+        .order('created_at', {ascending : false})
+        .range(from, from + limit);
 
         if (error) throw new BadRequestException('Error al obtener posts de musica' + error.message);
-
+        
         return{
             mensaje : 'Musica obtenida',
             songs : data

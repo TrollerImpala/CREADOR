@@ -5,6 +5,7 @@ import { Controller,
     Param,
     UseGuards,
     Req, 
+    Query,
     UseInterceptors, 
     UploadedFile, 
     BadRequestException,
@@ -37,8 +38,11 @@ export class MusicController{
     
     @Get('MusicPosts')
     //@UseGuards(SupabaseAuthGuard)
-    async getMusicPosts(){
-        return await this.musicService.getMusicPosts();
+    async getMusicPosts(
+        @Query('from') from: number,
+        @Query('limit') limit: number
+    ){
+        return await this.musicService.getMusicPosts(from, limit);
     }
 
 
