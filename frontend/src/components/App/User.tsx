@@ -193,6 +193,7 @@ export function User() {
             value={formData.socialMedias} 
             onChange={handleChange} 
             placeholder="Ej: twitter.com/miusuario (opcional)"
+            disabled
           />
         </div>
 
