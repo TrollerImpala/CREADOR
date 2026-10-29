@@ -37,7 +37,7 @@ export class MusicService{
     async getMusicPost(id_song : string){
         const {data, error} = await this.supabase
         .from('MUSICPOSTS')
-        .select()
+        .select('*, USERS(user_name, user_tag, user_avatar_url)')
         .eq('song_id', id_song)
         .single();
 

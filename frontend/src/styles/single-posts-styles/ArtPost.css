@@ -1,3 +1,37 @@
+/* --- BLOQUE DE USUARIO AGREGADO --- */
+.main-post-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    background-color: #242424;
+    border-bottom: 1px solid #333;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.user-tag {
+    color: #aaa;
+    font-size: 0.85rem;
+}
+/* ---------------------------------- */
+
 /* Contenedor principal del post completo (80% del ancho) */
 .main-post-container {
     width: 80%;

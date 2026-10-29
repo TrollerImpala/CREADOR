@@ -36,7 +36,7 @@ export class JobOfferService{
     async getJobOfferPost(id_project : string){
         const {data, error} = await this.supabase
         .from('PROJECTPOSTS')
-        .select()
+        .select('*, USERS(user_name, user_tag, user_avatar_url)')
         .eq('project_id', id_project)
         .single();
 

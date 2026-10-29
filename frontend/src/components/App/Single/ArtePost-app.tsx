@@ -6,6 +6,14 @@ import type { ArtInfo } from "../../tools/types";
 
 import '../../../styles/single-posts-styles/ArtPost.css'
 
+interface ExtendedArtInfo extends ArtInfo {
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    };
+}
+
 function ArtPost(){
     const navigate = useNavigate();
 
@@ -13,7 +21,7 @@ function ArtPost(){
 
     const [cargando, setCargando] = useState(true);
 
-    const [post, setPost] = useState<ArtInfo>(
+    const [post, setPost] = useState<ExtendedArtInfo>(
         {
             artpost_id : '',
             title : '',
@@ -53,6 +61,17 @@ function ArtPost(){
             ) : (
                 <>
                     <div className="main-post-container">
+                        {/* Bloque de Usuario Agregado */}
+                        {post.USERS && (
+                            <div className="main-post-user">
+                                <img src={post.USERS.user_avatar_url} alt={post.USERS.user_name} className="user-avatar" />
+                                <div className="user-info">
+                                    <span className="user-name">{post.USERS.user_name}</span>
+                                    <span className="user-tag">@{post.USERS.user_tag}</span>
+                                </div>
+                            </div>
+                        )}
+
                         <div className="main-post-header">
                             <div>{post.rating} - {post.title}</div>
                         </div>

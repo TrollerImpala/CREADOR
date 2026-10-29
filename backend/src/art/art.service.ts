@@ -37,12 +37,12 @@ export class ArtService{
     async getArtPost(id_art : string){
         const {data, error} = await this.supabase
         .from('ARTPOSTS')
-        .select()
+        .select('*, USERS(user_name, user_tag, user_avatar_url)')
         .eq('artpost_id', id_art)
         .single();
 
         if (error) throw new BadRequestException('Error al obtener post de arte' + error.message);
-
+        console.log(data);
         return{
             mensaje : 'Arte obtenido',
             art : data
