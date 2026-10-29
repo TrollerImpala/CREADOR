@@ -73,13 +73,14 @@ function PostJobOffer() {
     try {
       let response = await enviarPeticion(localStorage.getItem('access_token')!);
 
-      if (response.status === 400 || response.status === 422) {
-        await refreshToken();
-        const newAccessToken = localStorage.getItem('access_token');
-
-        if (newAccessToken) {
-          response = await enviarPeticion(newAccessToken);
-        }
+      if (response.status === 401) {
+        const refreshed = await refreshToken();
+        
+        if (refreshed) {
+          const newAccessToken = localStorage.getItem('access_token');
+          
+          if (newAccessToken) response = await enviarPeticion(newAccessToken);
+        } else return;
       }
 
       if (response.ok) {

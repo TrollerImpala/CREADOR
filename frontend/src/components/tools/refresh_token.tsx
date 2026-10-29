@@ -22,6 +22,7 @@ export async function refreshToken(){
             
             localStorage.setItem('access_token', new_access_token);
             localStorage.setItem('refresh_token', new_refresh_token);
+            return true;
 
             //alert('Token actualizado');
         
@@ -29,6 +30,10 @@ export async function refreshToken(){
             await errorMsg(response, 'Error al actualizar el token');
             localStorage.clear();
             window.location.href = '/Login';
+            return false;
         }
-    } else window.location.href = '/Login';
+    } else {
+        window.location.href = '/Login';
+        return false;
+    }
 }
