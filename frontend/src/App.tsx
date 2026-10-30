@@ -9,7 +9,7 @@ import Home from './components/Home';
 import Login from './components/auth/Login';
 import Register from "./components/auth/Register";
 
-import UserProfile from "./components/App/UserProfile";
+import UserProfile from "./components/App/UserProfile/UserProfile";
 
 import GaleriaArte from "./components/App/GaleriaArte-app";
 import ArtPost from "./components/App/Single/ArtePost-app";

@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import Header from "../Reusable/Header";
-import Nav from "../Reusable/Nav";
-import ArtPostPrev from "../templates/ArtTemplate";
+import Header from "../../Reusable/Header";
+import Nav from "../../Reusable/Nav";
 
-import type { PublicUser } from "../tools/types";
+import UserArtGallery from "./UserArtGallery";
+import UserMusicGallery from "./UserMusicGallery";
+import UserOffers from "./UserOffers";
 
-import type { ArtInfo } from "../tools/types";
-import { errorMsg } from "../tools/errorUtils";
+import type { PublicUser } from "../../tools/types";
+import { errorMsg } from "../../tools/errorUtils";
 
-import "../../styles/UserProfile.css";
+import "../../../styles/UserProfile.css";
 
+type Seccion = 'arte' | 'musica' | 'ofertas';
 
 function UserProfile() {
-    const { user_id } = useParams();
+    const { user_id } = useParams<{ user_id: string }>();
 
     const [user, setUser] = useState<PublicUser | null>(null);
-    const [posts, setPosts] = useState<ArtInfo[]>([]);
     const [cargandoUser, setCargandoUser] = useState(true);
-    const [cargandoPosts, setCargandoPosts] = useState(true);
+    const [seccionActiva, setSeccionActiva] = useState<Seccion>('arte');
 
     const obtenerDatosUsuario = async () => {
         try {
@@ -37,26 +38,9 @@ function UserProfile() {
         }
     };
 
-    const obtenerArteUsuario = async () => {
-        try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/UserArtPosts/${user_id}?from=0&limit=12`);
-            if (!response.ok) {
-                await errorMsg(response, 'Error al cargar publicaciones del usuario');
-                return;
-            }
-            const data = await response.json();
-            setPosts(data.art ?? []);
-        } catch (error) {
-            console.error('Error al obtener posts de arte:', error);
-        } finally {
-            setCargandoPosts(false);
-        }
-    };
-
     useEffect(() => {
         if (user_id) {
             obtenerDatosUsuario();
-            obtenerArteUsuario();
         }
     }, [user_id]);
 
@@ -91,21 +75,34 @@ function UserProfile() {
                     )}
                 </aside>
 
-                {/* Columna Derecha: Galería de Arte del Usuario */}
-                <main className="user-profile-gallery">
-                    <h3 className="gallery-title">Obras de Arte</h3>
+                {/* Columna Derecha: Secciones con Barra de Navegación Interna */}
+                <main className="user-profile-content">
+                    <nav className="profile-tabs-nav">
+                        <button
+                            className={`tab-btn ${seccionActiva === 'arte' ? 'active' : ''}`}
+                            onClick={() => setSeccionActiva('arte')}
+                        >
+                            Arte
+                        </button>
+                        <button
+                            className={`tab-btn ${seccionActiva === 'musica' ? 'active' : ''}`}
+                            onClick={() => setSeccionActiva('musica')}
+                        >
+                            Música
+                        </button>
+                        <button
+                            className={`tab-btn ${seccionActiva === 'ofertas' ? 'active' : ''}`}
+                            onClick={() => setSeccionActiva('ofertas')}
+                        >
+                            Ofertas
+                        </button>
+                    </nav>
 
-                    {cargandoPosts ? (
-                        <p className="cargando-texto">Cargando obras...</p>
-                    ) : posts.length > 0 ? (
-                        <div className="user-art-grid">
-                            {posts.map((post) => (
-                                <ArtPostPrev post={post} />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="sin-obras-texto">Este usuario no ha publicado obras de arte aún.</p>
-                    )}
+                    <div className="profile-tab-body">
+                        {user_id && seccionActiva === 'arte' && <UserArtGallery user_id={user_id} />}
+                        {user_id && seccionActiva === 'musica' && <UserMusicGallery user_id={user_id} />}
+                        {user_id && seccionActiva === 'ofertas' && <UserOffers user_id={user_id} />}
+                    </div>
                 </main>
             </div>
         </div>

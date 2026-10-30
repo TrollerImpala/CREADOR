@@ -34,6 +34,22 @@ export class MusicService{
         };
     }
 
+    async getUserMusicPosts(user_id : string, from: number, limit: number){
+        const {data, error} = await this.supabase
+        .from('MUSICPOSTS')
+        .select('song_id, song_name, song_url, song_cover_url, rating')
+        .eq('user_id', user_id)
+        .order('created_at', {ascending : false})
+        .range(from, from + limit);
+
+        if (error) throw new BadRequestException('Error al obtener posts de musica del usuario' + error.message);
+        
+        return{
+            mensaje : 'Musica de usuario obtenida',
+            songs : data
+        };
+    }
+
     async getMusicPost(id_song : string){
         const {data, error} = await this.supabase
         .from('MUSICPOSTS')

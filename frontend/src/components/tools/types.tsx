@@ -54,3 +54,8 @@ export interface MusicInfo {
     rating : string;
     tags : string[];
 }
+
+
+export interface UserPostsGalleriesProp {
+    user_id : string
+}
