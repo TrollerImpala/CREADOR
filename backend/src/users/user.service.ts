@@ -18,6 +18,21 @@ export class UserService{
         this.supabase = this.supabaseService.getClient();
     }
 
+    async getPublicUserData(user_id : string){
+        const { data, error } = await this.supabase
+        .from('USERS')
+        .select('user_tag, user_name, user_description, user_avatar_url')
+        .eq('id_user', user_id)
+        .single();
+
+        if (error) throw new BadRequestException('Error al conseguir perfil', error.message);
+
+        return {
+            publicUser : data,
+            mensaje : 'Perfil publico obtenido'
+        };
+    }
+
     async getUserData(user_id : string){
         const { data, error } = await this.supabase
         .from('USERS')

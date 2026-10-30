@@ -1,18 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 import { errorMsg } from "../../tools/errorUtils";
 import type { ArtInfo } from "../../tools/types";
 
 import '../../../styles/single-posts-styles/ArtPost.css'
-
-interface ExtendedArtInfo extends ArtInfo {
-    USERS?: {
-        user_tag: string;
-        user_name: string;
-        user_avatar_url: string;
-    };
-}
 
 function ArtPost(){
     const navigate = useNavigate();
@@ -21,7 +13,7 @@ function ArtPost(){
 
     const [cargando, setCargando] = useState(true);
 
-    const [post, setPost] = useState<ExtendedArtInfo>(
+    const [post, setPost] = useState<ArtInfo>(
         {
             artpost_id : '',
             title : '',
@@ -29,7 +21,12 @@ function ArtPost(){
             description : '',
             tags : [''],
             rating : '',
-            user_id : ''
+            user_id : '',
+            USERS : {
+                user_tag : '',
+                user_name : '',
+                user_avatar_url : '',
+            },
         }
     );
 
@@ -63,6 +60,7 @@ function ArtPost(){
                     <div className="main-post-container">
                         {/* Bloque de Usuario Agregado */}
                         {post.USERS && (
+                            <Link to={`/User/${post.user_id}`}>
                             <div className="main-post-user">
                                 <img src={post.USERS.user_avatar_url} alt={post.USERS.user_name} className="user-avatar" />
                                 <div className="user-info">
@@ -70,6 +68,7 @@ function ArtPost(){
                                     <span className="user-tag">@{post.USERS.user_tag}</span>
                                 </div>
                             </div>
+                            </Link>
                         )}
 
                         <div className="main-post-header">

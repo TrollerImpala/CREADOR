@@ -9,6 +9,8 @@ import Home from './components/Home';
 import Login from './components/auth/Login';
 import Register from "./components/auth/Register";
 
+import UserProfile from "./components/App/UserProfile";
+
 import GaleriaArte from "./components/App/GaleriaArte-app";
 import ArtPost from "./components/App/Single/ArtePost-app";
 import PostearArte from "./components/App/Posts/Postear-Arte";
@@ -99,6 +101,10 @@ const Router = createBrowserRouter([
             },
         ]
     },    
+    {
+        path : '/User/:user_id',
+        element : <UserProfile />
+    },
     {
         path : '/Amigos',
         element : <Amigos />

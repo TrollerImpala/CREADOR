@@ -3,6 +3,13 @@ type FuncionType = () => void;
 export interface CreateToolProps {
     funsBtns: FuncionType[];
 }
+export interface PublicUser {
+    user_tag: string;
+    user_name: string;
+    user_decription?: string;
+    user_avatar_url?: string;
+}
+
 
 export interface ArtInfo {
     artpost_id : string;
@@ -12,6 +19,11 @@ export interface ArtInfo {
     description ?: string;
     tags ?: string[];
     user_id ?: string;
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    }
 }
 
 export interface JobOfferInfo {
