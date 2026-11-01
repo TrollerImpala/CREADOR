@@ -46,6 +46,14 @@ export class ArtController{
         return await this.artService.getArtPosts(from, limit);
     }
 
+    @Get('UserArtPosts/:id')
+    async getUserArtPosts(
+        @Param('id') user_id : string,
+        @Query('from') from: number,
+        @Query('limit') limit: number
+    ){
+        return await this.artService.getUserArtPosts(user_id, from, limit)
+    }
 
     @ApiOperation({ summary: 'Obtener una publicación de arte específica' })
     @ApiResponse({ status: 200, description: 'Devuelve la publicación de arte solicitada' })

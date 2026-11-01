@@ -45,6 +45,14 @@ export class MusicController{
         return await this.musicService.getMusicPosts(from, limit);
     }
 
+    @Get('UserMusicPosts/:id')
+    async getUserMusicPosts(
+        @Param('id') user_id : string,
+        @Query('from') from: number,
+        @Query('limit') limit: number
+    ){
+        return await this.musicService.getUserMusicPosts(user_id, from, limit)
+    }
 
     @ApiOperation({ summary: 'Obtener una publicación de música específica' })
     @ApiResponse({ status: 200, description: 'Devuelve la publicación de música solicitada' })

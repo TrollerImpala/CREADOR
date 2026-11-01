@@ -5,6 +5,7 @@ import { Controller,
     Param,
     UseGuards,
     Req, 
+    Query,
     UseInterceptors, 
     UploadedFile, 
     BadRequestException
@@ -32,8 +33,20 @@ export class JobOfferController{
 
     @Get('JobOfferPosts')
     //@UseGuards(SupabaseAuthGuard)
-    async getJobOfferPosts(){
-        return await this.jobOfferService.getJobOfferPosts();
+    async getJobOfferPosts(
+        @Query('from') from: number,
+        @Query('limit') limit: number
+    ){
+        return await this.jobOfferService.getJobOfferPosts(from, limit);
+    }
+
+    @Get('UserJobOfferPosts/:id')
+    async getUserMusicPosts(
+        @Param('id') user_id : string,
+        @Query('from') from: number,
+        @Query('limit') limit: number
+    ){
+        return await this.jobOfferService.getUserJobOfferPosts(user_id, from, limit)
     }
     
     @ApiOperation({ summary: 'Obtener una publicación de oferta de trabajo específica' })

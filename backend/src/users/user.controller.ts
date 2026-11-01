@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Put, Body, Req, UseGuards, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Controller, Post, Get, Put, Body, Req, UseGuards, UseInterceptors, UploadedFile, Param } from "@nestjs/common";
 import { UserService } from "./user.service";
 
 import { SupabaseAuthGuard } from "../guards/auth.guard";
@@ -12,6 +12,13 @@ import { UserDto } from "../DTO/user.dto";
 @Controller('Users')
 export class UsersController{
     constructor(private readonly userService : UserService) {};
+
+    @Get('Usuario/:user_id')
+    async getUser(
+        @Param('user_id') user_id : string
+    ){
+        return await this.userService.getPublicUserData(user_id);
+    }
 
     @Post('Perfil')
     @UseGuards(SupabaseAuthGuard)
