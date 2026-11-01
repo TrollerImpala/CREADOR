@@ -1,7 +1,7 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsArray, isEmail, IsEmail } from 'class-validator';
 
 export class RegisterAuthDto {
-  @IsString({ message: 'El email debe ser una cadena de texto' })
+  @IsEmail()
   @IsNotEmpty({ message: 'El email es obligatorio' })
   email! : string;
 
@@ -27,11 +27,17 @@ export class RegisterAuthDto {
 }
 
 export class LoginAuthDto {
-  @IsString({ message: 'El email debe ser una cadena de texto' })
+  @IsEmail()
   @IsNotEmpty({ message: 'El email es obligatorio' })
   email! : string;
 
   @IsString({ message: 'La contraseña debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'La contraseña es obligatoria' })
   password! : string;
+}
+
+export class RefreshTokenDto {
+  @IsString({ message: 'El refresh token debe ser un string' })
+  @IsNotEmpty({ message: 'El refresh token es obligatorio' })
+  refresh_token!: string;
 }
