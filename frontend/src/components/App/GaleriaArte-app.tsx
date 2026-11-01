@@ -10,6 +10,8 @@ import '../../styles/GaleriaArte.css';
 function GaleriaArte() {
   const Navigate = useNavigate();
 
+  const role = localStorage.getItem('role');
+
   const [posts, setPosts] = useState<ArtInfo[]>([]);
 
   const [page, setPage] = useState<number>(0);
@@ -46,7 +48,7 @@ function GaleriaArte() {
     <>
       <Header/>
       <Nav/>
-
+      
       <div className="galeria-content">
         <button className="btn-postear" onClick={() => Navigate('PostearArte')}>Postear Arte</button>
         
