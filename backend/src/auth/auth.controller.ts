@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 
 import { SupabaseAuthGuard } from "../guards/auth.guard";
 
-import { RegisterAuthDto, LoginAuthDto } from "../DTO/auth.dto";
+import { RegisterAuthDto, LoginAuthDto, RefreshTokenDto } from "../DTO/auth.dto";
 
 
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
@@ -24,7 +24,7 @@ export class AuthController{
     }
 
     @Post('Refresh')
-    async refresh(@Body() body : {refresh_token : string}){
+    async refresh(@Body() body : RefreshTokenDto){
         return this.authService.refresh_token(body.refresh_token);
     }
 

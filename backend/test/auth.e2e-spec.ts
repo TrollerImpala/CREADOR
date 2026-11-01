@@ -202,7 +202,8 @@ describe('AuthModule (e2e)', () => {
         it('debe rechazar con 401 Unauthorized si el refresh_token no se provee', async () => {
             await request(app.getHttpServer())
                 .post('/Auth/Refresh')
-                .expect(500);
+                .send({})
+                .expect(400);
         });
 
         it('debe devolver nuevos tokens (access_token y refresh_token) al recibir un refresh_token valido', async () => {
