@@ -73,7 +73,7 @@ export class AuthService{
 
         const { data : profile } = await this.supabase
             .from('USERS')
-            .select('user_name, user_avatar_url')
+            .select('id_user, user_name, user_avatar_url')
             .eq('id_user', data.user.id)
             .single();
         
@@ -81,10 +81,11 @@ export class AuthService{
             mensaje : 'Usuario logeado con exito',
             user_token : data.session.access_token,
             refresh_token : data.session.refresh_token,
-            user : profile
+            user : profile,
+            role : data.user.app_metadata?.role || 'user'
         };
     }
-
+    
     async verify_session(){
         const {data : { session }, error} = await this.supabase.auth.getSession();
 
