@@ -7,6 +7,9 @@ import { SupabaseService } from './sub_services/supabaseClient';
 
 import { StatsCreatorService } from './sub_services/stats_creator';
 
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 
@@ -42,6 +45,7 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
     } ),
   ],
   controllers: [
+    AppController,
     AuthController,
     UsersController,
 
@@ -55,6 +59,7 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
     JobOfferController
   ],
   providers: [
+    AppService,
     SupabaseService,
     StatsCreatorService,
 
