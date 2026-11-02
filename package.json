@@ -1,0 +1,7 @@
+{
+  "dependencies": {},
+  "devDependencies": {
+    "@nestjs/testing": "^12.3.2",
+    "@types/jest": "^30.0.0"
+  }
+}

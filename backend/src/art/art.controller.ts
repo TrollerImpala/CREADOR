@@ -33,7 +33,6 @@ import { CreateArtPostDto } from "../DTO/art.dto";
 export class ArtController{
     constructor(private readonly artService : ArtService){}
 
-
     @ApiOperation({ summary: 'Obtener todas las publicaciones de arte' })
     @ApiResponse({ status: 200, description: 'Devuelve todas las publicaciones de arte' })
     
@@ -62,7 +61,6 @@ export class ArtController{
     async getArtPost(@Param('id') id : string){
         return await this.artService.getArtPost(id);
     }
-
 
     @ApiOperation({ summary: 'Crear una nueva publicación de arte' })
     @ApiResponse({ status: 201, description: 'Publicación de arte creada exitosamente' })
@@ -108,4 +106,7 @@ export class ArtController{
 
     return this.artService.postArt(userId, postPayload);
   }
+
+  
+
 }

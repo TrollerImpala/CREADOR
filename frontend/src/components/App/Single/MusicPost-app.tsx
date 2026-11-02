@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import AudioPlayer from '../../Reusable/AudioPlayer';
+import DeletPostsboton from '../../Reusable/DeletPostsboton';
 import { errorMsg } from '../../tools/errorUtils';
 import type { MusicInfo } from '../../tools/types';
 
@@ -71,6 +72,15 @@ function MusicPost() {
                 {tag}
               </span>
             ))}
+          </div>
+
+          <div className="music-post-actions">
+            <DeletPostsboton 
+              postId={song.song_id} 
+              tipo="musica" 
+              redirectTo="/musica" 
+              post={song} 
+            />
           </div>
         </div>
       )}

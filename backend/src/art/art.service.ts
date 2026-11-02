@@ -3,7 +3,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseService } from "../sub_services/supabaseClient";
 
-import { GeneralPostsService } from "../sub_services/general-posts.service";
+import { StatsCreatorService} from "../sub_services/stats_creator";
 import { StorageService } from "../sub_services/storage.service";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class ArtService{
     constructor(
         private readonly supabaseService : SupabaseService,
         private readonly storageService : StorageService,
-        private readonly generalPostsService : GeneralPostsService
+        private readonly statsCreatorService : StatsCreatorService
     ){
         this.supabase = this.supabaseService.getClient();
     }
@@ -73,7 +73,7 @@ export class ArtService{
 
 
     async postArt(user_id : string, body : any){
-        const {stat, mensaje} = await this.generalPostsService.createStat();
+        const {stat, mensaje} = await this.statsCreatorService.createStat();
         console.log(mensaje);
         console.log(stat);
         const stats_id = stat.stats_id;
@@ -101,7 +101,7 @@ export class ArtService{
         .single();
 
         if ( error ) {
-            this.generalPostsService.deleteStat(stats_id);
+            this.statsCreatorService.deleteStat(stats_id);
             this.storageService.deleteFile('ART', filePath);
             console.log(error);
             throw new BadRequestException('Error al subir info del post de Arte');
