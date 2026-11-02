@@ -33,5 +33,4 @@ describe('GameModule (e2e)', () => {
     expect(response.body).toHaveProperty('games');
     expect(Array.isArray(response.body.games)).toBe(true);
   });
-
 });

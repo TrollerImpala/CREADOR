@@ -122,7 +122,8 @@ describe('JobOfferModule (e2e)', () => {
           .get('/JobOffer/JobOfferPosts?from=0&limit=5')
           .expect(200);
 
-        jobOfferId = fallbackResponse.body.job_offers[0]?.project_id || 'project-fallback';
+        jobOfferId =
+          fallbackResponse.body.job_offers[0]?.project_id || 'project-fallback';
       }
 
       const response = await request(realApp.getHttpServer())
@@ -138,8 +139,8 @@ describe('JobOfferModule (e2e)', () => {
           .get('/JobOffer/JobOfferPosts?from=0&limit=5')
           .expect(200);
 
-          jobOfferId = fallbackResponse.body.job_offers[0]?.project_id || 'project-fallback';
-        
+        jobOfferId =
+          fallbackResponse.body.job_offers[0]?.project_id || 'project-fallback';
 
         const detailResponse = await request(realApp.getHttpServer())
           .get(`/JobOffer/JobOfferPost/${jobOfferId}`)
@@ -149,7 +150,7 @@ describe('JobOfferModule (e2e)', () => {
       }
 
       console.log('User ID for Job Offer Posts;', userId);
-      
+
       const response = await request(realApp.getHttpServer())
         .get(`/JobOffer/UserJobOfferPosts/${userId}?from=0&limit=5`)
         .expect(200);

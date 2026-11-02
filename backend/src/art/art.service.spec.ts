@@ -5,11 +5,15 @@ type QueryResult = { data: any; error: any };
 
 const createQueryBuilder = (result: QueryResult) => {
   const builder: any = {};
-  ['select', 'order', 'range', 'eq', 'delete', 'insert', 'single'].forEach((method) => {
-    builder[method] = jest.fn().mockReturnValue(builder);
-  });
-  builder.then = (resolve: (value: QueryResult) => unknown, reject: (reason: unknown) => unknown) =>
-    Promise.resolve(result).then(resolve, reject);
+  ['select', 'order', 'range', 'eq', 'delete', 'insert', 'single'].forEach(
+    (method) => {
+      builder[method] = jest.fn().mockReturnValue(builder);
+    },
+  );
+  builder.then = (
+    resolve: (value: QueryResult) => unknown,
+    reject: (reason: unknown) => unknown,
+  ) => Promise.resolve(result).then(resolve, reject);
   return builder;
 };
 
@@ -53,16 +57,30 @@ describe('ArtService', () => {
   describe('getArtPosts', () => {
     it('consulta ARTPOSTS ordenado por fecha descendente y devuelve los posts', async () => {
       const posts = [
-        { artpost_id: '1', title: 'Ilustración Gothic', art_img_url: 'url1', rating: 'G' },
-        { artpost_id: '2', title: 'Cyberpunk Art', art_img_url: 'url2', rating: 'PG' },
+        {
+          artpost_id: '1',
+          title: 'Ilustración Gothic',
+          art_img_url: 'url1',
+          rating: 'G',
+        },
+        {
+          artpost_id: '2',
+          title: 'Cyberpunk Art',
+          art_img_url: 'url2',
+          rating: 'PG',
+        },
       ];
       const builder = queryReturns({ data: posts, error: null });
 
       const result = await service.getArtPosts(0, 10);
 
       expect(supabase.from).toHaveBeenCalledWith('ARTPOSTS');
-      expect(builder.select).toHaveBeenCalledWith('artpost_id, title, art_img_url, rating');
-      expect(builder.order).toHaveBeenCalledWith('created_at', { ascending: false });
+      expect(builder.select).toHaveBeenCalledWith(
+        'artpost_id, title, art_img_url, rating',
+      );
+      expect(builder.order).toHaveBeenCalledWith('created_at', {
+        ascending: false,
+      });
       expect(result).toEqual({ mensaje: 'Arte obtenido', art: posts });
     });
 
@@ -77,7 +95,9 @@ describe('ArtService', () => {
     it('lanza BadRequestException con el detalle si Supabase devuelve error', async () => {
       queryReturns({ data: null, error: { message: 'boom' } });
 
-      await expect(service.getArtPosts(0, 10)).rejects.toThrow(BadRequestException);
+      await expect(service.getArtPosts(0, 10)).rejects.toThrow(
+        BadRequestException,
+      );
       await expect(service.getArtPosts(0, 10)).rejects.toThrow('boom');
     });
   });
@@ -85,7 +105,11 @@ describe('ArtService', () => {
   // ---------------------------------------------------------------------------
   describe('getArtPost', () => {
     it('busca el post por id y devuelve un único resultado', async () => {
-      const post = { artpost_id: 'abc', title: 'Ilustración Gothic', rating: 'G' };
+      const post = {
+        artpost_id: 'abc',
+        title: 'Ilustración Gothic',
+        rating: 'G',
+      };
       const builder = queryReturns({ data: post, error: null });
 
       const result = await service.getArtPost('abc');
@@ -99,7 +123,9 @@ describe('ArtService', () => {
     it('lanza BadRequestException si el post no existe o la consulta falla', async () => {
       queryReturns({ data: null, error: { message: 'no rows' } });
 
-      await expect(service.getArtPost('999')).rejects.toThrow(BadRequestException);
+      await expect(service.getArtPost('999')).rejects.toThrow(
+        BadRequestException,
+      );
       await expect(service.getArtPost('999')).rejects.toThrow('no rows');
     });
   });
@@ -109,7 +135,8 @@ describe('ArtService', () => {
     const deletedRow = {
       artpost_id: '1',
       title: 'Obra',
-      art_img_url: 'https://proyecto.supabase.co/storage/v1/object/public/ART/obra-123.png',
+      art_img_url:
+        'https://proyecto.supabase.co/storage/v1/object/public/ART/obra-123.png',
     };
 
     it('elimina el registro y borra la imagen del bucket ART', async () => {
@@ -120,20 +147,34 @@ describe('ArtService', () => {
       expect(supabase.from).toHaveBeenCalledWith('ARTPOSTS');
       expect(builder.delete).toHaveBeenCalled();
       expect(builder.eq).toHaveBeenCalledWith('artpost_id', '1');
-      expect(storageService.deleteFile).toHaveBeenCalledWith('ART', 'obra-123.png');
-      expect(result).toEqual({ mensaje: 'Post eliminado con exito', deletedData: deletedRow });
+      expect(storageService.deleteFile).toHaveBeenCalledWith(
+        'ART',
+        'obra-123.png',
+      );
+      expect(result).toEqual({
+        mensaje: 'Post eliminado con exito',
+        deletedData: deletedRow,
+      });
     });
 
     it('lanza BadRequestException y no toca el storage si falla el borrado en la base', async () => {
       queryReturns({ data: null, error: { message: 'fk violation' } });
 
-      await expect(service.deletePost('1')).rejects.toThrow(BadRequestException);
-      await expect(service.deletePost('1')).rejects.toThrow('Error al eliminar el Arte');
+      await expect(service.deletePost('1')).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.deletePost('1')).rejects.toThrow(
+        'Error al eliminar el Arte',
+      );
       expect(storageService.deleteFile).not.toHaveBeenCalled();
     });
 
     it('no intenta borrar ningún archivo si la url no trae nombre de archivo', async () => {
-      const row = { ...deletedRow, art_img_url: 'https://proyecto.supabase.co/storage/v1/object/public/ART/' };
+      const row = {
+        ...deletedRow,
+        art_img_url:
+          'https://proyecto.supabase.co/storage/v1/object/public/ART/',
+      };
       queryReturns({ data: row, error: null });
 
       const result = await service.deletePost('1');
@@ -146,14 +187,19 @@ describe('ArtService', () => {
   // ---------------------------------------------------------------------------
   describe('postArt', () => {
     const NOW = 1700000000000;
-    const IMAGE_URL = 'https://proyecto.supabase.co/storage/v1/object/public/ART/Mi Obra-1700000000000.png';
+    const IMAGE_URL =
+      'https://proyecto.supabase.co/storage/v1/object/public/ART/Mi Obra-1700000000000.png';
 
     const buildBody = (originalname = 'foto.png') => ({
       title: 'Mi Obra',
       description: 'Una descripción',
       tags: ['digital', 'gothic'],
       rating: 'G',
-      art_img: { originalname, mimetype: 'image/png', buffer: Buffer.from('fake-image-bytes') },
+      art_img: {
+        originalname,
+        mimetype: 'image/png',
+        buffer: Buffer.from('fake-image-bytes'),
+      },
     });
 
     beforeEach(() => {
@@ -173,7 +219,11 @@ describe('ArtService', () => {
       const result = await service.postArt('user-1', body);
 
       expect(statfactory.createStat).toHaveBeenCalledTimes(1);
-      expect(storageService.uploadFile).toHaveBeenCalledWith('ART', 'Mi Obra-1700000000000.png', body.art_img);
+      expect(storageService.uploadFile).toHaveBeenCalledWith(
+        'ART',
+        'Mi Obra-1700000000000.png',
+        body.art_img,
+      );
       expect(supabase.from).toHaveBeenCalledWith('ARTPOSTS');
       expect(builder.insert).toHaveBeenCalledWith({
         title: 'Mi Obra',
@@ -184,7 +234,10 @@ describe('ArtService', () => {
         user_id: 'user-1',
         stats_id: 'stats-1',
       });
-      expect(result).toEqual({ mensaje: 'Subida de arte exitosa', art: savedPost });
+      expect(result).toEqual({
+        mensaje: 'Subida de arte exitosa',
+        art: savedPost,
+      });
     });
 
     const extensionCases: Array<[string, string]> = [
@@ -212,22 +265,31 @@ describe('ArtService', () => {
       const promise = service.postArt('user-1', buildBody());
 
       await expect(promise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(promise).rejects.toThrow('Error al subir info del post de Arte');
+      await expect(promise).rejects.toThrow(
+        'Error al subir info del post de Arte',
+      );
       expect(statfactory.deleteStat).toHaveBeenCalledWith('stats-1');
-      expect(storageService.deleteFile).toHaveBeenCalledWith('ART', 'Mi Obra-1700000000000.png');
+      expect(storageService.deleteFile).toHaveBeenCalledWith(
+        'ART',
+        'Mi Obra-1700000000000.png',
+      );
     });
 
     it('si falla la subida de la imagen, propaga el error y no inserta el post', async () => {
       storageService.uploadFile.mockRejectedValue(new Error('storage down'));
 
-      await expect(service.postArt('user-1', buildBody())).rejects.toThrow('storage down');
+      await expect(service.postArt('user-1', buildBody())).rejects.toThrow(
+        'storage down',
+      );
       expect(supabase.from).not.toHaveBeenCalled();
     });
 
     it('si falla la creación de la stat, propaga el error y no sube nada', async () => {
       statfactory.createStat.mockRejectedValue(new Error('stat failed'));
 
-      await expect(service.postArt('user-1', buildBody())).rejects.toThrow('stat failed');
+      await expect(service.postArt('user-1', buildBody())).rejects.toThrow(
+        'stat failed',
+      );
       expect(storageService.uploadFile).not.toHaveBeenCalled();
       expect(supabase.from).not.toHaveBeenCalled();
     });

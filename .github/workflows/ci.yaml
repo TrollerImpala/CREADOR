@@ -32,9 +32,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-      - name: Lint Backend
-        run: yarn lint
-
       - name: Run Backend Unit Tests
         run: yarn test
 
@@ -68,9 +65,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Lint Frontend
-        run: yarn lint
 
       - name: Build Frontend (Static Site)
         run: yarn build

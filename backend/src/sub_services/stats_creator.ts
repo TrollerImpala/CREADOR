@@ -1,40 +1,36 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { SupabaseService } from "./supabaseClient";
+import { Injectable, BadRequestException } from '@nestjs/common';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseService } from './supabaseClient';
 
 @Injectable()
 export class StatsCreatorService {
-    private readonly supabase : SupabaseClient;
-    
-    constructor(
-        private readonly supabaseService : SupabaseService
-    ){
-        this.supabase = supabaseService.getClient();
-    }
+  private readonly supabase: SupabaseClient;
 
-    async createStat(){
-        const {data, error} = await this.supabase
-        .from('POSTSTATS')
-        .insert({})
-        .select()
-        .single();
+  constructor(private readonly supabaseService: SupabaseService) {
+    this.supabase = supabaseService.getClient();
+  }
 
-        if (error) throw new BadRequestException('Error al crear el stat', error);
+  async createStat() {
+    const { data, error } = await this.supabase
+      .from('POSTSTATS')
+      .insert({})
+      .select()
+      .single();
 
-        return{
-            stat : data,
-            mensaje : 'Stat creado'
-        };
-    }
+    if (error) throw new BadRequestException('Error al crear el stat', error);
 
-    async deleteStat(stat_id : string){
-        const {data, error} = await this.supabase
-        .from('POSTSTATS')
-        .delete()
-        .eq('stats_id', stat_id)
-        .select()
-        .single();
-    }
+    return {
+      stat: data,
+      mensaje: 'Stat creado',
+    };
+  }
 
-
+  async deleteStat(stat_id: string) {
+    await this.supabase
+      .from('POSTSTATS')
+      .delete()
+      .eq('stats_id', stat_id)
+      .select()
+      .single();
+  }
 }

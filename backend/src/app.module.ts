@@ -13,8 +13,6 @@ import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 
-
-
 import { UserService } from './users/user.service';
 import { UsersController } from './users/user.controller';
 
@@ -39,10 +37,10 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
 
 @Module({
   imports: [
-    ConfigModule.forRoot( {
-      isGlobal : true,
-      envFilePath : path.resolve(process.cwd(), '.env'),
-    } ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: path.resolve(process.cwd(), '.env'),
+    }),
   ],
   controllers: [
     AppController,
@@ -55,8 +53,8 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
     MusicController,
     FilmController,
     GameController,
-    
-    JobOfferController
+
+    JobOfferController,
   ],
   providers: [
     AppService,
@@ -73,7 +71,7 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
     FilmService,
     GameService,
     JobOfferService,
-    GeneralPostsService
+    GeneralPostsService,
   ],
 })
 export class AppModule {}

@@ -14,7 +14,9 @@ describe('MusicModule (e2e)', () => {
 
   const mockStorageBucket = {
     upload: jest.fn().mockResolvedValue({ error: null }),
-    getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/music-file.mp3' } }),
+    getPublicUrl: jest.fn().mockReturnValue({
+      data: { publicUrl: 'https://example.com/music-file.mp3' },
+    }),
     remove: jest.fn().mockResolvedValue({ error: null }),
   };
 
@@ -175,7 +177,6 @@ describe('MusicModule (e2e)', () => {
     });
   });
 
-  
   describe('POST /Music', () => {
     it('debe crear una publicación de música con un token válido', async () => {
       mockSupabaseClient.auth.getUser.mockResolvedValue({
@@ -188,7 +189,7 @@ describe('MusicModule (e2e)', () => {
         },
         error: null,
       });
-      
+
       const tinyPng = Buffer.from(
         'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==',
         'base64',
@@ -198,18 +199,23 @@ describe('MusicModule (e2e)', () => {
         Buffer.from('ID3\x03\x00\x00\x00\x00\x00\x00', 'binary'),
         Buffer.from([0xff, 0xfb, 0x90, 0x00]),
         Buffer.alloc(417),
-        ]);
-    
-        const response = await request(mockApp.getHttpServer())
+      ]);
+
+      const response = await request(mockApp.getHttpServer())
         .post('/Music/PostMusic')
         .set('Authorization', 'Bearer valid-music-token')
         .field('song_name', 'Canción de prueba')
         .field('song_description', 'Descripción de prueba')
         .field('tags', 'demo,prueba')
         .field('rating', 'G')
-        .attach('song_file', tinyMp3, { filename: 'song.mp3', contentType: 'audio/mpeg' })
-        .attach('song_cover_img', tinyPng, { filename: 'cover.png', contentType: 'image/png' });
-    
+        .attach('song_file', tinyMp3, {
+          filename: 'song.mp3',
+          contentType: 'audio/mpeg',
+        })
+        .attach('song_cover_img', tinyPng, {
+          filename: 'cover.png',
+          contentType: 'image/png',
+        });
 
       console.log('A VER DONDE ESTAS ERROR', response.status, response.body);
 

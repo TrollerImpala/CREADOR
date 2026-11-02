@@ -33,5 +33,4 @@ describe('FilmModule (e2e)', () => {
     expect(response.body).toHaveProperty('films');
     expect(Array.isArray(response.body.films)).toBe(true);
   });
-
 });

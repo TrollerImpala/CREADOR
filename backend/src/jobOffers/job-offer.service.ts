@@ -1,112 +1,122 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException } from '@nestjs/common';
 
-import { SupabaseClient } from "@supabase/supabase-js";
-import { SupabaseService } from "../sub_services/supabaseClient";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseService } from '../sub_services/supabaseClient';
 
-import { StatsCreatorService} from "../sub_services/stats_creator";
-import { StorageService } from "../sub_services/storage.service";
+import { StatsCreatorService } from '../sub_services/stats_creator';
+import { StorageService } from '../sub_services/storage.service';
 
 @Injectable()
-export class JobOfferService{
-    private readonly supabase : SupabaseClient;
-    
-    constructor(
-        private readonly supabaseService : SupabaseService,
-        private readonly storageService : StorageService,
-        private readonly statsCreatorService : StatsCreatorService
-    ){
-        this.supabase = this.supabaseService.getClient();
+export class JobOfferService {
+  private readonly supabase: SupabaseClient;
+
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly storageService: StorageService,
+    private readonly statsCreatorService: StatsCreatorService,
+  ) {
+    this.supabase = this.supabaseService.getClient();
+  }
+
+  async getJobOfferPosts(from: number, limit: number) {
+    const { data, error } = await this.supabase
+      .from('PROJECTPOSTS')
+      .select('project_id, project_title, tags')
+      .order('created_at', { ascending: false })
+      .range(from, from + limit);
+
+    if (error)
+      throw new BadRequestException(
+        'Error al obtener posts de ofertas de trabajo' + error.message,
+      );
+
+    return {
+      mensaje: 'Ofertas de trabajo obtenidas',
+      job_offers: data,
+    };
+  }
+
+  async getUserJobOfferPosts(user_id: string, from: number, limit: number) {
+    const { data, error } = await this.supabase
+      .from('PROJECTPOSTS')
+      .select('project_id, project_title, tags')
+      .eq('user_id', user_id)
+      .order('created_at', { ascending: false })
+      .range(from, from + limit);
+
+    if (error)
+      throw new BadRequestException(
+        'Error al obtener posts de ofertas de trabajo' + error.message,
+      );
+
+    return {
+      mensaje: 'Ofertas de trabajo obtenidas',
+      job_offers: data,
+    };
+  }
+
+  async getJobOfferPost(id_project: string) {
+    const { data, error } = await this.supabase
+      .from('PROJECTPOSTS')
+      .select('*, USERS(user_name, user_tag, user_avatar_url)')
+      .eq('project_id', id_project)
+      .single();
+
+    if (error)
+      throw new BadRequestException(
+        'Error al obtener post de oferta de trabajo' + error.message,
+      );
+
+    return {
+      mensaje: 'Oferta de trabajo obtenida',
+      job_offer: data,
+    };
+  }
+
+  async postJobOffer(user_id: string, body: any) {
+    const { project_title, project_info, email, tags } = body;
+
+    const { data, error } = await this.supabase
+      .from('PROJECTPOSTS')
+      .insert({
+        project_title,
+        project_info,
+        email,
+        tags,
+        user_id,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.log(error);
+      throw new BadRequestException('Error al subir info de oferta de trabajo');
     }
 
+    return {
+      mensaje: 'Subida de oferta exitosa',
+      job_offer: data,
+    };
+  }
 
-    async getJobOfferPosts(from : number, limit : number){
-        const {data, error} = await this.supabase
-        .from('PROJECTPOSTS')
-        .select('project_id, project_title, tags')
-        .order('created_at', {ascending : false})
-        .range(from, from + limit);
+  async deletePost(project_id: string) {
+    const { data, error } = await this.supabase
+      .from('PROJECTPOSTS')
+      .delete()
+      .eq('project_id', project_id)
+      .select()
+      .single();
 
-        if (error) throw new BadRequestException('Error al obtener posts de ofertas de trabajo' + error.message);
-
-        return{
-            mensaje : 'Ofertas de trabajo obtenidas',
-            job_offers : data
-        };
+    if (error) {
+      console.error('Error detallado de Supabase (JobOffer):', error.message);
+      throw new BadRequestException(
+        'Error al eliminar la oferta de trabajo: ' + error.message,
+      );
     }
 
-    async getUserJobOfferPosts(user_id : string, from : number, limit : number){
-        const {data, error} = await this.supabase
-        .from('PROJECTPOSTS')
-        .select('project_id, project_title, tags')
-        .eq('user_id', user_id)
-        .order('created_at', {ascending : false})
-        .range(from, from + limit);
-
-        if (error) throw new BadRequestException('Error al obtener posts de ofertas de trabajo' + error.message);
-
-        return{
-            mensaje : 'Ofertas de trabajo obtenidas',
-            job_offers : data
-        };
-    }
-
-    async getJobOfferPost(id_project : string){
-        const {data, error} = await this.supabase
-        .from('PROJECTPOSTS')
-        .select('*, USERS(user_name, user_tag, user_avatar_url)')
-        .eq('project_id', id_project)
-        .single();
-
-        if (error) throw new BadRequestException('Error al obtener post de oferta de trabajo' + error.message);
-
-        return{
-            mensaje : 'Oferta de trabajo obtenida',
-            job_offer : data
-        };
-    }
-
-    async postJobOffer(user_id : string, body : any){
-        const {project_title, project_info, email, tags} = body;
-
-        const {data, error} = await this.supabase
-        .from('PROJECTPOSTS')
-        .insert({
-            project_title,
-            project_info,
-            email,
-            tags,
-            user_id,
-        })
-        .select()
-        .single();
-
-        if ( error ) {
-            console.log(error);
-            throw new BadRequestException('Error al subir info de oferta de trabajo');
-        } 
-
-        return {
-            mensaje : 'Subida de oferta exitosa',
-            job_offer : data
-        }
-    }
-
-    async deletePost(project_id: string) {
-        const { data, error } = await this.supabase
-            .from('PROJECTPOSTS')
-            .delete()
-            .eq('project_id', project_id)
-            .select()
-            .single();
-
-        if (error) {
-            console.error('Error detallado de Supabase (JobOffer):', error.message);
-            throw new BadRequestException('Error al eliminar la oferta de trabajo: ' + error.message);
-        }
-
-        return {
-            mensaje: 'Oferta de trabajo eliminada con éxito',
-            deletedData: data
-        };
-    }
+    return {
+      mensaje: 'Oferta de trabajo eliminada con éxito',
+      deletedData: data,
+    };
+  }
 }

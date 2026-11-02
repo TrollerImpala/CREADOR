@@ -12,7 +12,9 @@ describe('UserModule (e2e)', () => {
 
   const mockStorageBucket = {
     upload: jest.fn().mockResolvedValue({ error: null }),
-    getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/avatar.png' } }),
+    getPublicUrl: jest.fn().mockReturnValue({
+      data: { publicUrl: 'https://example.com/avatar.png' },
+    }),
     remove: jest.fn().mockResolvedValue({ error: null }),
   };
 

@@ -13,7 +13,9 @@ describe('ArtModule (e2e)', () => {
 
   const mockStorageBucket = {
     upload: jest.fn().mockResolvedValue({ error: null }),
-    getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/art.png' } }),
+    getPublicUrl: jest
+      .fn()
+      .mockReturnValue({ data: { publicUrl: 'https://example.com/art.png' } }),
     remove: jest.fn().mockResolvedValue({ error: null }),
   };
 
@@ -139,7 +141,8 @@ describe('ArtModule (e2e)', () => {
           .get('/Art/ArtPosts?from=0&limit=5')
           .expect(200);
 
-        artPostId = fallbackResponse.body.art[0]?.artpost_id || 'artpost-fallback';
+        artPostId =
+          fallbackResponse.body.art[0]?.artpost_id || 'artpost-fallback';
       }
 
       const response = await request(realApp.getHttpServer())
@@ -155,7 +158,8 @@ describe('ArtModule (e2e)', () => {
           .get('/Art/ArtPosts?from=0&limit=5')
           .expect(200);
 
-        artPostId = fallbackResponse.body.art[0]?.artpost_id || 'artpost-fallback';
+        artPostId =
+          fallbackResponse.body.art[0]?.artpost_id || 'artpost-fallback';
       }
 
       const detailResponse = await request(realApp.getHttpServer())
