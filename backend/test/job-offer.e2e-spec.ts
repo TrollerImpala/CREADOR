@@ -138,9 +138,18 @@ describe('JobOfferModule (e2e)', () => {
           .get('/JobOffer/JobOfferPosts?from=0&limit=5')
           .expect(200);
 
-        userId = fallbackResponse.body.job_offers[0]?.user_id || 'user-fallback';
+          jobOfferId = fallbackResponse.body.job_offers[0]?.project_id || 'project-fallback';
+        
+
+        const detailResponse = await request(realApp.getHttpServer())
+          .get(`/JobOffer/JobOfferPost/${jobOfferId}`)
+          .expect(200);
+
+        userId = detailResponse.body.job_offer?.user_id || 'user-fallback';
       }
 
+      console.log('User ID for Job Offer Posts;', userId);
+      
       const response = await request(realApp.getHttpServer())
         .get(`/JobOffer/UserJobOfferPosts/${userId}?from=0&limit=5`)
         .expect(200);
