@@ -19,7 +19,22 @@ export class JobOfferService{
     }
 
 
-    async getJobOfferPosts(){
+    async getJobOfferPosts(from : number, limit : number){
+        const {data, error} = await this.supabase
+        .from('PROJECTPOSTS')
+        .select('project_id, project_title, tags')
+        .order('created_at', {ascending : false})
+        .range(from, from + limit);
+
+        if (error) throw new BadRequestException('Error al obtener posts de ofertas de trabajo' + error.message);
+
+        return{
+            mensaje : 'Ofertas de trabajo obtenidas',
+            job_offers : data
+        };
+    }
+
+    async getUserJobOfferPosts(user_id : string, from : number, limit : number){
         const {data, error} = await this.supabase
         .from('PROJECTPOSTS')
         .select('project_id, project_title, tags')
@@ -36,7 +51,7 @@ export class JobOfferService{
     async getJobOfferPost(id_project : string){
         const {data, error} = await this.supabase
         .from('PROJECTPOSTS')
-        .select()
+        .select('*, USERS(user_name, user_tag, user_avatar_url)')
         .eq('project_id', id_project)
         .single();
 

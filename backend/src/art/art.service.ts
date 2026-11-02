@@ -37,12 +37,12 @@ export class ArtService{
     async getArtPost(id_art : string){
         const {data, error} = await this.supabase
         .from('ARTPOSTS')
-        .select()
+        .select('*, USERS(user_name, user_tag, user_avatar_url)')
         .eq('artpost_id', id_art)
         .single();
 
         if (error) throw new BadRequestException('Error al obtener post de arte' + error.message);
-
+        console.log(data);
         return{
             mensaje : 'Arte obtenido',
             art : data
@@ -111,5 +111,21 @@ export class ArtService{
             mensaje : 'Subida de arte exitosa',
             art : data
         }
+    }
+
+    async getUserArtPosts(user_id : string, from : number, limit : number){
+        const {data, error} = await this.supabase
+        .from('ARTPOSTS')
+        .select('artpost_id, title, art_img_url, rating')
+        .order('created_at', {ascending : false})
+        .eq('user_id', user_id)
+        .range(from, from + limit);
+
+        if (error) throw new BadRequestException('Error al obtener posts de arte' + error.message);
+
+        return{
+            mensaje : 'Arte del usuario obtenido',
+            art : data
+        };
     }
 }

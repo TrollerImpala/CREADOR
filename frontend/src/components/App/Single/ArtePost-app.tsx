@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
 import { errorMsg } from "../../tools/errorUtils";
@@ -23,7 +23,12 @@ function ArtPost(){
             description : '',
             tags : [''],
             rating : '',
-            user_id : ''
+            user_id : '',
+            USERS : {
+                user_tag : '',
+                user_name : '',
+                user_avatar_url : '',
+            },
         }
     );
 
@@ -71,6 +76,19 @@ function ArtPost(){
             ) : (
                 <>
                     <div className="main-post-container">
+                        {/* Bloque de Usuario Agregado */}
+                        {post.USERS && (
+                            <Link to={`/User/${post.user_id}`}>
+                            <div className="main-post-user">
+                                <img src={post.USERS.user_avatar_url} alt={post.USERS.user_name} className="user-avatar" />
+                                <div className="user-info">
+                                    <span className="user-name">{post.USERS.user_name}</span>
+                                    <span className="user-tag">@{post.USERS.user_tag}</span>
+                                </div>
+                            </div>
+                            </Link>
+                        )}
+
                         <div className="main-post-header">
                             <div>{post.rating} {post.title}</div>
 
