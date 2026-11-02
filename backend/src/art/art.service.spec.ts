@@ -3,8 +3,6 @@ import { ArtService } from './art.service';
 
 type QueryResult = { data: any; error: any };
 
-// Query builder de Supabase falso: cada método de la cadena devuelve el mismo builder
-// y, al hacer await, resuelve con { data, error } (igual que PostgrestBuilder).
 const createQueryBuilder = (result: QueryResult) => {
   const builder: any = {};
   ['select', 'order', 'range', 'eq', 'delete', 'insert', 'single'].forEach((method) => {
@@ -21,7 +19,6 @@ describe('ArtService', () => {
   let storageService: { uploadFile: jest.Mock; deleteFile: jest.Mock };
   let statfactory: { createStat: jest.Mock; deleteStat: jest.Mock };
 
-  // Hace que la próxima consulta a Supabase devuelva { data, error } y expone el builder para inspeccionarlo.
   const queryReturns = (result: QueryResult) => {
     const builder = createQueryBuilder(result);
     supabase.from.mockReturnValue(builder);
@@ -29,7 +26,6 @@ describe('ArtService', () => {
   };
 
   beforeEach(() => {
-    // El service hace console.log de stats y errores: se silencia para no ensuciar la salida.
     jest.spyOn(console, 'log').mockImplementation(() => undefined);
 
     supabase = { from: jest.fn() };
@@ -71,8 +67,6 @@ describe('ArtService', () => {
     });
 
     it('pide el rango (from, from + limit)', async () => {
-      // OJO: range() de Supabase es inclusivo, así que range(0, 10) trae 11 filas.
-      // Este test documenta el comportamiento actual del service.
       const builder = queryReturns({ data: [], error: null });
 
       await service.getArtPosts(20, 5);

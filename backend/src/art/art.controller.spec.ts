@@ -177,7 +177,6 @@ describe('ArtController', () => {
   });
 
   // ---------------------------------------------------------------------------
-  // El controller no tiene endpoint de borrado: los tests de deletePost viven en art.service.spec.ts.
   describe('rutas y guards', () => {
     it('cuelga del prefijo /Art', () => {
       expect(Reflect.getMetadata(PATH_METADATA, ArtController)).toBe('Art');

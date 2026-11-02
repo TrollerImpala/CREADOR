@@ -25,21 +25,13 @@ function DeletPostsboton({ postId, tipo = "arte", redirectTo = "/arte", postUser
 
     const rolLimpio = rolUsuario ? String(rolUsuario).toLowerCase().trim() : '';
 
-    const tienePermisoEspecial = 
-        rolLimpio === 'admin' || 
-        rolLimpio === 'administrator' || 
-        rolLimpio === 'moderador' || 
-        rolLimpio === 'moderator' || 
-        rolLimpio === 'modedador';
+    const tienePermisoEspecial =  
+        rolLimpio === 'moderator';
+
 
     // Extraemos el ID del creador de cualquiera de las fuentes posibles
     const creadorId = 
-        postUserId || 
-        post?.user_id || 
-        post?.usuario_id || 
-        post?.id_user || 
-        post?.userId || 
-        '';
+        post?.user_id;
 
     const esDueño = currentUserId && creadorId && String(currentUserId).trim() === String(creadorId).trim();
 
