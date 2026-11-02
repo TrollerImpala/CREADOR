@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 import AudioPlayer from '../../Reusable/AudioPlayer';
 import { errorMsg } from '../../tools/errorUtils';
@@ -20,6 +20,11 @@ function MusicPost() {
     song_cover_url: '',
     rating: '',
     tags: [],
+    USERS: {
+      user_tag: '',
+      user_name: '',
+      user_avatar_url: '',
+    },
   });
 
   const obtenerCancion = async () => {
@@ -49,6 +54,19 @@ function MusicPost() {
         <h3 className="cargando-texto">Cargando canción...</h3>
       ) : (
         <div className="music-post-container">
+          {/* Bloque de Usuario Creador */}
+          {song.USERS && (
+            <Link to={`/User/${song.user_id}`} className="post-user-link">
+              <div className="music-post-user">
+                <img src={song.USERS.user_avatar_url} alt={song.USERS.user_name} className="user-avatar" />
+                <div className="user-info">
+                  <span className="user-name">{song.USERS.user_name}</span>
+                  <span className="user-tag">@{song.USERS.user_tag}</span>
+                </div>
+              </div>
+            </Link>
+          )}
+
           <div className="music-post-header">
             <img src={song.song_cover_url} alt={song.song_name} className="music-post-cover" />
             <div className="music-post-meta">
