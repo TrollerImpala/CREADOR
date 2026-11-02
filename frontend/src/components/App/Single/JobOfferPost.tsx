@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-<<<<<<< HEAD
-import { useParams } from "react-router-dom";
-=======
 import { useNavigate, useParams, Link } from "react-router-dom";
->>>>>>> Profiles
 
 import DeletPostsboton from "../../Reusable/DeletPostsboton";
 import { errorMsg } from "../../tools/errorUtils";

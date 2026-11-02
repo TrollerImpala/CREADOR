@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { errorMsg } from "../tools/errorUtils";
+import { refreshToken } from "../tools/refresh_token";
 
 type TipoPost = "arte" | "musica" | "JobOfferta";
 
@@ -28,10 +29,8 @@ function DeletPostsboton({ postId, tipo = "arte", redirectTo = "/arte", postUser
     const tienePermisoEspecial =  
         rolLimpio === 'moderator';
 
-
     // Extraemos el ID del creador de cualquiera de las fuentes posibles
-    const creadorId = 
-        post?.user_id;
+    const creadorId = postUserId || post?.user_id;
 
     const esDueño = currentUserId && creadorId && String(currentUserId).trim() === String(creadorId).trim();
 
@@ -40,18 +39,35 @@ function DeletPostsboton({ postId, tipo = "arte", redirectTo = "/arte", postUser
         return null; 
     }
 
+    const enviarPeticion = async (token: string) => {
+        return await fetch(`${import.meta.env.VITE_API_URL}/GeneralPosts/Deleteposts/${postId}?tipo=${tipo}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+    };
+
     const handleDeletePost = async () => {
         if (!postId) return;
         if (!window.confirm('¿Seguro que querés eliminar este post? Esta acción no se puede deshacer.')) return;
 
-        try{
-            const token = localStorage.getItem('access_token') || localStorage.getItem('token') || localStorage.getItem('user_token');
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/GeneralPosts/Deleteposts/${postId}?tipo=${tipo}`, {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
+        try {
+            let token = localStorage.getItem('access_token') || localStorage.getItem('token') || localStorage.getItem('user_token') || '';
+            let response = await enviarPeticion(token);
+
+            // Manejo de expiración del token (401)
+            if (response.status === 401) {
+                const refreshed = await refreshToken();
+                if (refreshed) {
+                    const newAccessToken = localStorage.getItem('access_token') || localStorage.getItem('token') || '';
+                    if (newAccessToken) {
+                        response = await enviarPeticion(newAccessToken);
+                    }
+                } else {
+                    return; // Si el refresco falla, refreshToken() ya redirige al Login
                 }
-            });
+            }
 
             if (!response.ok) {
                 await errorMsg(response, 'Error al borrar el post');
@@ -59,7 +75,7 @@ function DeletPostsboton({ postId, tipo = "arte", redirectTo = "/arte", postUser
             }
 
             navigate(redirectTo);
-        }catch (error){
+        } catch (error) {
             console.error(error);
             alert('No se ha podido borrar el post');
         }

@@ -82,7 +82,7 @@ function ArtPost(){
                             <div className="main-post-user">
                                 <img src={post.USERS.user_avatar_url} alt={post.USERS.user_name} className="user-avatar" />
                                 <div className="user-info">
-                                    <span className="user-name">{post.USERS.user_name}</span>
+                                    <span id="user-name">{post.USERS.user_name}</span>
                                     <span className="user-tag">@{post.USERS.user_tag}</span>
                                 </div>
                             </div>
