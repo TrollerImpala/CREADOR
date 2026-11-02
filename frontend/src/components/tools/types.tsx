@@ -6,7 +6,7 @@ export interface CreateToolProps {
 export interface PublicUser {
     user_tag: string;
     user_name: string;
-    user_decription?: string;
+    user_description?: string;
     user_avatar_url?: string;
 }
 

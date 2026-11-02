@@ -18,7 +18,7 @@ function GaleriaMusica() {
   const [posts, setPosts] = useState<MusicInfo[]>([]);
 
   const [page, setPage] = useState<number>(0);
-  const limit = 2;
+  const limit = 10;
 
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
 

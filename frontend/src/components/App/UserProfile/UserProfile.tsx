@@ -67,7 +67,7 @@ function UserProfile() {
                             <span className="profile-tag">@{user.user_tag}</span>
 
                             <p className="profile-description">
-                                {user.user_decription || "Sin descripción disponible."}
+                                {user.user_description || "Sin descripción disponible."}
                             </p>
                         </div>
                     ) : (

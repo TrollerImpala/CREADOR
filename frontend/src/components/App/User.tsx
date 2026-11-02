@@ -46,6 +46,7 @@ export function User() {
           setErrorServer('No se pudo obtener la información del perfil desde el servidor.');
           await refreshToken();
           fetchProfile(); // Reintentar después de refrescar el token
+          setErrorServer('');
         }
       } catch (error) {
         console.error('Error al conectar con el servidor:', error);
