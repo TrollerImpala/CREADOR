@@ -2,31 +2,75 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches: [Presentacion]
   push:
     branches: [Presentacion]
 
 jobs:
-  build-and-lint:
+  # ---------------------------------------------------------
+  # JOB 1: VALIDACIÓN DEL BACKEND (NestJS)
+  # ---------------------------------------------------------
+  backend-ci:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend # Ajusta al nombre exacto de la carpeta de tu backend
+
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Setup Node / Yarn
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: yarn
+          cache-dependency-path: './backend/yarn.lock' # O bun si usas bun en backend
+
       - name: Enable Corepack
         run: corepack enable
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Lint
+
+      - name: Lint Backend
         run: yarn lint
-        
-      - name: Run Unit Tests
+
+      - name: Run Backend Unit Tests
         run: yarn test
 
-      - name: Run E2E Tests
+      - name: Run Backend E2E Tests
         run: yarn test:e2e
 
-      - name: Build
+      - name: Build Backend
+        run: yarn build
+
+  # ---------------------------------------------------------
+  # JOB 2: VALIDACIÓN DEL FRONTEND (React / Vite)
+  # ---------------------------------------------------------
+  frontend-ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend # Ajusta al nombre exacto de la carpeta de tu frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node / Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: './frontend/yarn.lock'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint Frontend
+        run: yarn lint
+
+      - name: Build Frontend (Static Site)
         run: yarn build
