@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
+import DeletPostsboton from "../../Reusable/DeletPostsboton";
 import { errorMsg } from "../../tools/errorUtils";
 import type { JobOfferInfo } from "../../tools/types";
 
 import '../../../styles/single-posts-styles/JobOfferPost.css';
 
 function JobOfferPost() {
-    const navigate = useNavigate();
     const { project_id } = useParams();
 
     const [cargando, setCargando] = useState(true);
@@ -40,7 +40,9 @@ function JobOfferPost() {
         obtenerOferta();
     }, [project_id]);
 
-    void navigate;
+    const tagsList = typeof offer.tags === 'string'
+        ? (offer.tags as string).split(',').map((t) => t.trim()).filter(Boolean)
+        : (offer.tags ?? []);
 
     return (
         <div className="job-offer-post-page">
@@ -58,11 +60,20 @@ function JobOfferPost() {
                     </div>
 
                     <div className="job-offer-post-tags">
-                        {(offer.tags ?? []).map((tag, index) => (
+                        {tagsList.map((tag, index) => (
                             <span key={`${tag}-${index}`} className="job-tag">
                                 {tag}
                             </span>
                         ))}
+                    </div>
+
+                    <div className="job-offer-post-actions" style={{ marginTop: '20px' }}>
+                        <DeletPostsboton 
+                            postId={offer.project_id} 
+                            tipo="JobOfferta" 
+                            redirectTo="/job-offers" 
+                            post={offer} 
+                        />
                     </div>
 
                     <form className="job-offer-contact-form" target="_blank" action={`https://formsubmit.co/${offer.email}`} method="POST">

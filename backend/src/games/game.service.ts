@@ -3,7 +3,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseService } from "../sub_services/supabaseClient";
 
-import { GeneralPostsService } from "../sub_services/general-posts.service";
+import { StatsCreatorService } from "../sub_services/stats_creator";
 import { StorageService } from "../sub_services/storage.service";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class GameService{
     constructor(
         private readonly supabaseService : SupabaseService,
         private readonly storageService : StorageService,
-        private readonly generalPostsService : GeneralPostsService
+        private readonly statsCreatorService : StatsCreatorService
     ){
         this.supabase = this.supabaseService.getClient();
     }
