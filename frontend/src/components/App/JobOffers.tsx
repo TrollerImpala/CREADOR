@@ -13,9 +13,13 @@ function JobOffers() {
   const navigate = useNavigate();
   const [offers, setOffers] = useState<JobOfferInfo[]>([]);
 
+  const [page, setPage] = useState<number>(0);
+  const limit = 10;
+  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+
   const obtenerOfertas = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/JobOfferPosts`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/JobOfferPosts?from=${page * limit}&limit=${limit}`);
 
       if (!response.ok) {
         await errorMsg(response, 'Error al cargar las ofertas de trabajo');
@@ -23,6 +27,17 @@ function JobOffers() {
       }
 
       const data = await response.json();
+
+      if (data.job_offers.length > limit){
+        //console.log('hay mas songs q limite');
+        setHasNextPage(true);
+        data.job_offers.pop();
+
+      } else{
+        //console.log('hasta ahi');
+        setHasNextPage(false);
+      }
+      
       setOffers(data.job_offers ?? []);
     } catch (error) {
       console.error('No se han podido cargar las ofertas de trabajo', error);
