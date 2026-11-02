@@ -275,7 +275,7 @@ describe ('AuthService', () => {
     });
 
     describe('login', () => {
-        it('debe loguear un usuario correctamente y retornar sus tokens y perfil', async () => {
+        it('debe loguear un usuario correctamente y retornar sus tokens, perfil y rol', async () => {
             const loginDto = {
                 email: 'test@example.com',
                 password: 'password123',
@@ -287,9 +287,11 @@ describe ('AuthService', () => {
                     access_token: 'mock_access_token',
                     refresh_token: 'mock_refresh_token',
                 },
+                app_metadata : { role : 'user' },
             };
 
             const mockProfile = {
+                id_user: 'user-id-123',
                 user_name: 'Test User',
                 user_avatar_url: 'https://avatar.url/photo.png',
             };
@@ -313,6 +315,7 @@ describe ('AuthService', () => {
                 user_token: 'mock_access_token',
                 refresh_token: 'mock_refresh_token',
                 user: mockProfile,
+                role: 'user',
             });
 
             expect(client.auth.signInWithPassword).toHaveBeenCalledWith({
