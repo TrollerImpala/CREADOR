@@ -38,7 +38,9 @@ export class JobOfferService{
         const {data, error} = await this.supabase
         .from('PROJECTPOSTS')
         .select('project_id, project_title, tags')
-        .order('created_at', {ascending : false});
+        .eq('user_id', user_id)
+        .order('created_at', {ascending : false})
+        .range(from, from + limit);
 
         if (error) throw new BadRequestException('Error al obtener posts de ofertas de trabajo' + error.message);
 

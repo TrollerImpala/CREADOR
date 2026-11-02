@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 import { errorMsg } from "../../tools/errorUtils";
 import type { JobOfferInfo } from "../../tools/types";
@@ -17,6 +17,11 @@ function JobOfferPost() {
         project_info: '',
         email: '',
         tags: [],
+        USERS: {
+            user_tag: '',
+            user_name: '',
+            user_avatar_url: '',
+        },
     });
 
     const obtenerOferta = async () => {
@@ -48,6 +53,19 @@ function JobOfferPost() {
                 <h3 className="cargando-texto">Cargando oferta...</h3>
             ) : (
                 <div className="job-offer-post-container">
+                    {/* Bloque de Usuario Creador */}
+                    {offer.USERS && (
+                        <Link to={`/User/${offer.user_id}`} className="post-user-link">
+                            <div className="job-offer-user">
+                                <img src={offer.USERS.user_avatar_url} alt={offer.USERS.user_name} className="user-avatar" />
+                                <div className="user-info">
+                                    <span className="user-name">{offer.USERS.user_name}</span>
+                                    <span className="user-tag">@{offer.USERS.user_tag}</span>
+                                </div>
+                            </div>
+                        </Link>
+                    )}
+
                     <div className="job-offer-post-header">
                         <h2>{offer.project_title}</h2>
                     </div>
