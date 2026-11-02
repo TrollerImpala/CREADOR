@@ -31,7 +31,7 @@ export class ArtService {
       );
 
     return {
-      mesaje: 'Arte obtenido',
+      mensaje: 'Arte obtenido',
       art: data,
     };
   }
