@@ -19,6 +19,12 @@
     font-size: 1.3rem;
     font-weight: bold;
     border-bottom: 2px solid #333;
+    position: relative; /* Necesario para posicionar el botón de opciones */
+}
+
+/* Deja lugar a la derecha para que un título largo no quede debajo del botón */
+.main-post-header:has(.post-options) {
+    padding-right: 68px;
 }
 
 /* 2. Cuerpo del post (Imagen a la izquierda, Descripción a la derecha) */
@@ -79,4 +85,80 @@
     border-radius: 16px;
     font-size: 0.85rem;
     color: #ffffff;
+}
+
+/* 4. Botón de opciones del post (⋯) y mini ventanita para borrar */
+.post-options {
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    transform: translateY(-50%);
+}
+
+.post-options-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.25);
+    color: #ffffff;
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.post-options-btn:hover,
+.post-options-btn[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.post-options-btn:focus-visible {
+    outline: 2px solid #8fd3d3;
+    outline-offset: 2px;
+}
+
+.post-options-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 20;
+    min-width: 150px;
+    padding: 6px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    font-size: 0.95rem;
+    font-weight: normal; /* Resetea el bold del header */
+    text-align: left;
+}
+
+.post-options-item {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: #ffffff;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.post-options-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.post-options-item.danger {
+    color: #ff6b6b;
+}
+
+.post-options-item.danger:hover {
+    background: rgba(255, 107, 107, 0.15);
 }

@@ -3,7 +3,7 @@ import { Injectable, BadRequestException } from "@nestjs/common";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { SupabaseService } from "../sub_services/supabaseClient";
 
-import { GeneralPostsService } from "../sub_services/general-posts.service";
+import { StatsCreatorService} from "../sub_services/stats_creator";
 import { StorageService } from "../sub_services/storage.service";
 
 @Injectable()
@@ -13,7 +13,7 @@ export class JobOfferService{
     constructor(
         private readonly supabaseService : SupabaseService,
         private readonly storageService : StorageService,
-        private readonly generalPostsService : GeneralPostsService
+        private readonly statsCreatorService : StatsCreatorService
     ){
         this.supabase = this.supabaseService.getClient();
     }
@@ -72,5 +72,24 @@ export class JobOfferService{
             mensaje : 'Subida de oferta exitosa',
             job_offer : data
         }
+    }
+
+    async deletePost(project_id: string) {
+        const { data, error } = await this.supabase
+            .from('PROJECTPOSTS')
+            .delete()
+            .eq('project_id', project_id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Error detallado de Supabase (JobOffer):', error.message);
+            throw new BadRequestException('Error al eliminar la oferta de trabajo: ' + error.message);
+        }
+
+        return {
+            mensaje: 'Oferta de trabajo eliminada con éxito',
+            deletedData: data
+        };
     }
 }

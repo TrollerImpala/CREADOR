@@ -1,17 +1,19 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { errorMsg } from "../../tools/errorUtils";
 import type { ArtInfo } from "../../tools/types";
+import DeletPostsboton from "../../Reusable/DeletPostsboton";
 
 import '../../../styles/single-posts-styles/ArtPost.css'
 
 function ArtPost(){
     const navigate = useNavigate();
-
     const { artpost_id } = useParams();
 
     const [cargando, setCargando] = useState(true);
+    const [menuAbierto, setMenuAbierto] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     const [post, setPost] = useState<ArtInfo>(
         {
@@ -29,9 +31,9 @@ function ArtPost(){
         try{
             const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPost/${artpost_id}`);
             if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
-      
+     
             const data = await response.json();
-      
+     
             setPost(data.art);
             setCargando(false);
     
@@ -40,7 +42,23 @@ function ArtPost(){
         }
     }
 
-    useEffect(() => { obtenerPost(); }, []);
+    useEffect(() => { obtenerPost(); }, [artpost_id]);
+
+    // Efecto para cerrar el menú si se hace clic fuera de él
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setMenuAbierto(false);
+            }
+        };
+
+        if (menuAbierto) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [menuAbierto]);
 
     void navigate;
 
@@ -54,7 +72,31 @@ function ArtPost(){
                 <>
                     <div className="main-post-container">
                         <div className="main-post-header">
-                            <div>{post.rating} - {post.title}</div>
+                            <div>{post.rating} {post.title}</div>
+
+                            <div className="post-options" ref={menuRef}>
+                                <button
+                                    type="button"
+                                    className="post-options-btn"
+                                    aria-label="Opciones del post"
+                                    aria-haspopup="true"
+                                    aria-expanded={menuAbierto}
+                                    onClick={() => setMenuAbierto(!menuAbierto)}
+                                >
+                                    ⋯
+                                </button>
+
+                                {menuAbierto && (
+                                    <div className="post-options-menu">
+                                        <DeletPostsboton 
+                                            postId={artpost_id} 
+                                            tipo="arte" 
+                                            redirectTo="/arte" 
+                                            post={post} 
+                                        />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div className="main-post-body">
@@ -68,10 +110,10 @@ function ArtPost(){
 
                         <div className="main-post-footer">
                             <div className="main-post-tags">
-                                {post.tags!.map((tag) => (
-                                    <>
+                                {post.tags!.map((tag, index) => (
+                                    <div key={index}>
                                         <p>{tag}</p>
-                                    </>
+                                    </div>
                                 ))}
                             </div>
                         </div>

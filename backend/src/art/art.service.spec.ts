@@ -19,7 +19,7 @@ describe('ArtService', () => {
   let service: ArtService;
   let supabase: { from: jest.Mock };
   let storageService: { uploadFile: jest.Mock; deleteFile: jest.Mock };
-  let generalPostsService: { createStat: jest.Mock; deleteStat: jest.Mock };
+  let statfactory: { createStat: jest.Mock; deleteStat: jest.Mock };
 
   // Hace que la próxima consulta a Supabase devuelva { data, error } y expone el builder para inspeccionarlo.
   const queryReturns = (result: QueryResult) => {
@@ -37,7 +37,7 @@ describe('ArtService', () => {
       uploadFile: jest.fn(),
       deleteFile: jest.fn().mockResolvedValue(undefined),
     };
-    generalPostsService = {
+    statfactory = {
       createStat: jest.fn(),
       deleteStat: jest.fn().mockResolvedValue(undefined),
     };
@@ -45,7 +45,7 @@ describe('ArtService', () => {
     service = new ArtService(
       { getClient: () => supabase } as any,
       storageService as any,
-      generalPostsService as any,
+      statfactory as any,
     );
   });
 
@@ -164,7 +164,7 @@ describe('ArtService', () => {
 
     beforeEach(() => {
       jest.spyOn(Date, 'now').mockReturnValue(NOW);
-      generalPostsService.createStat.mockResolvedValue({
+      statfactory.createStat.mockResolvedValue({
         mensaje: 'Stat creada',
         stat: { stats_id: 'stats-1' },
       });
@@ -178,7 +178,7 @@ describe('ArtService', () => {
 
       const result = await service.postArt('user-1', body);
 
-      expect(generalPostsService.createStat).toHaveBeenCalledTimes(1);
+      expect(statfactory.createStat).toHaveBeenCalledTimes(1);
       expect(storageService.uploadFile).toHaveBeenCalledWith('ART', 'Mi Obra-1700000000000.png', body.art_img);
       expect(supabase.from).toHaveBeenCalledWith('ARTPOSTS');
       expect(builder.insert).toHaveBeenCalledWith({
@@ -219,7 +219,7 @@ describe('ArtService', () => {
 
       await expect(promise).rejects.toBeInstanceOf(BadRequestException);
       await expect(promise).rejects.toThrow('Error al subir info del post de Arte');
-      expect(generalPostsService.deleteStat).toHaveBeenCalledWith('stats-1');
+      expect(statfactory.deleteStat).toHaveBeenCalledWith('stats-1');
       expect(storageService.deleteFile).toHaveBeenCalledWith('ART', 'Mi Obra-1700000000000.png');
     });
 
@@ -231,7 +231,7 @@ describe('ArtService', () => {
     });
 
     it('si falla la creación de la stat, propaga el error y no sube nada', async () => {
-      generalPostsService.createStat.mockRejectedValue(new Error('stat failed'));
+      statfactory.createStat.mockRejectedValue(new Error('stat failed'));
 
       await expect(service.postArt('user-1', buildBody())).rejects.toThrow('stat failed');
       expect(storageService.uploadFile).not.toHaveBeenCalled();
