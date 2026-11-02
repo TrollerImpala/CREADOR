@@ -16,6 +16,12 @@ jobs:
       run:
         working-directory: ./backend # Ajusta al nombre exacto de la carpeta de tu backend
 
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      PORT: ${{ secrets.PORT }}
+      VITE_API_URL: ${{ secrets.VITE_API_URL }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -63,8 +69,10 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+
+
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install --ignore-engines --frozen-lockfile
 
       - name: Build Frontend (Static Site)
         run: yarn build
