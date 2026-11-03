@@ -34,6 +34,11 @@ export interface JobOfferInfo {
     tags?: string[];
     user_id?: string;
     created_at?: string;
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    }
 }
 
 // export interface ArtPrev {
@@ -53,6 +58,11 @@ export interface MusicInfo {
     song_cover_url : string;
     rating : string;
     tags : string[];
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    }
 }
 
 

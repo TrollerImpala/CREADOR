@@ -1,4 +1,7 @@
+import 'reflect-metadata';
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException, RequestMethod } from '@nestjs/common';
+import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { FilmController } from './film.controller';
 import { FilmService } from './film.service';
 
@@ -21,6 +24,11 @@ describe('FilmController', () => {
     controller = module.get<FilmController>(FilmController);
   });
 
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  // ---------------------------------------------------------------------------
   describe('getFilmPosts', () => {
     it('devuelve la lista de filmes que entrega el service', async () => {
       const response = {
@@ -37,25 +45,54 @@ describe('FilmController', () => {
       expect(service.getFilmPosts).toHaveBeenCalledTimes(1);
       expect(result).toEqual(response);
     });
+
+    it('propaga el error si el service falla', async () => {
+      service.getFilmPosts.mockRejectedValue(new BadRequestException('Error al obtener posts de filmes'));
+
+      await expect(controller.getFilmPosts()).rejects.toThrow(BadRequestException);
+    });
   });
 
-  // Acá siguen tus tests: getFilmPost (con id), error del service, rutas, etc.
-
+  // ---------------------------------------------------------------------------
   describe('getFilmPost', () => {
-    it('devuelve un filme específico que entrega el service', async () => {
-      const filmId = '1';
+    it('devuelve el filme pedido por id', async () => {
       const response = {
         mensaje: 'Filme obtenido',
-        film: { film_id: '1', film_title: 'Metropolis', film_thumbnail_url: 'url1', rating: 'G' },
+        film: { film_id: 'abc', film_title: 'Metropolis', rating: 'G' },
       };
       service.getFilmPost.mockResolvedValue(response);
-      
-      const result = await controller.getFilmPost(filmId);
 
-        expect(service.getFilmPost).toHaveBeenCalledWith(filmId);
+      const result = await controller.getFilmPost('abc');
 
-        expect(result).toEqual(response);
-
+      expect(service.getFilmPost).toHaveBeenCalledTimes(1);
+      expect(service.getFilmPost).toHaveBeenCalledWith('abc');
+      expect(result).toEqual(response);
     });
-    })
+
+    it('propaga la excepción si el filme no existe', async () => {
+      service.getFilmPost.mockRejectedValue(new BadRequestException('Error al obtener post de filmes'));
+
+      await expect(controller.getFilmPost('999')).rejects.toThrow(BadRequestException);
+      expect(service.getFilmPost).toHaveBeenCalledWith('999');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
+  describe('rutas', () => {
+    it('cuelga del prefijo /Film', () => {
+      expect(Reflect.getMetadata(PATH_METADATA, FilmController)).toBe('Film');
+    });
+
+    const routes: Array<[string, Function, string]> = [
+      ['getFilmPosts', FilmController.prototype.getFilmPosts, 'FilmPosts'],
+      ['getFilmPost', FilmController.prototype.getFilmPost, 'FilmPost/:id'],
+    ];
+
+    routes.forEach(([name, handler, path]) => {
+      it(`${name} responde en GET /Film/${path}`, () => {
+        expect(Reflect.getMetadata(PATH_METADATA, handler)).toBe(path);
+        expect(Reflect.getMetadata(METHOD_METADATA, handler)).toBe(RequestMethod.GET);
+      });
+    });
+  });
 });

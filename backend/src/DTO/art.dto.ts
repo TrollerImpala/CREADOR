@@ -1,11 +1,16 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-import { IsString, IsNotEmpty, IsOptional, IsArray, IsEnum } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsEnum,
+} from 'class-validator';
 
 import { Transform } from 'class-transformer';
 
 import { Rating } from '../enum/post-rating.enum';
-
 
 export class CreateArtPostDto {
   @ApiProperty({
@@ -30,8 +35,14 @@ export class CreateArtPostDto {
     description: 'Etiquetas del arte',
     example: ['pintura', 'escultura'],
   })
-  @Transform(({ value }) => (typeof value === 'string' ? value.split(',').map((tag: string) => tag.trim()) : value))
-  @IsArray({ message: 'Las etiquetas deben ser un arreglo de cadenas de texto' })
+  @Transform(({ value }: { value?: string | string[] }) =>
+    typeof value === 'string'
+      ? value.split(',').map((tag: string) => tag.trim())
+      : value,
+  )
+  @IsArray({
+    message: 'Las etiquetas deben ser un arreglo de cadenas de texto',
+  })
   @IsString({ each: true, message: 'Cada etiqueta debe ser un texto' })
   @IsOptional()
   tags?: string[];
@@ -40,7 +51,9 @@ export class CreateArtPostDto {
     description: 'Rating del arte',
     example: Rating.G,
   })
-  @IsEnum(Rating, { message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)' })
+  @IsEnum(Rating, {
+    message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)',
+  })
   @IsNotEmpty({ message: 'El rating es obligatorio' })
   rating!: Rating;
 }

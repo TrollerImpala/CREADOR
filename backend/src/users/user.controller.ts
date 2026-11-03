@@ -1,54 +1,58 @@
-import { Controller, Post, Get, Put, Body, Req, UseGuards, UseInterceptors, UploadedFile, Param } from "@nestjs/common";
-import { UserService } from "./user.service";
+import {
+  Controller,
+  Post,
+  Get,
+  Put,
+  Body,
+  Req,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  Param,
+} from '@nestjs/common';
+import { UserService } from './user.service';
 
-import { SupabaseAuthGuard } from "../guards/auth.guard";
+import { SupabaseAuthGuard } from '../guards/auth.guard';
 
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 
-import { FileInterceptor } from "@nestjs/platform-express";
-
-import { UserDto } from "../DTO/user.dto";
+import { UserDto } from '../DTO/user.dto';
 
 @Controller('Users')
-export class UsersController{
-    constructor(private readonly userService : UserService) {};
+export class UsersController {
+  constructor(private readonly userService: UserService) {}
 
-    @Get('Usuario/:user_id')
-    async getUser(
-        @Param('user_id') user_id : string
-    ){
-        return await this.userService.getPublicUserData(user_id);
-    }
+  @Get('Usuario/:user_id')
+  async getUser(@Param('user_id') user_id: string) {
+    return await this.userService.getPublicUserData(user_id);
+  }
 
-    @Post('Perfil')
-    @UseGuards(SupabaseAuthGuard)
-    async getProfile(@Req() req : any){
-        
-        const userId = req.user.id;
+  @Post('Perfil')
+  @UseGuards(SupabaseAuthGuard)
+  async getProfile(@Req() req: any) {
+    const userId = req.user.id;
 
-        return this.userService.getUserData(userId);
-    }
+    return this.userService.getUserData(userId);
+  }
 
-    @Put('ActualizarPerfil')
-    @UseGuards(SupabaseAuthGuard)
-    @UseInterceptors(FileInterceptor('profile_img'))
-    async updateProfile(
-        @Req() req : any,
-        @Body() body : UserDto,
-        @UploadedFile() file : Express.Multer.File
-    ){
+  @Put('ActualizarPerfil')
+  @UseGuards(SupabaseAuthGuard)
+  @UseInterceptors(FileInterceptor('profile_img'))
+  async updateProfile(
+    @Req() req: any,
+    @Body() body: UserDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const userId = req.user.id;
 
-        const userId = req.user.id;
+    const postPayLoad = {
+      userTag: body.userTag,
+      userName: body.userName,
+      userDescription: body.userDescription,
+      avatar_img: file ? file : null,
+      socialMedias: body.socialMedias || [],
+    };
 
-        const postPayLoad = {
-            userTag : body.userTag,
-            userName : body.userName,
-            userDescription : body.userDescription,
-            avatar_img : file ? file : null,
-            socialMedias : body.socialMedias || []
-        };
-
-        return this.userService.updateUser(userId, postPayLoad);
-    }
-
+    return this.userService.updateUser(userId, postPayLoad);
+  }
 }

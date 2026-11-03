@@ -20,7 +20,7 @@
     flex-direction: column;
 }
 
-.user-name {
+#user-name {
     font-weight: bold;
     color: #ffffff;
     font-size: 0.95rem;

@@ -80,3 +80,44 @@ audio {
   color: #475569;
   font-weight: 500;
 }
+
+/* Bloque de Usuario Creador */
+.post-user-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.music-post-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #8b5cf6;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.user-tag {
+  color: #8b5cf6;
+  font-size: 0.85rem;
+  font-weight: 500;
+}

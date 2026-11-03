@@ -1,14 +1,22 @@
 import 'reflect-metadata';
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException, RequestMethod } from '@nestjs/common';
-import { GUARDS_METADATA, METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
+import {
+  GUARDS_METADATA,
+  METHOD_METADATA,
+  PATH_METADATA,
+} from '@nestjs/common/constants';
 import { ArtController } from './art.controller';
 import { ArtService } from './art.service';
 import { SupabaseAuthGuard } from '../guards/auth.guard';
 
 describe('ArtController', () => {
   let controller: ArtController;
-  let service: { getArtPosts: jest.Mock; getArtPost: jest.Mock; postArt: jest.Mock };
+  let service: {
+    getArtPosts: jest.Mock;
+    getArtPost: jest.Mock;
+    postArt: jest.Mock;
+  };
 
   const buildFile = () =>
     ({
@@ -64,8 +72,18 @@ describe('ArtController', () => {
       const response = {
         mensaje: 'Arte obtenido',
         art: [
-          { artpost_id: '1', title: 'Ilustración Gothic', art_img_url: 'url1', rating: 'G' },
-          { artpost_id: '2', title: 'Cyberpunk Art', art_img_url: 'url2', rating: 'PG' },
+          {
+            artpost_id: '1',
+            title: 'Ilustración Gothic',
+            art_img_url: 'url1',
+            rating: 'G',
+          },
+          {
+            artpost_id: '2',
+            title: 'Cyberpunk Art',
+            art_img_url: 'url2',
+            rating: 'PG',
+          },
         ],
       };
       service.getArtPosts.mockResolvedValue(response);
@@ -79,9 +97,13 @@ describe('ArtController', () => {
     });
 
     it('propaga el error si el service falla', async () => {
-      service.getArtPosts.mockRejectedValue(new BadRequestException('Error al obtener posts de arte'));
+      service.getArtPosts.mockRejectedValue(
+        new BadRequestException('Error al obtener posts de arte'),
+      );
 
-      await expect(controller.getArtPosts(0, 10)).rejects.toThrow(BadRequestException);
+      await expect(controller.getArtPosts(0, 10)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -101,9 +123,13 @@ describe('ArtController', () => {
     });
 
     it('propaga la excepción si el post no existe', async () => {
-      service.getArtPost.mockRejectedValue(new BadRequestException('Error al obtener post de arte'));
+      service.getArtPost.mockRejectedValue(
+        new BadRequestException('Error al obtener post de arte'),
+      );
 
-      await expect(controller.getArtPost('999')).rejects.toThrow(BadRequestException);
+      await expect(controller.getArtPost('999')).rejects.toThrow(
+        BadRequestException,
+      );
       expect(service.getArtPost).toHaveBeenCalledWith('999');
     });
   });
@@ -119,7 +145,11 @@ describe('ArtController', () => {
       };
       service.postArt.mockResolvedValue(response);
 
-      const result = await controller.createArtPost({ user: { id: 'user-uuid-123' } }, body as any, file);
+      const result = await controller.createArtPost(
+        { user: { id: 'user-uuid-123' } },
+        body as any,
+        file,
+      );
 
       expect(service.postArt).toHaveBeenCalledTimes(1);
       expect(service.postArt).toHaveBeenCalledWith('user-uuid-123', {
@@ -134,19 +164,38 @@ describe('ArtController', () => {
 
     it('usa el id del usuario de la request y no uno que venga en el body', async () => {
       const body = { ...buildBody(), user_id: 'otro-usuario' };
-      service.postArt.mockResolvedValue({ mensaje: 'Subida de arte exitosa', art: {} });
+      service.postArt.mockResolvedValue({
+        mensaje: 'Subida de arte exitosa',
+        art: {},
+      });
 
-      await controller.createArtPost({ user: { id: 'user-real' } }, body as any, buildFile());
+      await controller.createArtPost(
+        { user: { id: 'user-real' } },
+        body as any,
+        buildFile(),
+      );
 
       expect(service.postArt.mock.calls[0][0]).toBe('user-real');
     });
 
     it('solo pasa al service los campos esperados (ignora el resto del body)', async () => {
-      const body = { ...buildBody(), user_id: 'x', stats_id: 'y', art_img_url: 'http://malicioso' };
+      const body = {
+        ...buildBody(),
+        user_id: 'x',
+        stats_id: 'y',
+        art_img_url: 'http://malicioso',
+      };
       const file = buildFile();
-      service.postArt.mockResolvedValue({ mensaje: 'Subida de arte exitosa', art: {} });
+      service.postArt.mockResolvedValue({
+        mensaje: 'Subida de arte exitosa',
+        art: {},
+      });
 
-      await controller.createArtPost({ user: { id: 'user-1' } }, body as any, file);
+      await controller.createArtPost(
+        { user: { id: 'user-1' } },
+        body as any,
+        file,
+      );
 
       expect(service.postArt).toHaveBeenCalledWith('user-1', {
         title: body.title,
@@ -160,18 +209,30 @@ describe('ArtController', () => {
     it('lanza BadRequestException y no llama al service si no se adjunta imagen', async () => {
       const noFile = undefined as unknown as Express.Multer.File;
 
-      const promise = controller.createArtPost({ user: { id: 'user-1' } }, buildBody() as any, noFile);
+      const promise = controller.createArtPost(
+        { user: { id: 'user-1' } },
+        buildBody() as any,
+        noFile,
+      );
 
       await expect(promise).rejects.toBeInstanceOf(BadRequestException);
-      await expect(promise).rejects.toThrow('El archivo de imagen es obligatorio');
+      await expect(promise).rejects.toThrow(
+        'El archivo de imagen es obligatorio',
+      );
       expect(service.postArt).not.toHaveBeenCalled();
     });
 
     it('propaga el error si el service falla al subir el post', async () => {
-      service.postArt.mockRejectedValue(new BadRequestException('Error al subir info del post de Arte'));
+      service.postArt.mockRejectedValue(
+        new BadRequestException('Error al subir info del post de Arte'),
+      );
 
       await expect(
-        controller.createArtPost({ user: { id: 'user-1' } }, buildBody() as any, buildFile()),
+        controller.createArtPost(
+          { user: { id: 'user-1' } },
+          buildBody() as any,
+          buildFile(),
+        ),
       ).rejects.toThrow('Error al subir info del post de Arte');
     });
   });
@@ -198,7 +259,10 @@ describe('ArtController', () => {
     });
 
     it('PostArt exige autenticación con SupabaseAuthGuard', () => {
-      const guards = Reflect.getMetadata(GUARDS_METADATA, ArtController.prototype.createArtPost);
+      const guards = Reflect.getMetadata(
+        GUARDS_METADATA,
+        ArtController.prototype.createArtPost,
+      );
 
       expect(guards).toContain(SupabaseAuthGuard);
     });

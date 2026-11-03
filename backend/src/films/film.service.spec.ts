@@ -70,6 +70,7 @@ describe('FilmService', () => {
       queryReturns({ data: null, error: { message: 'boom' } });
 
       await expect(service.getFilmPosts()).rejects.toThrow(BadRequestException);
+      await expect(service.getFilmPosts()).rejects.toThrow('Error al obtener posts de filmes');
       await expect(service.getFilmPosts()).rejects.toThrow('boom');
     });
   });
@@ -92,6 +93,7 @@ describe('FilmService', () => {
       queryReturns({ data: null, error: { message: 'no rows' } });
 
       await expect(service.getFilmPost('999')).rejects.toThrow(BadRequestException);
+      await expect(service.getFilmPost('999')).rejects.toThrow('Error al obtener post de filmes');
       await expect(service.getFilmPost('999')).rejects.toThrow('no rows');
     });
   });
