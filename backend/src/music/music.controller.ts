@@ -8,7 +8,6 @@ import {
   Req,
   Query,
   UseInterceptors,
-  UploadedFile,
   BadRequestException,
   UploadedFiles,
   HttpStatus,
@@ -19,7 +18,6 @@ import 'multer';
 
 import {
   FileFieldsInterceptor,
-  FileInterceptor,
 } from '@nestjs/platform-express';
 
 import {
@@ -32,11 +30,8 @@ import {
 } from '@nestjs/swagger';
 
 import { SupabaseAuthGuard } from '../guards/auth.guard';
-
 import { MusicService } from './music.service';
-
 import { CreateMusicPostDto } from '../DTO/music.dto';
-//import type { UploadedFileDto } from "../DTO/file.dto";
 
 @ApiTags('Music Posts')
 @Controller('Music')
@@ -49,7 +44,6 @@ export class MusicController {
     description: 'Devuelve todas las publicaciones de música',
   })
   @Get('MusicPosts')
-  //@UseGuards(SupabaseAuthGuard)
   async getMusicPosts(
     @Query('from') from: number,
     @Query('limit') limit: number,
@@ -116,11 +110,12 @@ export class MusicController {
     @Body() body: CreateMusicPostDto,
     @UploadedFiles()
     files: {
-      song_file: Express.Multer.File;
-      song_cover_img: Express.Multer.File;
+      song_file: Express.Multer.File[];
+      song_cover_img: Express.Multer.File[];
     },
   ) {
-    if (!files.song_file || !files.song_cover_img) {
+    // Validación segura para detectar arrays vacíos o indefinidos de Multer
+    if (!files?.song_file?.[0] || !files?.song_cover_img?.[0]) {
       throw new BadRequestException(
         'El archivo de música y la imagen de portada son obligatorios',
       );
@@ -147,9 +142,6 @@ export class MusicController {
         fileIsRequired: true,
         errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       });
-
-    console.log(body);
-    console.log(files);
 
     await coverPipe.transform(files.song_cover_img[0]);
     await songPipe.transform(files.song_file[0]);
