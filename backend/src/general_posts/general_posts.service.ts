@@ -53,10 +53,7 @@ export class GeneralPostsService {
     // 2. Obtener el rol del usuario autenticado
     const rol = user?.role ? String(user.role).toLowerCase().trim() : '';
     const tienePermisoEspecial =
-      rol === 'admin' ||
-      rol === 'administrator' ||
-      rol === 'moderador' ||
-      rol === 'moderator' ||
+
       rol === 'modedador';
 
     // 3. Verificar si el usuario actual es el dueño del post

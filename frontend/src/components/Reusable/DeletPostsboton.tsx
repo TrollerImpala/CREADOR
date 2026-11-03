@@ -30,7 +30,7 @@ function DeletPostsboton({ postId, tipo = "arte", redirectTo = "/arte", postUser
         rolLimpio === 'moderator';
 
     // Extraemos el ID del creador de cualquiera de las fuentes posibles
-    const creadorId = postUserId || post?.user_id;
+    const creadorId = post?.user_id;
 
     const esDueño = currentUserId && creadorId && String(currentUserId).trim() === String(creadorId).trim();
 
