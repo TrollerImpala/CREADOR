@@ -29,12 +29,10 @@ function DeletPostsboton({ postId, tipo = "arte", redirectTo = "/arte", postUser
     const tienePermisoEspecial =  
         rolLimpio === 'moderator';
 
-    // Extraemos el ID del creador de cualquiera de las fuentes posibles
     const creadorId = post?.user_id;
 
     const esDueño = currentUserId && creadorId && String(currentUserId).trim() === String(creadorId).trim();
 
-    // Si no tiene permisos especiales ni es el dueño, no mostramos el botón
     if (!tienePermisoEspecial && !esDueño) {
         return null; 
     }
