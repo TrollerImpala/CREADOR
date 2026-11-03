@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { SupabaseClient, createClient } from "@supabase/supabase-js";
+import { Injectable } from '@nestjs/common';
+import { SupabaseClient, createClient } from '@supabase/supabase-js';
 
 // import { ConfigService } from "@nestjs/config";
 // import { Injectable } from "@nestjs/common";
 
-// const configService = new ConfigService(); 
+// const configService = new ConfigService();
 // const supabaseURL = configService.get<string>('SUPABASE_URL');
 
 // const supabaseURL = process.env.SUPABASE_URL;
@@ -13,18 +13,32 @@ import { SupabaseClient, createClient } from "@supabase/supabase-js";
 // export const supabase = createClient(supabaseURL, supabaseAnonKEY);
 
 @Injectable()
-export class SupabaseService{
-    private readonly supabase : SupabaseClient;
+export class SupabaseService {
+  private readonly supabase: SupabaseClient;
 
-    constructor(){
-        const supabaseURL = process.env.SUPABASE_URL;
-        const supabaseAnonKEY = process.env.SUPABASE_ANON_KEY;
-        this.supabase = createClient(supabaseURL!, supabaseAnonKEY!);
-    }
+  constructor() {
+    const supabaseURL = process.env.SUPABASE_URL;
+    const supabaseAnonKEY = process.env.SUPABASE_ANON_KEY;
+    this.supabase = createClient(supabaseURL!, supabaseAnonKEY!);
+  }
 
-    getClient() : SupabaseClient {
-        return this.supabase;
-    }
+  getClient(): SupabaseClient {
+    return this.supabase;
+  }
+
+  getUserClient(token: string): SupabaseClient {
+    return createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_ANON_KEY!,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      },
+    );
+  }
 }
 
 // @Injectable()

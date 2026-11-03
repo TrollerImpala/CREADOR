@@ -1,100 +1,170 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import { Injectable, BadRequestException } from '@nestjs/common';
 
-import { SupabaseClient } from "@supabase/supabase-js";
-import { SupabaseService } from "../sub_services/supabaseClient";
+import { SupabaseClient } from '@supabase/supabase-js';
+import { SupabaseService } from '../sub_services/supabaseClient';
 
-import { GeneralPostsService } from "../sub_services/general-posts.service";
-import { StorageService } from "../sub_services/storage.service";
+import { StatsCreatorService } from '../sub_services/stats_creator';
+import { StorageService } from '../sub_services/storage.service';
 
 @Injectable()
-export class MusicService{
-    private readonly supabase : SupabaseClient;
-    
-    constructor(
-        private readonly supabaseService : SupabaseService,
-        private readonly storageService : StorageService,
-        private readonly generalPostsService : GeneralPostsService
-    ){
-        this.supabase = this.supabaseService.getClient();
+export class MusicService {
+  private readonly supabase: SupabaseClient;
+
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly storageService: StorageService,
+    private readonly statsCreatorService: StatsCreatorService,
+  ) {
+    this.supabase = this.supabaseService.getClient();
+  }
+
+  async getMusicPosts(from: number, limit: number) {
+    const { data, error } = await this.supabase
+      .from('MUSICPOSTS')
+      .select('song_id, song_name, song_url, song_cover_url, rating')
+      .order('created_at', { ascending: false })
+      .range(from, from + limit);
+
+    if (error)
+      throw new BadRequestException(
+        'Error al obtener posts de musica' + error.message,
+      );
+
+    return {
+      mensaje: 'Musica obtenida',
+      songs: data,
+    };
+  }
+
+  async getUserMusicPosts(user_id: string, from: number, limit: number) {
+    const { data, error } = await this.supabase
+      .from('MUSICPOSTS')
+      .select('song_id, song_name, song_url, song_cover_url, rating')
+      .eq('user_id', user_id)
+      .order('created_at', { ascending: false })
+      .range(from, from + limit);
+
+    if (error)
+      throw new BadRequestException(
+        'Error al obtener posts de musica del usuario' + error.message,
+      );
+
+    return {
+      mensaje: 'Musica de usuario obtenida',
+      songs: data,
+    };
+  }
+
+  async getMusicPost(id_song: string) {
+    const { data, error } = await this.supabase
+      .from('MUSICPOSTS')
+      .select('*, USERS(user_name, user_tag, user_avatar_url)')
+      .eq('song_id', id_song)
+      .single();
+
+    if (error)
+      throw new BadRequestException(
+        'Error al obtener post de musica' + error.message,
+      );
+
+    return {
+      mensaje: 'Cancion obtenida',
+      song: data,
+    };
+  }
+
+  async postSong(user_id: string, body: any) {
+    const { stat, mensaje } = await this.statsCreatorService.createStat();
+    console.log(mensaje);
+    const stats_id = stat.stats_id;
+
+    const {
+      song_name,
+      song_file,
+      song_description,
+      song_cover_img,
+      tags,
+      rating,
+    } = body;
+
+    const coverFileExtension =
+      song_cover_img.originalname.split('.').pop() || 'png';
+
+    const coverFilePath = `SONGCOVERS/${song_name}Cover-${Date.now()}.${coverFileExtension}`;
+
+    const song_cover_url = await this.storageService.uploadFile(
+      'MUSIC',
+      coverFilePath,
+      song_cover_img,
+    );
+
+    const songFileExtension = song_file.originalname.split('.').pop() || 'png';
+
+    const songFilePath = `SONGS/${song_name}Song-${Date.now()}.${songFileExtension}`;
+
+    const song_url = await this.storageService.uploadFile(
+      'MUSIC',
+      songFilePath,
+      song_file,
+    );
+
+    const { data, error } = await this.supabase
+      .from('MUSICPOSTS')
+      .insert({
+        song_url,
+        song_name,
+        song_description,
+        user_id,
+        song_cover_url,
+        stats_id,
+        tags,
+        rating,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      this.statsCreatorService.deleteStat(stats_id);
+      this.storageService.deleteFile('MUSIC', coverFilePath);
+      this.storageService.deleteFile('MUSIC', songFilePath);
+
+      throw new BadRequestException(
+        'Error al subir info del post de Musica: ' + error.message,
+      );
     }
 
+    return {
+      mensaje: 'Subida de musica exitosa',
+      song: data,
+    };
+  }
 
-    async getMusicPosts(){
-        const {data, error} = await this.supabase
-        .from('MUSICPOSTS')
-        .select('song_id, song_name, song_url, song_cover_url, rating')
-        .order('created_at', {ascending : false});
+  async deletePost(song_id: string) {
+    const { data, error } = await this.supabase
 
-        if (error) throw new BadRequestException('Error al obtener posts de musica' + error.message);
+      .from('MUSICPOSTS')
+      .delete()
+      .eq('song_id', song_id)
+      .select()
+      .single();
 
-        return{
-            mensaje : 'Musica obtenida',
-            songs : data
-        };
+    if (error)
+      throw new console.error('Error detallado de Supabase:', error.message);
+
+    const filePathsong = data.song_url.split('/MUSIC/').pop();
+
+    if (filePathsong) {
+      await this.storageService.deleteFile('MUSIC', filePathsong);
     }
 
-    async getMusicPost(id_song : string){
-        const {data, error} = await this.supabase
-        .from('MUSICPOSTS')
-        .select()
-        .eq('song_id', id_song)
-        .single();
+    const coverFilePath = data.song_cover_url.split('/MUSIC/').pop();
 
-        if (error) throw new BadRequestException('Error al obtener post de musica' + error.message);
-
-        return{
-            mensaje : 'Cancion obtenida',
-            song : data
-        };
+    if (coverFilePath) {
+      await this.storageService.deleteFile('MUSIC', coverFilePath);
     }
-
-
-    async postSong(user_id : string, body : any){
-        const {stat, mensaje} = await this.generalPostsService.createStat();
-        console.log(mensaje);
-        const stats_id = stat.stats_id;
-
-        const {song_name, song_file, song_description, song_cover_img, tags, rating} = body;
-
-        const coverFileExtension = song_cover_img.originalname.split('.').pop() || 'png';
-
-        const coverFilePath = `SONGCOVERS/${song_name}Cover-${Date.now()}.${coverFileExtension}`;
-
-        const song_cover_url = await this.storageService.uploadFile('MUSIC', coverFilePath, song_cover_img);
-
-
-        const songFileExtension = song_file.originalname.split('.').pop() || 'png';
-
-        const songFilePath = `SONGS/${song_name}Song-${Date.now()}.${songFileExtension}`;
-
-        const song_url = await this.storageService.uploadFile('MUSIC', songFilePath, song_file);
-
-        const {data, error} = await this.supabase
-        .from('MUSICPOSTS')
-        .insert({
-            song_url,
-            song_name,
-            song_description,
-            user_id,
-            song_cover_url,
-            stats_id,
-            tags,
-            rating
-        })
-        .select()
-        .single();
-
-        if ( error ) {
-            this.generalPostsService.deleteStat(stats_id);
-            this.storageService.deleteFile('MUSIC', coverFilePath);
-            this.storageService.deleteFile('MUSIC', songFilePath);
-
-            throw new BadRequestException('Error al subir info del post de Musica: ' + error.message);
-        } 
-
-        return {
-            mensaje : 'Subida de musica exitosa',
-            song : data
-        }
-    }
+    return {
+      mensaje: 'Post eliminado con exito',
+      deletedData: data,
+    };
+  }
 }

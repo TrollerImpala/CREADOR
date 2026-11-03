@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
+import DeletPostsboton from "../../Reusable/DeletPostsboton";
 import { errorMsg } from "../../tools/errorUtils";
 import type { JobOfferInfo } from "../../tools/types";
 
 import '../../../styles/single-posts-styles/JobOfferPost.css';
 
 function JobOfferPost() {
-    const navigate = useNavigate();
     const { project_id } = useParams();
 
     const [cargando, setCargando] = useState(true);
@@ -17,6 +17,11 @@ function JobOfferPost() {
         project_info: '',
         email: '',
         tags: [],
+        USERS: {
+            user_tag: '',
+            user_name: '',
+            user_avatar_url: '',
+        },
     });
 
     const obtenerOferta = async () => {
@@ -40,7 +45,9 @@ function JobOfferPost() {
         obtenerOferta();
     }, [project_id]);
 
-    void navigate;
+    const tagsList = typeof offer.tags === 'string'
+        ? (offer.tags as string).split(',').map((t) => t.trim()).filter(Boolean)
+        : (offer.tags ?? []);
 
     return (
         <div className="job-offer-post-page">
@@ -48,6 +55,19 @@ function JobOfferPost() {
                 <h3 className="cargando-texto">Cargando oferta...</h3>
             ) : (
                 <div className="job-offer-post-container">
+                    {/* Bloque de Usuario Creador */}
+                    {offer.USERS && (
+                        <Link to={`/User/${offer.user_id}`} className="post-user-link">
+                            <div className="job-offer-user">
+                                <img src={offer.USERS.user_avatar_url} alt={offer.USERS.user_name} className="user-avatar" />
+                                <div className="user-info">
+                                    <span className="user-name">{offer.USERS.user_name}</span>
+                                    <span className="user-tag">@{offer.USERS.user_tag}</span>
+                                </div>
+                            </div>
+                        </Link>
+                    )}
+
                     <div className="job-offer-post-header">
                         <h2>{offer.project_title}</h2>
                     </div>
@@ -58,11 +78,20 @@ function JobOfferPost() {
                     </div>
 
                     <div className="job-offer-post-tags">
-                        {(offer.tags ?? []).map((tag, index) => (
+                        {tagsList.map((tag, index) => (
                             <span key={`${tag}-${index}`} className="job-tag">
                                 {tag}
                             </span>
                         ))}
+                    </div>
+
+                    <div className="job-offer-post-actions" style={{ marginTop: '20px' }}>
+                        <DeletPostsboton 
+                            postId={offer.project_id} 
+                            tipo="JobOfferta" 
+                            redirectTo="/job-offers" 
+                            post={offer} 
+                        />
                     </div>
 
                     <form className="job-offer-contact-form" target="_blank" action={`https://formsubmit.co/${offer.email}`} method="POST">

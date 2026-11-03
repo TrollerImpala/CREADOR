@@ -121,3 +121,44 @@
   box-shadow: 0 6px 20px rgba(236, 72, 153, 0.35);
   opacity: 0.95;
 }
+
+/* Bloque de Usuario Creador */
+.post-user-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.job-offer-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #8b5cf6;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
+}
+
+.user-tag {
+  color: #8b5cf6;
+  font-size: 0.85rem;
+  font-weight: 500;
+}

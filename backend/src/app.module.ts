@@ -5,7 +5,10 @@ import * as path from 'path';
 
 import { SupabaseService } from './sub_services/supabaseClient';
 
-import { GeneralPostsService } from './sub_services/general-posts.service';
+import { StatsCreatorService } from './sub_services/stats_creator';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
@@ -29,28 +32,34 @@ import { JobOfferService } from './jobOffers/job-offer.service';
 import { JobOfferController } from './jobOffers/job-offer.controller';
 
 import { StorageService } from './sub_services/storage.service';
+import { GeneralPostsService } from './general_posts/general_posts.service';
+import { generalPostscontroller } from './general_posts/general_posts.controller';
 
 @Module({
   imports: [
-    ConfigModule.forRoot( {
-      isGlobal : true,
-      envFilePath : path.resolve(process.cwd(), '.env'),
-    } ),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: path.resolve(process.cwd(), '.env'),
+    }),
   ],
   controllers: [
+    AppController,
     AuthController,
     UsersController,
+
+    generalPostscontroller,
 
     ArtController,
     MusicController,
     FilmController,
     GameController,
-    
-    JobOfferController
+
+    JobOfferController,
   ],
   providers: [
+    AppService,
     SupabaseService,
-    GeneralPostsService,
+    StatsCreatorService,
 
     AuthService,
     UserService,
@@ -61,7 +70,8 @@ import { StorageService } from './sub_services/storage.service';
     MusicService,
     FilmService,
     GameService,
-    JobOfferService
+    JobOfferService,
+    GeneralPostsService,
   ],
 })
 export class AppModule {}

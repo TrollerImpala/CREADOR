@@ -3,6 +3,13 @@ type FuncionType = () => void;
 export interface CreateToolProps {
     funsBtns: FuncionType[];
 }
+export interface PublicUser {
+    user_tag: string;
+    user_name: string;
+    user_description?: string;
+    user_avatar_url?: string;
+}
+
 
 export interface ArtInfo {
     artpost_id : string;
@@ -12,6 +19,11 @@ export interface ArtInfo {
     description ?: string;
     tags ?: string[];
     user_id ?: string;
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    }
 }
 
 export interface JobOfferInfo {
@@ -22,6 +34,11 @@ export interface JobOfferInfo {
     tags?: string[];
     user_id?: string;
     created_at?: string;
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    }
 }
 
 // export interface ArtPrev {
@@ -41,4 +58,14 @@ export interface MusicInfo {
     song_cover_url : string;
     rating : string;
     tags : string[];
+    USERS?: {
+        user_tag: string;
+        user_name: string;
+        user_avatar_url: string;
+    }
+}
+
+
+export interface UserPostsGalleriesProp {
+    user_id : string
 }

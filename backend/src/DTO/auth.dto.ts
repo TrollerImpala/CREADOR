@@ -1,39 +1,45 @@
-import { IsString, IsNotEmpty, IsOptional, IsArray, isEmail, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsArray,
+  IsEmail,
+} from 'class-validator';
 
 export class RegisterAuthDto {
   @IsEmail()
   @IsNotEmpty({ message: 'El email es obligatorio' })
-  email! : string;
+  email!: string;
 
   @IsString({ message: 'La contraseña debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'La contraseña es obligatoria' })
-  password! : string;
+  password!: string;
 
   @IsString({ message: 'El tag debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'El tag es obligatorio' })
-  userTag! : string;
+  userTag!: string;
 
-  @IsString({ message : 'El nombre tiene que ser una cadena de texto' })
-  @IsNotEmpty({ message : 'El nombre es obligatorio' })
-  userName! : string;
+  @IsString({ message: 'El nombre tiene que ser una cadena de texto' })
+  @IsNotEmpty({ message: 'El nombre es obligatorio' })
+  userName!: string;
 
   @IsString({ message: 'La descripción debe ser una cadena de texto' })
   @IsOptional()
   userDescription?: string;
 
-  @IsArray({ message : 'Las redes deben ser un Array de Urls' })
+  @IsArray({ message: 'Las redes deben ser un Array de Urls' })
   @IsOptional()
-  socialMedias ?: string[];
+  socialMedias?: string[];
 }
 
 export class LoginAuthDto {
   @IsEmail()
   @IsNotEmpty({ message: 'El email es obligatorio' })
-  email! : string;
+  email!: string;
 
   @IsString({ message: 'La contraseña debe ser una cadena de texto' })
   @IsNotEmpty({ message: 'La contraseña es obligatoria' })
-  password! : string;
+  password!: string;
 }
 
 export class RefreshTokenDto {

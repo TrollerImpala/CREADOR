@@ -8,14 +8,19 @@ import Header from "../Reusable/Header";
 import Nav from "../Reusable/Nav";
 
 import '../../styles/JobOffers.css';
+import '../../styles/Pagination.css';
 
 function JobOffers() {
   const navigate = useNavigate();
   const [offers, setOffers] = useState<JobOfferInfo[]>([]);
 
+  const [page, setPage] = useState<number>(0);
+  const limit = 10;
+  const [hasNextPage, setHasNextPage] = useState<boolean>(true);
+
   const obtenerOfertas = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/JobOfferPosts`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/JobOfferPosts?from=${page * limit}&limit=${limit}`);
 
       if (!response.ok) {
         await errorMsg(response, 'Error al cargar las ofertas de trabajo');
@@ -23,6 +28,17 @@ function JobOffers() {
       }
 
       const data = await response.json();
+
+      if (data.job_offers.length > limit){
+        //console.log('hay mas songs q limite');
+        setHasNextPage(true);
+        data.job_offers.pop();
+
+      } else{
+        //console.log('hasta ahi');
+        setHasNextPage(false);
+      }
+      
       setOffers(data.job_offers ?? []);
     } catch (error) {
       console.error('No se han podido cargar las ofertas de trabajo', error);
@@ -31,7 +47,7 @@ function JobOffers() {
 
   useEffect(() => {
     obtenerOfertas();
-  }, []);
+  }, [page]);
 
   return (
     <div className="job-offers-page">
@@ -52,6 +68,11 @@ function JobOffers() {
             <h3 className="cargando-job-offers">Cargando ofertas...</h3>
           )}
         </div>
+      </div>
+
+      <div className="pagination">
+        <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
+        <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
       </div>
     </div>
   );
