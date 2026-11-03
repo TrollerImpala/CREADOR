@@ -3,50 +3,64 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { SupabaseService } from '../src/sub_services/supabaseClient';
-import { StorageService} from '../src/sub_services/storage.service';
+import { StorageService } from '../src/sub_services/storage.service';
 
 describe('Flujo Completo de Usuario (E2E User Journey)', () => {
     let app: INestApplication;
-    
+
     // Variables para guardar el estado del usuario a lo largo de la sesión
     let userAccessToken: string;
     let userRefreshToken: string;
     let createdUserId: string;
 
-    // Mocks de Supabase para aislar la base de datos durante el flujo
+    // Mocks de Storage internos de Supabase (igual que en art.e2e-spec.ts)
+    const mockStorageBucket = {
+        upload: jest.fn().mockResolvedValue({ error: null }),
+        getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/art.png' } }),
+        remove: jest.fn().mockResolvedValue({ error: null }),
+    };
+
+    // Mocks principales de SupabaseClient
     const mockSupabaseClient = {
         auth: {
             signUp: jest.fn(),
             signInWithPassword: jest.fn(),
             getUser: jest.fn(),
+            signOut: jest.fn(),
+        },
+        storage: {
+            from: jest.fn().mockReturnValue(mockStorageBucket),
         },
         from: jest.fn(),
     };
 
+    const mockUserClient = {
+        auth: {
+            signOut: jest.fn(),
+        },
+    };
+
     const mockSupabaseService = {
         getClient: jest.fn().mockReturnValue(mockSupabaseClient),
-        getUserClient: jest.fn(),
+        getUserClient: jest.fn().mockReturnValue(mockUserClient),
     };
 
-    const mockStorageService = {
-        upload: jest.fn().mockReturnValue( 'https://example.com/art.png' ),
-        getPublicUrl: jest.fn().mockReturnValue({ data: { publicUrl: 'https://example.com/art.png' } }),
-        remove: jest.fn().mockResolvedValue({ error: null }),
-    };
-
-    const storageQueryBuilder = () => ({
-
-    })
+    // Helper para construir la interfaz fluida del query builder
+    const makeQueryBuilder = () => ({
+        select: jest.fn().mockReturnThis(),
+        eq: jest.fn().mockReturnThis(),
+        neq: jest.fn().mockReturnThis(),
+        order: jest.fn().mockReturnThis(),
+        range: jest.fn().mockReturnThis(),
+        insert: jest.fn().mockReturnThis(),
+        update: jest.fn().mockReturnThis(),
+        delete: jest.fn().mockReturnThis(),
+        single: jest.fn(),
+    });
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
-            providers: [
-                {
-                    provide: StorageService,
-                    useValue: mockStorageService,
-                }
-            ]
         })
             .overrideProvider(SupabaseService)
             .useValue(mockSupabaseService)
@@ -59,6 +73,10 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
 
     afterAll(async () => {
         await app.close();
+    });
+
+    beforeEach(() => {
+        mockSupabaseClient.storage.from.mockReturnValue(mockStorageBucket);
     });
 
     it('Paso 1: Flujo de Autenticación de Usuario (Registro -> Login -> Obtener Token)', async () => {
@@ -104,22 +122,24 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
             error: null,
         });
 
-        // Mock para la consulta interna a la tabla USERS
-        const mockQueryBuilder = {
-            select: jest.fn().mockReturnThis(),
-            eq: jest.fn().mockReturnThis(),
-            single: jest.fn().mockResolvedValue({
-                data: { id_user: createdUserId, user_name: 'Journey User', user_avatar_url: null },
-            }),
-        };
-        mockSupabaseClient.from.mockReturnValue(mockQueryBuilder);
+        // Mock para la consulta de la tabla USERS en Login
+        mockSupabaseClient.from.mockImplementation((table: string) => {
+            if (table === 'USERS') {
+                const builder = makeQueryBuilder();
+                builder.single.mockResolvedValue({
+                    data: { id_user: createdUserId, user_name: 'Journey User', user_avatar_url: null },
+                    error: null,
+                });
+                return builder;
+            }
+            return makeQueryBuilder();
+        });
 
         const loginRes = await request(app.getHttpServer())
             .post('/Auth/Login')
             .send(mockLoginCredentials)
             .expect(201);
 
-        // Guardamos los tokens retornados para los siguientes pasos del test (ej. crear publicaciones)
         userAccessToken = loginRes.body.user_token;
         userRefreshToken = loginRes.body.refresh_token;
 
@@ -131,11 +151,7 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
 
     let artPostId: string;
 
-    // Paso 2 (Crear, Ver y Eliminar publicación usando `userAccessToken`)
-    it('Paso 2: Crear, Ver, y Eliminar Publicación de Arte', async () => {
-        // -------------------------------------------------------------
-        // 2.1 CREAR POST DE ARTE
-        // -------------------------------------------------------------
+    it('Paso 2: Crear, Ver, Listar y Eliminar Publicación de Arte', async () => {
         const mockArtPayload = {
             artpost_id: 'artpost-uuid-123',
             title: 'Arte de e2e',
@@ -144,20 +160,58 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
             rating: 'G',
             user_id: createdUserId,
             art_img_url: 'https://example.com/art.png',
-            stats_id: 'stats-uuid-999',
+            stats_id: 'stats-art-test',
         };
 
-        // Mock para la creación de Stats y la inserción del Post en Supabase
-        const mockInsertQueryBuilder = {
-            insert: jest.fn().mockReturnThis(),
-            select: jest.fn().mockReturnThis(),
-            single: jest.fn().mockResolvedValue({
-                data: mockArtPayload,
-                error: null,
-            }),
-        };
+        // -------------------------------------------------------------
+        // MOCK DE TABLAS (POSTSTATS y ARTPOSTS)
+        // -------------------------------------------------------------
+        mockSupabaseClient.from.mockImplementation((table: string) => {
+            if (table === 'POSTSTATS') {
+                const builder = makeQueryBuilder();
+                builder.single.mockResolvedValue({
+                    data: { stats_id: 'stats-art-test' },
+                    error: null,
+                });
+                return builder;
+            }
 
-        mockSupabaseClient.from.mockReturnValue(mockInsertQueryBuilder);
+            if (table === 'ARTPOSTS') {
+                const builder = makeQueryBuilder();
+                builder.single.mockResolvedValue({
+                    data: {
+                        ...mockArtPayload,
+                        USERS: {
+                            user_name: 'Journey User',
+                            user_tag: 'journey_dev',
+                            user_avatar_url: null,
+                        },
+                    },
+                    error: null,
+                });
+                builder.range.mockResolvedValue({
+                    data: [mockArtPayload],
+                    error: null,
+                });
+                return builder;
+            }
+
+            return makeQueryBuilder();
+        });
+
+        // -------------------------------------------------------------
+        // 2.1 CREAR POST DE ARTE
+        // -------------------------------------------------------------
+        mockSupabaseClient.auth.getUser.mockResolvedValue({
+            data: {
+                user: {
+                    id: createdUserId,
+                    role: 'user',
+                    email: 'userjourney@domain.com',
+                },
+            },
+            error: null,
+        });
 
         const createRes = await request(app.getHttpServer())
             .post('/Art/PostArt')
@@ -179,26 +233,8 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
         artPostId = createRes.body.art.artpost_id;
 
         // -------------------------------------------------------------
-        // 2.2 VER POST CREADO
+        // 2.2 VER UN POST ESPECÍFICO DE ARTE
         // -------------------------------------------------------------
-        const mockGetSingleQueryBuilder = {
-            select: jest.fn().mockReturnThis(),
-            eq: jest.fn().mockReturnThis(),
-            single: jest.fn().mockResolvedValue({
-                data: {
-                    ...mockArtPayload,
-                    USERS: {
-                        user_name: 'Journey User',
-                        user_tag: 'journey_dev',
-                        user_avatar_url: null,
-                    },
-                },
-                error: null,
-            }),
-        };
-
-        mockSupabaseClient.from.mockReturnValue(mockGetSingleQueryBuilder);
-
         const getRes = await request(app.getHttpServer())
             .get(`/Art/ArtPost/${artPostId}`)
             .expect(200);
@@ -208,9 +244,40 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
         expect(getRes.body.mensaje).toBe('Arte obtenido');
 
         // -------------------------------------------------------------
-        // 2.3 ELIMINAR POST CREADO
+        // 2.3 OBTENER LISTADO GENERAL Y POR USUARIO
         // -------------------------------------------------------------
-        // Mock de autenticación para que el SupabaseAuthGuard identifique al usuario
+        const listRes = await request(app.getHttpServer())
+            .get('/Art/ArtPosts?from=0&limit=10')
+            .expect(200);
+
+        expect(listRes.body.mensaje).toBe('Arte obtenido');
+        expect(Array.isArray(listRes.body.art)).toBe(true);
+
+        const userListRes = await request(app.getHttpServer())
+            .get(`/Art/UserArtPosts/${createdUserId}?from=0&limit=10`)
+            .expect(200);
+
+        expect(userListRes.body.mensaje).toBe('Arte del usuario obtenido');
+        expect(Array.isArray(userListRes.body.art)).toBe(true);
+
+        // -------------------------------------------------------------
+        // 2.4 ELIMINAR POST CREADO
+        // -------------------------------------------------------------
+        const deleteRes = await request(app.getHttpServer())
+            .delete(`/GeneralPosts/Deleteposts/${artPostId}?tipo=arte`)
+            .set('Authorization', `Bearer ${userAccessToken}`)
+            .expect(200);
+
+        expect(deleteRes.body.mensaje).toBe('Post eliminado con exito');
+        expect(deleteRes.body.deletedData.artpost_id).toBe(artPostId);
+
+        console.log('✓ Paso 2 Completado: Publicación creada, consultada, listada y eliminada con éxito.');
+    });
+
+    it('Paso 3: Cierre de Sesión (LogOut)', async () => {
+        // -------------------------------------------------------------
+        // 3.1 CERRAR SESIÓN DE USUARIO
+        // -------------------------------------------------------------
         mockSupabaseClient.auth.getUser.mockResolvedValue({
             data: {
                 user: {
@@ -222,37 +289,17 @@ describe('Flujo Completo de Usuario (E2E User Journey)', () => {
             error: null,
         });
 
-        // Mock para:
-        // 1. Verificación de dueño en GeneralPostsService (select user_id)
-        // 2. Borrado del post en ArtService (delete().eq().select().single())
-        const mockDeleteQueryBuilder = {
-            select: jest.fn().mockReturnThis(),
-            delete: jest.fn().mockReturnThis(),
-            eq: jest.fn().mockReturnThis(),
-            single: jest.fn()
-                // Primera llamada (GeneralPostsService): Retorna el user_id para validar dueño
-                .mockResolvedValueOnce({
-                    data: { user_id: createdUserId },
-                    error: null,
-                })
-                // Segunda llamada (ArtService.deletePost): Retorna la data eliminada
-                .mockResolvedValueOnce({
-                    data: mockArtPayload,
-                    error: null,
-                }),
-        };
+        mockUserClient.auth.signOut.mockResolvedValue({
+            error: null,
+        });
 
-        mockSupabaseClient.from.mockReturnValue(mockDeleteQueryBuilder);
-
-        const deleteRes = await request(app.getHttpServer())
-            .delete(`/GeneralPosts/Deleteposts/${artPostId}?tipo=arte`)
+        const logoutRes = await request(app.getHttpServer())
+            .post('/Auth/LogOut')
             .set('Authorization', `Bearer ${userAccessToken}`)
-            .expect(200);
+            .expect(201);
 
-        expect(deleteRes.body.mensaje).toBe('Post eliminado con exito');
-        expect(deleteRes.body.deletedData.artpost_id).toBe(artPostId);
+        expect(logoutRes.body.mensaje).toBe('Cierre de sesión exitoso');
 
-        console.log('✓ Paso 2 Completado: Publicación creada, consultada y eliminada con éxito.');
+        console.log('✓ Paso 3 Completado: Cierre de sesión finalizado exitosamente.');
     });
-
 });
