@@ -71,6 +71,54 @@
     word-break: break-word;
 }
 
+/* Pestañas internas del perfil */
+.profile-tabs-nav {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    border: 1px solid rgba(139, 92, 246, 0.12);
+    border-radius: 999px;
+    box-shadow: 0 4px 16px rgba(111, 78, 255, 0.08);
+}
+
+.tab-btn {
+    padding: 9px 22px;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: #64748b;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease,
+        box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.tab-btn:hover {
+    background: #f5f3ff;
+    color: #7c3aed;
+}
+
+.tab-btn:focus-visible {
+    outline: 2px solid #c4b5fd;
+    outline-offset: 2px;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #8b5cf6, #6d4aff);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(109, 74, 255, 0.35);
+}
+
+.tab-btn.active:hover {
+    background: linear-gradient(135deg, #7c3aed, #5b3df5);
+    color: #ffffff;
+}
+
 /* Sección de la Galería (Derecha) */
 .user-profile-gallery {
     background: #ffffff;
@@ -123,5 +171,17 @@
 
     .user-profile-sidebar {
         position: static;
+    }
+
+    .profile-tabs-nav {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        border-radius: 18px;
+    }
+
+    .tab-btn {
+        flex: 1;
+        padding: 9px 12px;
     }
 }

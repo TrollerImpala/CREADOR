@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Reusable/Header";
 import '../../styles/GaleriaMusica.css';
+import '../../styles/Pagination.css';
 
 import Nav from "../Reusable/Nav";
 
@@ -105,8 +106,10 @@ function GaleriaMusica() {
 
         { (posts.length == 0) && <h3 className="cargando-musica">Cargando...</h3>}
       </div>
-      <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
-      <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
+      <div className="pagination">
+        <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
+        <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
+      </div>
     
     </div>
   );

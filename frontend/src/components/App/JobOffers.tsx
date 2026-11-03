@@ -8,6 +8,7 @@ import Header from "../Reusable/Header";
 import Nav from "../Reusable/Nav";
 
 import '../../styles/JobOffers.css';
+import '../../styles/Pagination.css';
 
 function JobOffers() {
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ function JobOffers() {
 
   useEffect(() => {
     obtenerOfertas();
-  }, []);
+  }, [page]);
 
   return (
     <div className="job-offers-page">
@@ -67,6 +68,11 @@ function JobOffers() {
             <h3 className="cargando-job-offers">Cargando ofertas...</h3>
           )}
         </div>
+      </div>
+
+      <div className="pagination">
+        <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
+        <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
       </div>
     </div>
   );

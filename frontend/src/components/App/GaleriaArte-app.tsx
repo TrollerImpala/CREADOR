@@ -6,6 +6,7 @@ import type { ArtInfo } from "../tools/types";
 import { errorMsg } from "../tools/errorUtils";
 import ArtPostPrev from "../templates/ArtTemplate";
 import '../../styles/GaleriaArte.css';
+import '../../styles/Pagination.css';
 
 function GaleriaArte() {
   const Navigate = useNavigate();
@@ -60,8 +61,10 @@ function GaleriaArte() {
 
         { (posts.length == 0) && <h3 className="cargando-texto">Cargando...</h3>}
       </div>
-      <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
-      <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
+      <div className="pagination">
+        <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
+        <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
+      </div>
     </>
   );
 }

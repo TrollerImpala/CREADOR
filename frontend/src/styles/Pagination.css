@@ -1,0 +1,80 @@
+/* Paginación de las galerías */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 10px auto 40px;
+  padding: 0 20px;
+}
+
+.btn-paginar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #475569;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.btn-paginar:first-child::before {
+  content: "←";
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-paginar:last-child::after {
+  content: "→";
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.btn-paginar:hover:not(:disabled) {
+  background: #f5f3ff;
+  border-color: #c4b5fd;
+  color: #7c3aed;
+  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.16);
+  transform: translateY(-1px);
+}
+
+.btn-paginar:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.12);
+}
+
+.btn-paginar:focus-visible {
+  outline: 2px solid #c4b5fd;
+  outline-offset: 2px;
+}
+
+.btn-paginar:disabled {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+  color: #cbd5e1;
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .pagination {
+    gap: 8px;
+  }
+
+  .btn-paginar {
+    flex: 1;
+    padding: 10px 14px;
+  }
+}
