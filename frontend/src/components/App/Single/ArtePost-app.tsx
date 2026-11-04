@@ -78,7 +78,7 @@ function ArtPost(){
                     <div className="main-post-container">
                         {/* Bloque de Usuario Agregado */}
                         {post.USERS && (
-                            <Link to={`/User/${post.user_id}`}>
+                            <Link to={`/User/${post.user_id}`} style={{textDecoration : 'none'}}>
                             <div className="main-post-user">
                                 <img src={post.USERS.user_avatar_url} alt={post.USERS.user_name} className="user-avatar" />
                                 <div className="user-info">

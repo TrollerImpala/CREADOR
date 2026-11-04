@@ -163,6 +163,29 @@
     padding: 40px 0;
 }
 
+.edit-profile-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: greenyellow;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.edit-profile-btn:hover {
+    background: rgba(139, 92, 246, 0.15); /* Tono violeta acorde a la app */
+    color: green;
+}
+
+.edit-profile-btn:active {
+    transform: scale(0.98);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .user-profile-container {

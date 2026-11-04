@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 import Header from "../../Reusable/Header";
 import Nav from "../../Reusable/Nav";
@@ -15,7 +15,27 @@ import "../../../styles/UserProfile.css";
 
 type Seccion = 'arte' | 'musica' | 'ofertas';
 
+function EditProfileBtn({user_id} : {user_id : string}){
+    const usuarioLogueadoStr = localStorage.getItem('usuario');
+    const usuarioLogueado = usuarioLogueadoStr ? JSON.parse(usuarioLogueadoStr) : null;
+    const currentUserId = usuarioLogueado?.id_user
+
+    if (currentUserId !== user_id) return null;
+
+    return (
+        <>
+            <Link to={'/User'} style={{textDecoration : 'none'}}>
+                <button className="edit-profile-btn">Editar Perfil</button>
+            </Link>
+        </>
+    );
+
+
+}
+
 function UserProfile() {
+
+
     const { user_id } = useParams<{ user_id: string }>();
 
     const [user, setUser] = useState<PublicUser | null>(null);
@@ -65,7 +85,9 @@ function UserProfile() {
                             </div>
                             <h2 className="profile-name">{user.user_name || "Usuario"}</h2>
                             <span className="profile-tag">@{user.user_tag}</span>
-
+                            
+                            {user_id && <EditProfileBtn user_id = { user_id } />}
+                            
                             <p className="profile-description">
                                 {user.user_description || "Sin descripción disponible."}
                             </p>

@@ -16,6 +16,9 @@ function Register(){
   }, []);
 
   const Navigate = useNavigate();
+
+  const [enviando, setEnviando] = useState(false);
+
   const [mensajeError, setMensajeError] = useState('');
 
   const {setFormData, formData, handleChange, handleSubmit} = useForm({
@@ -38,6 +41,7 @@ function Register(){
       Navigate("/Login");
     },
     onFailure : (response) => {
+      setEnviando(false);
       console.error("Error en la solicitud:", response);
       if (response.status === 400) {
         setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
@@ -69,6 +73,14 @@ function Register(){
   //   }));
     
   // };
+  const sendInit = () => {
+    setEnviando(true);
+    setMensajeError('');
+    if (!formData.email.trim() || !formData.password.trim()) {
+      setMensajeError("Por favor, complete todos los campos.");
+      setEnviando(false);
+    }
+  }
 
     return (
         <>
@@ -107,7 +119,7 @@ function Register(){
                   <input onChange={handleChange} type="text" name="socialMedias" value={formData.socialMedias} placeholder="[YT: @pepeart, X: @artpepe, IG: @pepitoart...]" className="for-border" disabled></input>
                   <br></br>
                       
-                  <input type="submit" value="Registrarse" id = "boton-envio"></input>
+                  <input type="submit" value={enviando ? 'Registrandose...' : 'Registrarse'} id = "boton-envio" onClick={sendInit}></input>
                   {mensajeError && <h2 className="error-message">{mensajeError}</h2>}
                 </>
               )}

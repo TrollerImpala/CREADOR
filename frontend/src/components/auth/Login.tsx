@@ -9,6 +9,8 @@ import "../../styles/Auth.css"
 
 function Login(){
 
+  const [enviando, setEnviando] = useState(false);
+
   const [mensajeError, setMensajeError] = useState('');
 
   useEffect(() => {
@@ -44,6 +46,7 @@ function Login(){
       Navigate("/");
     },
     onFailure : (response) => {
+      setEnviando(false);
       console.error("Error en la solicitud:", response);
       if (response.status === 401) {
         setMensajeError("Error en las credenciales");
@@ -53,9 +56,11 @@ function Login(){
     }
   });
   const sendInit = () => {
+    setEnviando(true);
     setMensajeError('');
     if (!formData.email.trim() || !formData.password.trim()) {
       setMensajeError("Por favor, complete todos los campos.");
+      setEnviando(false);
     }
   }
 
@@ -70,7 +75,7 @@ function Login(){
              <label>Contraseña: </label>
              <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="******" className="for-border"></input>
              <br></br>
-             <input type="submit" value="Iniciar Sesion" id = "boton-envio" onClick={sendInit}></input>
+             <input type="submit" value={enviando ? 'Iniciando sesión...' : 'Iniciar Sesión'} id = "boton-envio" onClick={sendInit}></input>
             </form>
             {mensajeError && <p id="error-message">{mensajeError}</p>}
             <p>¿No tienes cuenta? <a href="/Register">Registrate</a></p>
