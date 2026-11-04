@@ -7,7 +7,7 @@ import '../../styles/templates-styles/ArtTemplate.css';
 function ArtPostPrev ( { post } : { post: ArtInfo } ) {
     return (
         <>
-            <Link to={`/Arte/${post.artpost_id}`}>
+            <Link to={`/Arte/${post.artpost_id}`} style={{textDecoration : 'none'}}>
             
             <div className="prev-art-post">
                 <div className="prev-art-info">

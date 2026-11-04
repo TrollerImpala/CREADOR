@@ -30,6 +30,7 @@ function PostJobOffer() {
     eMsg: '',
     onSuccess: () => {},
     onFailure: (response : Response) => {
+      setEnviando(false);
       if (response.status === 400) {
         setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
       } else {
@@ -94,6 +95,7 @@ function PostJobOffer() {
           setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
         }
         await errorMsg(response, 'Error al publicar la oferta de trabajo');
+        setEnviando(false);
       }
     } catch (error) {
       console.error('Error de conexión:', error);
