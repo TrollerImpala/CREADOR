@@ -89,7 +89,7 @@ function JobOfferPost() {
                         <DeletPostsboton 
                             postId={offer.project_id} 
                             tipo="JobOfferta" 
-                            redirectTo="/job-offers" 
+                            redirectTo="/JobOffers" 
                             post={offer} 
                         />
                     </div>
