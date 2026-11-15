@@ -1,3 +1,12 @@
+/**
+ * types.tsx — Tipos compartidos del frontend.
+ *
+ * Capa: tipos (solo TypeScript, no se ejecuta en runtime).
+ * Reflejan la forma de las respuestas del backend y de las filas de Supabase.
+ * Cuando agregás una columna o una relación en el backend, actualizá acá
+ * para que el editor te avise si la UI usa mal el dato.
+ */
+
 type FuncionType = () => void;
 
 export interface CreateToolProps {
@@ -6,7 +15,7 @@ export interface CreateToolProps {
 export interface PublicUser {
     user_tag: string;
     user_name: string;
-    user_decription?: string;
+    user_decription?: string; // Ojo: typo existente, la columna real es user_description
     user_avatar_url?: string;
 }
 
@@ -19,6 +28,7 @@ export interface ArtInfo {
     description ?: string;
     tags ?: string[];
     user_id ?: string;
+    // Relación anidada que devuelve Supabase con USERS(...)
     USERS?: {
         user_tag: string;
         user_name: string;
@@ -41,7 +51,7 @@ export interface JobOfferInfo {
     }
 }
 
-// export interface ArtPrev {
+// interface ArtPrev {
 //     artpost_id : string;
 //     title : string;
 //     art_img_url : string;

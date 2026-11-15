@@ -1,3 +1,15 @@
+/**
+ * job-offer.service.ts — Lógica de las ofertas de trabajo.
+ *
+ * Capa: service (lógica de negocio + acceso a datos).
+ * Tabla principal: PROJECTPOSTS.
+ * Relación: PROJECTPOSTS.user_id → USERS.id_user (muchas ofertas por usuario).
+ *
+ * Patrón de consulta:
+ *   .from('TABLA').select('columnas').eq(...).order(...).range(...)
+ *
+ * Este service es la mejor plantilla para copiar cuando pidan un CRUD nuevo.
+ */
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -15,9 +27,20 @@ export class JobOfferService {
     private readonly storageService: StorageService,
     private readonly statsCreatorService: StatsCreatorService,
   ) {
+    // Cliente compartido de Supabase (clave anon + RLS).
     this.supabase = this.supabaseService.getClient();
   }
 
+  /**
+   * Lista paginada de ofertas para la galería.
+   *
+   * Devuelve solo 3 columnas: la vista de lista no necesita el detalle.
+   * Si agregás un campo que la lista debe mostrar, tenés que sumarlo acá.
+   *
+   * Ojo con el rango: .range(from, from + limit) trae limit + 1 filas.
+   * Es intencional: el frontend usa esa fila extra para saber si hay
+   * próxima página y luego hace pop(). No lo cambies sin ajustar el frontend.
+   */
   async getJobOfferPosts(from: number, limit: number) {
     const { data, error } = await this.supabase
       .from('PROJECTPOSTS')
@@ -36,6 +59,10 @@ export class JobOfferService {
     };
   }
 
+  /**
+   * Igual que la lista anterior, pero filtrada por autor.
+   * .eq('user_id', user_id) equivale a WHERE user_id = ...
+   */
   async getUserJobOfferPosts(user_id: string, from: number, limit: number) {
     const { data, error } = await this.supabase
       .from('PROJECTPOSTS')
@@ -55,6 +82,15 @@ export class JobOfferService {
     };
   }
 
+  /**
+   * Detalle de una oferta con los datos públicos del autor.
+   *
+   * select('*, USERS(...)') es una relación anidada de Supabase/PostgREST:
+   * trae todas las columnas de PROJECTPOSTS y, dentro de USERS, solo las
+   * columnas indicadas. Requiere que exista la FK user_id → USERS.
+   *
+   * .single() exige exactamente una fila; si no existe, devuelve error.
+   */
   async getJobOfferPost(id_project: string) {
     const { data, error } = await this.supabase
       .from('PROJECTPOSTS')
@@ -73,6 +109,15 @@ export class JobOfferService {
     };
   }
 
+  /**
+   * Inserta una oferta nueva.
+   *
+   * El user_id viene del token validado por el guard, no del body:
+   * así el usuario no puede crear publicaciones a nombre de otro.
+   *
+   * .insert({...}).select().single() devuelve la fila recién creada,
+   * que el controller retorna al frontend.
+   */
   async postJobOffer(user_id: string, body: any) {
     const { project_title, project_info, email, tags } = body;
 
@@ -89,6 +134,7 @@ export class JobOfferService {
       .single();
 
     if (error) {
+      // Log interno para depurar; al cliente se le devuelve un mensaje genérico.
       console.log(error);
       throw new BadRequestException('Error al subir info de oferta de trabajo');
     }
@@ -99,6 +145,13 @@ export class JobOfferService {
     };
   }
 
+  /**
+   * Borra una oferta por project_id y devuelve la fila eliminada.
+   *
+   * Este método existe en el service, pero el JobOfferController no lo expone.
+   * El borrado real se hace desde GeneralPostsService, que decide permisos
+   * (dueño o moderador) antes de llamar acá.
+   */
   async deletePost(project_id: string) {
     const { data, error } = await this.supabase
       .from('PROJECTPOSTS')

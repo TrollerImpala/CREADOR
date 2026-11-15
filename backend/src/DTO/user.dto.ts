@@ -1,3 +1,10 @@
+/**
+ * user.dto.ts — Validación de la actualización de perfil.
+ *
+ * Capa: DTO.
+ * Se usa en PUT /api/Users/ActualizarPerfil. El avatar NO está acá porque
+ * viaja como archivo multipart y lo recibe @UploadedFile().
+ */
 import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
 
 export class UserDto {

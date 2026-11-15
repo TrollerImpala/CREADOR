@@ -1,3 +1,9 @@
+/**
+ * joboffer.dto.ts — Validación de la creación de ofertas.
+ *
+ * Capa: DTO. El ValidationPipe global valida esta clase antes del controller.
+ * Si un campo no está acá, se descarta del body por whitelist: true.
+ */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { IsString, IsNotEmpty, IsOptional, IsArray } from 'class-validator';
@@ -13,6 +19,7 @@ export class CreateJobOfferPostDto {
   @IsNotEmpty({ message: 'El título es obligatorio' })
   project_title!: string;
 
+  // Opcional: la oferta puede no tener descripción.
   @ApiPropertyOptional({
     description: 'Descripción de la oferta de trabajo',
     example: 'Buscamos un desarrollador con experiencia en Node.js y React.',
@@ -29,6 +36,11 @@ export class CreateJobOfferPostDto {
   @IsNotEmpty({ message: 'El correo electrónico es obligatorio' })
   email!: string;
 
+  /**
+   * Tags: el frontend manda un string "react, node, arte" y @Transform lo
+   * convierte en array antes de validar. Si ya viene array, lo deja igual.
+   * Luego @IsArray + @IsString({ each: true }) validan cada elemento.
+   */
   @ApiPropertyOptional({
     isArray: true,
     type: [String],

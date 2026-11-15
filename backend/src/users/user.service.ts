@@ -1,3 +1,14 @@
+/**
+ * user.service.ts — Lógica de perfiles de usuario.
+ *
+ * Capa: service.
+ * Tabla: USERS (perfil público). La contraseña vive en auth.users, no acá.
+ *
+ * Este service muestra tres patrones útiles:
+ * - select de columnas específicas para no exponer datos de más.
+ * - validación de unicidad antes de actualizar (tag repetido).
+ * - subida de archivo a Storage y guardado de la URL en la fila.
+ */
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -16,6 +27,10 @@ export class UserService {
     this.supabase = this.supabaseService.getClient();
   }
 
+  /**
+   * Perfil público: solo las columnas que pueden mostrarse a cualquiera.
+   * No incluye email, redes privadas ni datos de autenticación.
+   */
   async getPublicUserData(user_id: string) {
     const { data, error } = await this.supabase
       .from('USERS')
@@ -32,6 +47,10 @@ export class UserService {
     };
   }
 
+  /**
+   * Perfil propio: select() sin columnas trae todas las columnas de USERS.
+   * Solo se llama con el id que vino del token.
+   */
   async getUserData(user_id: string) {
     const { data, error } = await this.supabase
       .from('USERS')
@@ -48,6 +67,18 @@ export class UserService {
     };
   }
 
+  /**
+   * Actualiza el perfil del usuario autenticado.
+   *
+   * Pasos:
+   * 1. Verificar que el tag no esté usado por otro usuario (.neq excluye
+   *    al propio usuario).
+   * 2. Si hay avatar, subirlo a Storage y quedarse con la URL.
+   * 3. Actualizar la fila y devolverla.
+   *
+   * No se actualiza el email ni la contraseña: eso es competencia de
+   * Supabase Auth, no de la tabla USERS.
+   */
   async updateUser(user_id: string, body: any) {
     const { userTag, userName, userDescription, avatar_img, socialMedias } =
       body;
@@ -64,12 +95,14 @@ export class UserService {
         errorTagVerif.message,
       );
 
+    // Si encontró otra fila con ese tag, el tag ya está ocupado.
     if (userTagVerif && userTagVerif.length > 0)
       throw new BadRequestException('Tag ya existente, elije otro');
 
     let avatarUrl;
 
     if (avatar_img) {
+      // La ruta incluye el id para evitar colisiones de nombres.
       const avatarPath = `AVATARS/${user_id}_${avatar_img.originalname}`;
       avatarUrl = await this.storageService.uploadFile(
         'USERS',
@@ -84,6 +117,8 @@ export class UserService {
         user_tag: userTag,
         user_name: userName,
         user_description: userDescription || '',
+        // Si no se subió avatar nuevo, avatarUrl es undefined y la columna
+        // no se modifica (Supabase ignora undefined en el update).
         user_avatar_url: avatarUrl,
         social_medias: socialMedias || [],
       })

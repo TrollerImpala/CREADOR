@@ -1,3 +1,19 @@
+/**
+ * App.tsx — Configuración de rutas del frontend.
+ *
+ * Capa: routing (React Router).
+ * Este archivo es el mapa de la SPA: qué URL muestra qué componente.
+ *
+ * Conceptos:
+ * - createBrowserRouter define el árbol de rutas.
+ * - RouterProvider monta ese árbol en la app.
+ * - :param en una ruta se lee con useParams() en el componente.
+ * - Outlet renderiza los hijos de una ruta padre.
+ * - ProtectedRoute envuelve las rutas que requieren sesión.
+ *
+ * Ojo: ProtectedRoute solo comprueba que exista 'usuario' en localStorage.
+ * No valida el token; la seguridad real la aplica el backend con los guards.
+ */
 import {
     createBrowserRouter, RouterProvider,
     Navigate, Outlet
@@ -29,6 +45,11 @@ import Amigos from "./components/App/Amigos-app";
 import Teams from "./components/App/Teams-app";
 
 
+/**
+ * Componente de ruta protegida.
+ * Si no hay usuario guardado, redirige a "/" (replace evita volver atrás).
+ * Si hay usuario, <Outlet /> renderiza la ruta hija que corresponda.
+ */
 function ProtectedRoute() {
   const usuarioAutenticado = localStorage.getItem('usuario');
 
@@ -39,6 +60,8 @@ function ProtectedRoute() {
   return <Outlet />;
 }
 
+// Cada objeto es una ruta. Las públicas van primero; las de creación de
+// posts están agrupadas como hijas de ProtectedRoute.
 const Router = createBrowserRouter([
     {
         path : '/',
@@ -85,6 +108,7 @@ const Router = createBrowserRouter([
         element : <JobOfferPost />
     },
     {
+        // Ruta padre sin path propio: solo aplica el guard a sus hijas.
         element : <ProtectedRoute />,
         children : [
             {

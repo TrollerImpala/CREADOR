@@ -1,3 +1,17 @@
+/**
+ * auth.service.ts — Lógica de autenticación contra Supabase Auth.
+ *
+ * Capa: service (lógica de negocio). El controller solo lo llama.
+ *
+ * Conceptos que tenés que poder explicar:
+ * - auth.users es la tabla interna de Supabase donde vive el hash de la
+ *   contraseña; public.USERS es la tabla de perfil del proyecto.
+ * - signUp / signInWithPassword / refreshSession / signOut son métodos de
+ *   Supabase Auth, no consultas SQL directas.
+ * - El access token es de vida corta; el refresh token permite renovarlo.
+ * - Para restablecer contraseña se usa resetPasswordForEmail (envía un mail)
+ *   y luego updateUser con la sesión del usuario. No se toca USERS.
+ */
 import {
   Injectable,
   BadRequestException,
@@ -25,6 +39,18 @@ export class AuthService {
   }
 
   //                                  REGISTRO
+  /**
+   * Crea un usuario en Supabase Auth.
+   *
+   * Los datos de perfil (tag, nombre, descripción, redes) se guardan en
+   * user_metadata dentro de auth.users. El insert a public.USERS está
+   * comentado en este método, así que la fila de perfil se crea fuera de este
+   * código (del lado de Supabase, por ejemplo con un trigger). Conviene
+   * verificarlo en el dashboard: sin fila en USERS, el login devuelve perfil null.
+   *
+   * Errores: si Supabase rechaza el alta (email duplicado, password débil),
+   * se traduce a BadRequestException → HTTP 400.
+   */
   async register(body: any) {
     const {
       email,
@@ -76,6 +102,18 @@ export class AuthService {
   }
 
   //                                     LOGIN
+  /**
+   * Valida email + password con Supabase Auth.
+   *
+   * Si las credenciales son incorrectas, Supabase devuelve error y se lanza
+   * UnauthorizedException → HTTP 401.
+   *
+   * Si son correctas:
+   * - Busca el perfil en USERS por id_user (el id de auth.users).
+   * - Devuelve access token, refresh token, perfil y rol.
+   * - El rol sale de app_metadata.role (lo setea el administrador y el usuario
+   *   no puede editarlo), con fallback a 'user'.
+   */
   async login(body: any) {
     const { email, password } = body;
 
@@ -101,6 +139,13 @@ export class AuthService {
     };
   }
 
+  /**
+   * Verifica la sesión actual del cliente Supabase del backend.
+   *
+   * Ojo: como el backend usa la clave anon y no la sesión del navegador,
+   * este método no es el que valida las peticiones del frontend. Esa
+   * responsabilidad está en SupabaseAuthGuard.
+   */
   async verify_session() {
     const {
       data: { session },
@@ -119,6 +164,12 @@ export class AuthService {
     return { access_token: session.access_token };
   }
 
+  /**
+   * Renueva la sesión usando el refresh token.
+   *
+   * Lo llama POST /api/Auth/Refresh. Si el refresh token venció o es inválido,
+   * lanza UnauthorizedException → 401 y el frontend debe forzar el login.
+   */
   async refresh_token(refresh_token: string) {
     if (!refresh_token) throw new Error('No se proporciono refresh token');
 
@@ -139,6 +190,14 @@ export class AuthService {
   }
 
   // En auth.service.ts
+  /**
+   * Cierra la sesión en Supabase.
+   *
+   * Crea un cliente Supabase "como el usuario" (getUserClient) para que
+   * signOut invalide la sesión correcta y no la del backend.
+   *
+   * El borrado de localStorage lo hace el frontend (logout.tsx).
+   */
   async log_out(token: string) {
     if (!token) {
       throw new UnauthorizedException('No se proporcionó el token de acceso');
