@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 
+import ServerErrorMsg from '../../Reusable/serverErrorMsg';
+import { serverErrorHandler } from '../../tools/serverError';
+
 import AudioPlayer from '../../Reusable/AudioPlayer';
 import DeletPostsboton from '../../Reusable/DeletPostsboton';
 import { errorMsg } from '../../tools/errorUtils';
@@ -11,6 +14,9 @@ import '../../../styles/single-posts-styles/MusicPost.css';
 function MusicPost() {
   const { song_id } = useParams();
   const [cargando, setCargando] = useState(true);
+
+  const [serverError, setServerError] = useState<boolean>(false);
+
   const [song, setSong] = useState<MusicInfo>({
     song_id: '',
     song_url: '',
@@ -33,7 +39,9 @@ function MusicPost() {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Music/MusicPost/${song_id}`);
 
       if (!response.ok) {
+        setCargando(false);
         await errorMsg(response, 'Error al cargar la canción');
+        serverErrorHandler(response, setServerError);
         return;
       }
 
@@ -53,7 +61,7 @@ function MusicPost() {
     <div className="music-post-page">
       {cargando ? (
         <h3 className="cargando-texto">Cargando canción...</h3>
-      ) : (
+      ) : !serverError ? (
         <div className="music-post-container">
           {/* Bloque de Usuario Creador */}
           {song.USERS && (
@@ -101,7 +109,8 @@ function MusicPost() {
             />
           </div>
         </div>
-      )}
+      ) : <ServerErrorMsg />
+      }
     </div>
   );
 }

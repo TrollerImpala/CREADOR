@@ -8,6 +8,9 @@ import Nav from "../Reusable/Nav";
 
 import type { MusicInfo } from "../tools/types";
 
+import ServerErrorMsg from "../Reusable/serverErrorMsg";
+import { serverErrorHandler } from "../tools/serverError";
+
 import { errorMsg } from "../tools/errorUtils";
 import AudioPlayer from "../Reusable/AudioPlayer";
 
@@ -21,6 +24,8 @@ function GaleriaMusica() {
   const [page, setPage] = useState<number>(0);
   const limit = 10;
 
+  const [serverError, setServerError] = useState<boolean>(false);
+  
   const [hasNextPage, setHasNextPage] = useState<boolean>(false);
 
   const [actualSong, setActualSong] = useState<string>('');
@@ -47,8 +52,10 @@ function GaleriaMusica() {
   const obtenerPosts = async () => {
     try{
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Music/MusicPosts?from=${page * limit}&limit=${limit}`);
-      if (!response.ok) await errorMsg(response, 'Error al cargar la cancion');
-      
+      if (!response.ok) {
+        await errorMsg(response, 'Error al cargar la cancion');
+        serverErrorHandler(response, setServerError);
+      }
       const data = await response.json();
   
       if (data.songs.length > limit){
@@ -88,22 +95,27 @@ function GaleriaMusica() {
             onPause={pauseSong}
           />
         )}
-
-        <div className="music-grid">
-          {posts.map((post) =>
-            <div className="music-card-wrapper" key={post.song_id}>
-              <MusicPostPrev
-                post={post}
-                setActualSong={handleSetActualSong}
-                pauseSong={pauseSong}
-                resumeSong={resumeSong}
-                isPlaying={isPlaying && actualSong === post.song_url}
-                actualSong={actualSong}
-              />
+        {
+          !serverError ? (
+            <>
+        
+            <div className="music-grid">
+              {posts.map((post) =>
+                <div className="music-card-wrapper" key={post.song_id}>
+                  <MusicPostPrev
+                    post={post}
+                    setActualSong={handleSetActualSong}
+                    pauseSong={pauseSong}
+                    resumeSong={resumeSong}
+                    isPlaying={isPlaying && actualSong === post.song_url}
+                    actualSong={actualSong}
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
+            </>
+          ) : <ServerErrorMsg /> 
+        }
         { (posts.length == 0) && <h3 className="cargando-musica">Cargando...</h3>}
       </div>
       <div className="pagination">

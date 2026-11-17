@@ -5,6 +5,9 @@ import { useNavigate } from 'react-router-dom';
 import { errorMsg } from '../../tools/errorUtils';
 import { refreshToken } from '../../tools/refresh_token';
 
+import ServerErrorMsg from '../../Reusable/serverErrorMsg';
+import { serverErrorHandler } from '../../tools/serverError';
+
 import '../../../styles/Postear.css';
 
 interface ArtPostForm {
@@ -19,6 +22,9 @@ function PostearArte() {
   const navigate = useNavigate();
   const [mensajeError, setMensajeError] = useState('');
   const [enviando, setEnviando] = useState(false);
+
+  const [serverError, setServerError] = useState<boolean>(false);
+
 
   const { formData, handleChange, handleTextAreaChange, handleSelectChange } = useForm<ArtPostForm>({
     valoresIniciales: {
@@ -37,6 +43,7 @@ function PostearArte() {
       } else {
         setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
       }
+      serverErrorHandler(response, setServerError);
     },
     opc: true,
   });
@@ -49,6 +56,7 @@ function PostearArte() {
 
   const enviarPeticion = async (token: string) => {
     setEnviando(true);
+    setServerError(false);
 
     const dataForm = new FormData();
     dataForm.append('title', formData.title);
@@ -112,6 +120,7 @@ function PostearArte() {
         }
       
         await errorMsg(response, 'Error al publicar la canción');}
+        serverErrorHandler(response, setServerError);
     } catch (error) {
       console.error('Error de conexión:', error);
     }
@@ -168,6 +177,7 @@ function PostearArte() {
         </button>
       </form>
       {mensajeError && <h2 id="error-message">{mensajeError}</h2>}
+      {serverError && <ServerErrorMsg />}
     </div>
   );
 }
