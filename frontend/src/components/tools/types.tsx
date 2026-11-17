@@ -79,3 +79,10 @@ export interface MusicInfo {
 export interface UserPostsGalleriesProp {
     user_id : string
 }
+
+export interface PublicationCounts {
+    arte: number;
+    musica: number;
+    ofertas: number;
+    total: number;
+}   

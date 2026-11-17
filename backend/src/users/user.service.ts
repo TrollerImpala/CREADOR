@@ -41,11 +41,52 @@ export class UserService {
     if (error)
       throw new BadRequestException('Error al conseguir perfil', error.message);
 
+    const publicaciones = await this.getPublicationCounts(user_id);
+
     return {
-      publicUser: data,
-      mensaje: 'Perfil publico obtenido',
+    publicUser: data,
+    publicaciones,
+    mensaje: 'Perfil publico obtenido',
     };
   }
+
+  async getPublicationCounts(user_id: string) {
+  const [arte, musica, ofertas] = await Promise.all([
+    this.supabase
+      .from('ARTPOSTS')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user_id),
+    this.supabase
+      .from('MUSICPOSTS')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user_id),
+    this.supabase
+      .from('PROJECTPOSTS')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user_id),
+  ]);
+
+  if (arte.error) {
+    throw new BadRequestException('Error al contar arte', arte.error.message);
+  }
+  if (musica.error) {
+    throw new BadRequestException('Error al contar música', musica.error.message);
+  }
+  if (ofertas.error) {
+    throw new BadRequestException('Error al contar ofertas', ofertas.error.message);
+  }
+
+  const conteoArte = arte.count ?? 0;
+  const conteoMusica = musica.count ?? 0;
+  const conteoOfertas = ofertas.count ?? 0;
+
+  return {
+    arte: conteoArte,
+    musica: conteoMusica,
+    ofertas: conteoOfertas,
+    total: conteoArte + conteoMusica + conteoOfertas,
+  };
+}
 
   /**
    * Perfil propio: select() sin columnas trae todas las columnas de USERS.

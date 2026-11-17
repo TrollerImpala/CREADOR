@@ -184,4 +184,21 @@
         flex: 1;
         padding: 9px 12px;
     }
+
+    .profile-publication-counts {
+        margin-top: 12px;
+        text-align: center;
+    }
+
+    .profile-total-posts {
+        font-weight: 700;
+        font-size: 1.05rem;
+    }
+
+    .profile-counts-detail {
+        opacity: 0.75;
+        font-size: 0.85rem;
+    }
+
 }
+
