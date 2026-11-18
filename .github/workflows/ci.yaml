@@ -1,3 +1,13 @@
+# ci.yaml — Integración continua con GitHub Actions.
+#
+# Se dispara solo en pull_request y push a la rama 'Presentacion'.
+# Si trabajás en otra rama (main, Botonespaginavisual, etc.), este workflow
+# NO corre automáticamente.
+#
+# Job 1 (backend-ci): instala, corre tests unitarios, e2e y build de NestJS.
+# Job 2 (frontend-ci): instala y compila React/Vite.
+#
+# Las credenciales se leen de GitHub Secrets, nunca del repo.
 name: CI
 
 on:
@@ -16,6 +26,7 @@ jobs:
       run:
         working-directory: ./backend # Ajusta al nombre exacto de la carpeta de tu backend
 
+    # Variables disponibles durante los tests/build del backend.
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}

@@ -1,3 +1,13 @@
+/**
+ * art.dto.ts — Validación de la creación de arte.
+ *
+ * Capa: DTO.
+ * Ojo: este DTO valida los campos de texto del multipart, pero NO el archivo
+ * (art_img). El archivo lo recibe @UploadedFile() y el controller verifica
+ * que exista. Por eso "art_img" no aparece como propiedad acá.
+ *
+ * El rating usa @IsEnum(Rating): solo acepta los valores del enum.
+ */
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import {
@@ -51,6 +61,8 @@ export class CreateArtPostDto {
     description: 'Rating del arte',
     example: Rating.G,
   })
+  // @IsEnum valida que el valor pertenezca al enum Rating.
+  // Es la forma correcta de validar un conjunto cerrado de opciones.
   @IsEnum(Rating, {
     message: 'El rating debe ser un valor válido (G, PG, PG-13, R, NC)',
   })

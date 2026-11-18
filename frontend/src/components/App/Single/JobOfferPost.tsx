@@ -1,3 +1,17 @@
+/**
+ * JobOfferPost.tsx — Detalle de una oferta de trabajo.
+ *
+ * Capa: página de detalle.
+ *
+ * Flujo:
+ * 1. useParams() lee :project_id de la URL (/JobOffers/:project_id).
+ * 2. GET /api/JobOffer/JobOfferPost/:id trae la oferta + datos del autor.
+ * 3. Mientras carga, se muestra un texto; después, la ficha completa.
+ * 4. El botón de borrar solo aparece si el usuario es dueño o moderador.
+ *
+ * Detalle: el formulario de contacto usa FormSubmit (servicio externo) y
+ * envía el mensaje al email de la oferta; no pasa por el backend.
+ */
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
@@ -11,12 +25,14 @@ import type { JobOfferInfo } from "../../tools/types";
 import '../../../styles/single-posts-styles/JobOfferPost.css';
 
 function JobOfferPost() {
+    // project_id viene definido en App.tsx como :project_id.
     const { project_id } = useParams();
 
     
     const [serverError, setServerError] = useState<boolean>(false);
 
     const [cargando, setCargando] = useState(true);
+    // Estado inicial con la forma del tipo para evitar undefined en el render.
     const [offer, setOffer] = useState<JobOfferInfo>({
         project_id: '',
         project_title: '',
@@ -42,6 +58,7 @@ function JobOfferPost() {
             }
 
             const data = await response.json();
+            // El backend envuelve la fila en { job_offer: ... }.
             setOffer(data.job_offer ?? {});
             setCargando(false);
         } catch (error) {
@@ -49,10 +66,13 @@ function JobOfferPost() {
         }
     };
 
+    // Se repite el fetch si cambia el id de la URL.
     useEffect(() => {
         obtenerOferta();
     }, [project_id]);
 
+    // Los tags pueden venir como array o como string "a,b".
+    // Se normalizan a array para poder mapearlos sin errores.
     const tagsList = typeof offer.tags === 'string'
         ? (offer.tags as string).split(',').map((t) => t.trim()).filter(Boolean)
         : (offer.tags ?? []);
@@ -63,7 +83,8 @@ function JobOfferPost() {
                 <h3 className="cargando-texto">Cargando oferta...</h3>
             ) : !serverError ? (
                 <div className="job-offer-post-container">
-                    {/* Bloque de Usuario Creador */}
+                    {/* Bloque de Usuario Creador: enlaza al perfil público.
+                        USERS viene de la relación anidada del backend. */}
                     {offer.USERS && (
                         <Link to={`/User/${offer.user_id}`} className="post-user-link">
                             <div className="job-offer-user">
@@ -94,6 +115,8 @@ function JobOfferPost() {
                     </div>
 
                     <div className="job-offer-post-actions" style={{ marginTop: '20px' }}>
+                        {/* El botón decide solo si mostrarse según localStorage.
+                            La validación definitiva la hace el backend. */}
                         <DeletPostsboton 
                             postId={offer.project_id} 
                             tipo="JobOfferta" 
@@ -102,6 +125,8 @@ function JobOfferPost() {
                         />
                     </div>
 
+                    {/* Contacto directo por FormSubmit: el navegador envía el
+                        formulario al servicio externo, no a nuestra API. */}
                     <form className="job-offer-contact-form" target="_blank" action={`https://formsubmit.co/${offer.email}`} method="POST">
                         <h3>Contactar para este proyecto</h3>
                         <div className="form-group">

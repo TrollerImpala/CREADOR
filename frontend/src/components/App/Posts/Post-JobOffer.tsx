@@ -1,3 +1,21 @@
+/**
+ * Post-JobOffer.tsx — Formulario para crear una oferta de trabajo.
+ *
+ * Capa: componente + fetch propio (no usa handleSubmit del hook).
+ *
+ * ¿Por qué no usa handleSubmit? Porque ese método siempre manda JSON sin
+ * Authorization. Acá hace falta el Bearer token y manejar el refresh en 401,
+ * así que se usa useForm solo para el estado de los campos.
+ *
+ * Flujo:
+ * 1. Valida título y email en el cliente.
+ * 2. Convierte "react, node" en ['react', 'node'].
+ * 3. POST /api/JobOffer/PostJobOffer con Bearer token.
+ * 4. Si recibe 401, llama a refreshToken() y reintenta una vez.
+ * 5. Si todo sale bien, navega al detalle de la oferta creada.
+ *
+ * Validación real: el DTO CreateJobOfferPostDto en el backend (400/422).
+ */
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +32,7 @@ interface JobOfferForm {
   project_title: string;
   project_info: string;
   email: string;
-  tags: string;
+  tags: string; // En el formulario es un string; se transforma antes de enviar.
 }
 
 function PostJobOffer() {
@@ -47,7 +65,13 @@ function PostJobOffer() {
     opc: true,
   });
 
+  /**
+   * Hace la petición con el token recibido.
+   * Separa esta función para poder reintentar tras un refresh.
+   */
   const enviarPeticion = async (token: string) => {
+    // "react, node, remoto" → ['react', 'node', 'remoto']
+    // filter elimina elementos vacíos si el usuario deja comas de más.
     const tagsArray = formData.tags
       .split(',')
       .map((tag) => tag.trim())
@@ -71,6 +95,7 @@ function PostJobOffer() {
   const handleSubmitCustom = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Validación de UX. El backend vuelve a validar con el DTO.
     if (!formData.project_title || !formData.email) {
       setMensajeError('Completa al menos el título y el email de contacto');
       return;
@@ -82,6 +107,7 @@ function PostJobOffer() {
     try {
       let response = await enviarPeticion(localStorage.getItem('access_token')!);
 
+      // Token vencido: se renueva y se reintenta UNA vez.
       if (response.status === 401) {
         const refreshed = await refreshToken();
         
@@ -95,6 +121,7 @@ function PostJobOffer() {
       if (response.ok) {
         //alert('¡Oferta publicada con éxito!');
         const data = await response.json();
+        // El backend devuelve { job_offer: {...} }; se navega con su id.
         navigate(`/JobOffers/${data.job_offer.project_id}`);
       } else {
         if (response.status === 400 || response.status === 422) {
@@ -107,8 +134,10 @@ function PostJobOffer() {
         serverErrorHandler(response, setServerError);
       }
     } catch (error) {
+      // Fallo de red: no hubo respuesta del servidor.
       console.error('Error de conexión:', error);
     } finally {
+      // Se ejecute bien o mal, se vuelve a habilitar el botón.
       setEnviando(false);
     }
   };

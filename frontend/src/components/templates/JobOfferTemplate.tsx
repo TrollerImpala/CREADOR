@@ -1,3 +1,11 @@
+/**
+ * JobOfferTemplate.tsx — Tarjeta de vista previa de una oferta.
+ *
+ * Capa: plantilla de presentación (recibe props, no hace fetch).
+ * Se usa en JobOffers.tsx dentro de un .map().
+ *
+ * El Link envuelve la tarjeta y navega al detalle usando project_id.
+ */
 import { Link } from "react-router-dom";
 
 import type { JobOfferInfo } from "../tools/types";

@@ -1,3 +1,15 @@
+/**
+ * JobOffers.tsx — Galería de ofertas de trabajo.
+ *
+ * Capa: página (componente) que consume la API.
+ *
+ * Flujo:
+ * 1. useEffect se ejecuta al montar y cada vez que cambia `page`.
+ * 2. obtenerOfertas hace GET /api/JobOffer/JobOfferPosts?from=...&limit=...
+ * 3. El backend devuelve una fila extra (limit + 1) para indicar si hay
+ *    página siguiente; acá se hace pop() para no mostrarla.
+ * 4. Se renderiza una tarjeta por oferta con .map() y se navega al detalle.
+ */
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +28,7 @@ import '../../styles/Pagination.css';
 
 function JobOffers() {
   const navigate = useNavigate();
+  // Lista de ofertas y estado de paginación.
   const [offers, setOffers] = useState<JobOfferInfo[]>([]);
 
   const [serverError, setServerError] = useState<boolean>(false);
@@ -28,6 +41,7 @@ function JobOffers() {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/JobOfferPosts?from=${page * limit}&limit=${limit}`);
 
+      // response.ok = status 200-299. Si falla, se registra y se corta.
       if (!response.ok) {
         await errorMsg(response, 'Error al cargar las ofertas de trabajo');
         serverErrorHandler(response, setServerError);
@@ -36,6 +50,8 @@ function JobOffers() {
 
       const data = await response.json();
 
+      // El service pide limit + 1 filas. Si llegaron más que el límite,
+      // existe otra página; se descarta la extra con pop().
       if (data.job_offers.length > limit){
         //console.log('hay mas songs q limite');
         setHasNextPage(true);
@@ -46,12 +62,14 @@ function JobOffers() {
         setHasNextPage(false);
       }
       
+      // ?? [] evita guardar undefined si la respuesta no trae la propiedad.
       setOffers(data.job_offers ?? []);
     } catch (error) {
       console.error('No se han podido cargar las ofertas de trabajo', error);
     }
   };
 
+  // Se vuelve a pedir cuando cambia la página.
   useEffect(() => {
     obtenerOfertas();
   }, [page]);
@@ -62,6 +80,7 @@ function JobOffers() {
       <Nav />
       
       <div className="job-offers-content">
+        {/* Ruta relativa: desde /JobOffers va a /JobOffers/PostJobOffer */}
         <button className="btn-postear-oferta" onClick={() => navigate('PostJobOffer')}>
           Publicar Oferta
         </button>
@@ -84,6 +103,7 @@ function JobOffers() {
       </div>
 
       <div className="pagination">
+        {/* Anterior se deshabilita en la primera página. */}
         <button className="btn-paginar" onClick={() => setPage(page - 1)} disabled={page === 0}>Anterior</button>
         <button className="btn-paginar" onClick={() => setPage(page + 1)} disabled={!hasNextPage}>Siguiente</button>
       </div>

@@ -1,3 +1,18 @@
+/**
+ * art.service.ts — Lógica de las publicaciones de arte.
+ *
+ * Capa: service.
+ * Tablas: ARTPOSTS + POSTSTATS. Bucket de Storage: ART.
+ *
+ * Es el ejemplo más completo de subida de archivos del proyecto:
+ * 1. Crea la fila de estadísticas.
+ * 2. Sube la imagen a Storage.
+ * 3. Inserta el post con la URL y el id de stats.
+ * 4. Si el insert falla, hace rollback manual: borra el archivo y el stat.
+ *
+ * Ese rollback es clave para explicar "manejo de fallas": si una operación
+ * posterior falla, no se deben dejar datos ni archivos huérfanos.
+ */
 import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -18,6 +33,12 @@ export class ArtService {
     this.supabase = this.supabaseService.getClient();
   }
 
+  /**
+   * Lista paginada para la galería.
+   * Solo trae las columnas necesarias para la tarjeta de vista previa.
+   * Igual que en ofertas, .range(from, from + limit) trae una fila extra
+   * que el frontend usa para detectar la página siguiente.
+   */
   async getArtPosts(from: number, limit: number) {
     const { data, error } = await this.supabase
       .from('ARTPOSTS')
@@ -36,6 +57,10 @@ export class ArtService {
     };
   }
 
+  /**
+   * Detalle de una obra con los datos públicos del autor.
+   * Misma relación anidada que en ofertas: USERS(...) dentro del select.
+   */
   async getArtPost(id_art: string) {
     const { data, error } = await this.supabase
       .from('ARTPOSTS')
@@ -54,6 +79,15 @@ export class ArtService {
     };
   }
 
+  /**
+   * Borra la fila y también el archivo del bucket ART.
+   *
+   * Para reconstruir la ruta interna, toma la URL pública y se queda con lo
+   * que está después de '/ART/'. Si la URL cambia de formato, esto se rompe.
+   *
+   * Nota: no borra la fila de POSTSTATS (el stat queda huérfano). Es el
+   * comportamiento actual; si lo cambiás, avisalo como mejora.
+   */
   async deletePost(artpost_id: string) {
     const { data, error } = await this.supabase
       .from('ARTPOSTS')
@@ -76,6 +110,17 @@ export class ArtService {
     };
   }
 
+  /**
+   * Crea una publicación de arte con imagen.
+   *
+   * Orden y por qué:
+   * - Primero el stat: el post necesita stats_id como FK.
+   * - Después el archivo: el post necesita la URL.
+   * - Por último el insert: si falla, se revierte lo anterior.
+   *
+   * El nombre del archivo usa el título + Date.now() para que dos subidas
+   * con el mismo título no se pisen.
+   */
   async postArt(user_id: string, body: any) {
     const { stat, mensaje } = await this.statsCreatorService.createStat();
     console.log(mensaje);
@@ -109,6 +154,7 @@ export class ArtService {
       .single();
 
     if (error) {
+      // Rollback manual: deshacer lo que ya se había creado.
       this.statsCreatorService.deleteStat(stats_id);
       this.storageService.deleteFile('ART', filePath);
       console.log(error);
@@ -121,6 +167,10 @@ export class ArtService {
     };
   }
 
+  /**
+   * Obras de un usuario concreto (para su perfil público).
+   * Mismo patrón de paginación que la galería general.
+   */
   async getUserArtPosts(user_id: string, from: number, limit: number) {
     const { data, error } = await this.supabase
       .from('ARTPOSTS')
