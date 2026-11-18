@@ -16,10 +16,9 @@ function Home() {
 
       <main className="home-main">
         <section className="welcome-hero">
-          <h1>¡Bienvenidos a la página!</h1>
+          <h1>¡Bienvenidos a CREADOR!</h1>
           <p className="welcome-subtitle">
-            En la página principal, tendría que haber un tablón mostrando un poco de todas las creaciones 
-            <span>(por ejemplo, dibujos, música, proyectos de teams, etc.)</span>
+            ¡Un lugar para todo y de todos! Comparte tu arte, fotografia, música, y encuentra oportunidades.
           </p>
         </section>
 

@@ -32,6 +32,7 @@ function PostSong() {
     eMsg: '',
     onSuccess: () => {},
     onFailure: (response : Response) => {
+      setEnviando(false);
       if (response.status === 400 || response.status === 422) {
         setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
         console.log('se seteo el mensaje de error');
@@ -117,6 +118,7 @@ function PostSong() {
           setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
         }
         await errorMsg(response, 'Error al publicar la canción');
+        setEnviando(false);
       }
     } catch (error) {
       console.error('Error de conexión:', error);

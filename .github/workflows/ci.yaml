@@ -12,9 +12,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [Presentacion]
+    branches: [main]
   push:
-    branches: [Presentacion]
+    branches: [main]
 
 jobs:
   # ---------------------------------------------------------

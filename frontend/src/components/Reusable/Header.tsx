@@ -40,6 +40,10 @@ function BotonUser() {
   const [avatarUrl, setAvatarUrl] = useState('');
   const [inicial, setInicial] = useState('U');
 
+  const usuarioLogueadoStr = localStorage.getItem('usuario');
+  const usuarioLogueado = usuarioLogueadoStr ? JSON.parse(usuarioLogueadoStr) : null;
+  const currentUserId = usuarioLogueado?.id_user
+
   /*
   useEffect(() => {
     const fetchUserAvatar = async () => {
@@ -84,7 +88,7 @@ function BotonUser() {
   return (
     <button 
       id="btn-user-avatar" 
-      onClick={() => navigate('/User')}
+      onClick={() => navigate(`/User/${currentUserId}`)}
       title="Ver perfil"
     >
       {avatarUrl ? (

@@ -23,6 +23,8 @@ import "../../styles/Auth.css"
 
 function Login(){
 
+  const [enviando, setEnviando] = useState(false);
+
   const [mensajeError, setMensajeError] = useState('');
 
   // Cambia la clase del body mientras esta pantalla está montada.
@@ -64,6 +66,7 @@ function Login(){
       Navigate("/");
     },
     onFailure : (response) => {
+      setEnviando(false);
       console.error("Error en la solicitud:", response);
       // 401 = credenciales inválidas; cualquier otro = error inesperado.
       if (response.status === 401) {
@@ -76,9 +79,11 @@ function Login(){
   // Chequeo visual: muestra un mensaje si faltan campos, pero no cancela
   // el submit. La validación real la hace el DTO en el backend.
   const sendInit = () => {
+    setEnviando(true);
     setMensajeError('');
     if (!formData.email.trim() || !formData.password.trim()) {
       setMensajeError("Por favor, complete todos los campos.");
+      setEnviando(false);
     }
   }
 
@@ -93,7 +98,7 @@ function Login(){
              <label>Contraseña: </label>
              <input type="password" name="password" value={formData.password} onChange={handleChange} placeholder="******" className="for-border"></input>
              <br></br>
-             <input type="submit" value="Iniciar Sesion" id = "boton-envio" onClick={sendInit}></input>
+             <input type="submit" value={enviando ? 'Iniciando sesión...' : 'Iniciar Sesión'} id = "boton-envio" onClick={sendInit}></input>
             </form>
             {mensajeError && <p id="error-message">{mensajeError}</p>}
             <p>¿No tienes cuenta? <a href="/Register">Registrate</a></p>
