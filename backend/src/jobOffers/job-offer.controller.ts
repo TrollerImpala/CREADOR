@@ -1,3 +1,20 @@
+/**
+ * job-offer.controller.ts — Rutas HTTP de ofertas de trabajo.
+ *
+ * Capa: controller. Este módulo es el CRUD más limpio del proyecto y sirve
+ * como plantilla para crear cualquier módulo nuevo.
+ *
+ * Base: /api/JobOffer (prefijo global /api + @Controller('JobOffer')).
+ *
+ * Endpoints:
+ * - GET  /api/JobOffer/JobOfferPosts?from=0&limit=10  → lista paginada
+ * - GET  /api/JobOffer/UserJobOfferPosts/:id          → ofertas de un usuario
+ * - GET  /api/JobOffer/JobOfferPost/:id               → detalle con autor
+ * - POST /api/JobOffer/PostJobOffer                   → crear (requiere token)
+ *
+ * El borrado NO está acá: se hace por DELETE /api/GeneralPosts/Deleteposts/:id
+ * con tipo=JobOfferta (ver general_posts.service.ts).
+ */
 import {
   Controller,
   Post,
@@ -43,6 +60,9 @@ export class JobOfferController {
     status: 200,
     description: 'Devuelve todas las publicaciones de ofertas de trabajo',
   })
+  // Lista paginada. from y limit llegan como query params y Nest los recibe
+  // como string en runtime, pero el service los usa en .range() igual.
+  // La ruta es pública: el guard está comentado a propósito.
   @Get('JobOfferPosts')
   //@UseGuards(SupabaseAuthGuard)
   async getJobOfferPosts(
@@ -52,6 +72,7 @@ export class JobOfferController {
     return await this.jobOfferService.getJobOfferPosts(from, limit);
   }
 
+  // Ofertas de un usuario concreto. :id es el id_user de USERS/auth.users.
   @Get('UserJobOfferPosts/:id')
   async getUserMusicPosts(
     @Param('id') user_id: string,
@@ -65,6 +86,8 @@ export class JobOfferController {
     );
   }
 
+  // Detalle por project_id. El service trae también los datos del autor
+  // mediante la relación con USERS.
   @ApiOperation({
     summary: 'Obtener una publicación de oferta de trabajo específica',
   })
@@ -77,6 +100,9 @@ export class JobOfferController {
     return await this.jobOfferService.getJobOfferPost(id);
   }
 
+  // Crear oferta: ruta protegida. El guard valida el Bearer token y deja
+  // req.user; el controller solo toma el id y delega. El body se valida
+  // contra CreateJobOfferPostDto antes de entrar acá.
   @ApiOperation({ summary: 'Crear una nueva publicación de oferta de trabajo' })
   @ApiResponse({
     status: 201,
@@ -101,6 +127,7 @@ export class JobOfferController {
   @Post('PostJobOffer')
   @UseGuards(SupabaseAuthGuard)
   async postJobOffer(@Req() req: any, @Body() body: CreateJobOfferPostDto) {
+    // req.user.id lo setea SupabaseAuthGuard tras validar el token.
     const user_id = req.user.id;
     return await this.jobOfferService.postJobOffer(user_id, body);
   }

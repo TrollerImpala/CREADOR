@@ -1,3 +1,17 @@
+/**
+ * app.module.ts — Módulo raíz de NestJS.
+ *
+ * Capa: configuración / registro de la aplicación.
+ * Es el "índice" del backend: todo controller y provider que exista debe
+ * declararse acá o NestJS no lo va a conocer.
+ *
+ * Diferencia clave:
+ * - controllers: reciben HTTP y delegan.
+ * - providers: clases inyectables (services) que contienen lógica o acceso a datos.
+ *
+ * Si creás un módulo/controller nuevo y no lo registrás en este archivo,
+ * la ruta responde 404 o Nest falla al resolver dependencias.
+ */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
@@ -37,11 +51,16 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
 
 @Module({
   imports: [
+    // Carga el archivo .env del directorio desde donde se ejecuta el proceso.
+    // isGlobal: true deja ConfigService disponible en toda la app sin reimportar.
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: path.resolve(process.cwd(), '.env'),
     }),
   ],
+  // Cada controller declara un conjunto de rutas HTTP.
+  // Se listan todos los dominios: auth, usuarios, posts generales, arte,
+  // música, films, games y ofertas de trabajo.
   controllers: [
     AppController,
     AuthController,
@@ -56,6 +75,9 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
 
     JobOfferController,
   ],
+  // Providers = clases que Nest instancia y puede inyectar por constructor.
+  // Acá viven los services de cada dominio y los servicios de infraestructura
+  // (Supabase, storage, stats).
   providers: [
     AppService,
     SupabaseService,

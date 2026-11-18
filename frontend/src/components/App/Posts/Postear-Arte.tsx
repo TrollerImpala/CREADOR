@@ -1,3 +1,15 @@
+/**
+ * Postear-Arte.tsx — Formulario de creación de arte con imagen.
+ *
+ * Capa: componente + fetch propio.
+ * Es el ejemplo de multipart/form-data del frontend:
+ * - Se arma un FormData y se agregan campos con append().
+ * - El archivo se agrega como 'art_img' (mismo nombre que espera el
+ *   FileInterceptor del backend).
+ * - NO se setea Content-Type: el navegador agrega el boundary solo.
+ *
+ * Los tags se envían como 'tags[]', uno por cada valor.
+ */
 import { useState } from 'react';
 import { useForm } from '../../hooks/useForm';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +27,7 @@ interface ArtPostForm {
 }
 
 function PostearArte() {
+  // El archivo no vive en formData: se maneja en su propio estado.
   const [artImg, setArtImg] = useState<File | null>(null);
   const navigate = useNavigate();
   const [mensajeError, setMensajeError] = useState('');
@@ -41,6 +54,7 @@ function PostearArte() {
     opc: true,
   });
 
+  // Toma el primer archivo seleccionado del input file.
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setArtImg(e.target.files[0]);
@@ -50,6 +64,8 @@ function PostearArte() {
   const enviarPeticion = async (token: string) => {
     setEnviando(true);
 
+    // FormData arma el cuerpo multipart. Los nombres deben coincidir con
+    // los que lee el backend: title, description, rating, tags[], art_img.
     const dataForm = new FormData();
     dataForm.append('title', formData.title);
     dataForm.append('description', formData.description);
@@ -60,6 +76,7 @@ function PostearArte() {
       .map((tag) => tag.trim())
       .filter((tag) => tag !== '');
 
+    // Se agrega una entrada por tag; el backend la transforma en array.
     arrayTags.forEach((tag) => dataForm.append('tags[]', tag));
 
     if (artImg) {
@@ -69,6 +86,7 @@ function PostearArte() {
     return await fetch(`${import.meta.env.VITE_API_URL}/Art/PostArt`, {
       method: 'POST',
       headers: {
+        // Solo Authorization. Content-Type lo pone el navegador con boundary.
         Authorization: `Bearer ${token}`,
       },
       body: dataForm,
@@ -78,6 +96,7 @@ function PostearArte() {
   const handleSubmitCustom = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // La imagen es obligatoria: el controller también la exige.
     if (!artImg) {
       setMensajeError('Por favor selecciona una imagen');
       return;
@@ -86,6 +105,7 @@ function PostearArte() {
     try {
       let response = await enviarPeticion(localStorage.getItem('access_token')!);
 
+      // Mismo patrón que en ofertas: 401 → refresh → reintento único.
       if (response.status === 401) {
         const refreshed = await refreshToken();
         if (refreshed){

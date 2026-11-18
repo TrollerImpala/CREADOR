@@ -8,7 +8,7 @@ import UserArtGallery from "./UserArtGallery";
 import UserMusicGallery from "./UserMusicGallery";
 import UserOffers from "./UserOffers";
 
-import type { PublicUser } from "../../tools/types";
+import type { PublicUser, PublicationCounts} from "../../tools/types";
 import { errorMsg } from "../../tools/errorUtils";
 
 import "../../../styles/UserProfile.css";
@@ -37,7 +37,7 @@ function UserProfile() {
 
 
     const { user_id } = useParams<{ user_id: string }>();
-
+    const [publicaciones, setPublicaciones] = useState<PublicationCounts | null>(null);
     const [user, setUser] = useState<PublicUser | null>(null);
     const [cargandoUser, setCargandoUser] = useState(true);
     const [seccionActiva, setSeccionActiva] = useState<Seccion>('arte');
@@ -51,6 +51,7 @@ function UserProfile() {
             }
             const data = await response.json();
             setUser(data.publicUser ?? null);
+            setPublicaciones(data.publicaciones ?? null);
         } catch (error) {
             console.error('Error al obtener usuario:', error);
         } finally {
@@ -85,6 +86,20 @@ function UserProfile() {
                             </div>
                             <h2 className="profile-name">{user.user_name || "Usuario"}</h2>
                             <span className="profile-tag">@{user.user_tag}</span>
+
+                                {publicaciones && (
+                            <div className="profile-publication-counts">
+                                <p className="profile-total-posts">
+                                    {publicaciones.total}{" "}
+                                    {publicaciones.total === 1 ? "publicación" : "publicaciones"}
+                                </p>
+                                <p className="profile-counts-detail">
+                                    {publicaciones.arte} arte · {publicaciones.musica} música ·{" "}
+                                    {publicaciones.ofertas} ofertas
+                                </p>
+                            </div>
+                        )}
+
                             
                             {user_id && <EditProfileBtn user_id = { user_id } />}
                             

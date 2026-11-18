@@ -1,3 +1,17 @@
+/**
+ * Login.tsx — Pantalla de inicio de sesión.
+ *
+ * Capa: componente de presentación + llamada HTTP mediante useForm.
+ *
+ * Flujo:
+ * 1. useForm guarda email/password en estado y hace POST a /api/Auth/Login.
+ * 2. Si la respuesta es ok, onSuccess guarda tokens y perfil en localStorage.
+ * 3. Si falla, onFailure muestra el mensaje según el status (401 = credenciales).
+ * 4. Tras el éxito navega a "/".
+ *
+ * El backend devuelve:
+ * { user_token, refresh_token, user, role }
+ */
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
@@ -13,6 +27,8 @@ function Login(){
 
   const [mensajeError, setMensajeError] = useState('');
 
+  // Cambia la clase del body mientras esta pantalla está montada.
+  // El return del useEffect es la limpieza: se ejecuta al desmontar.
   useEffect(() => {
     document.body.className = 'body-login';
 
@@ -23,12 +39,14 @@ function Login(){
 
   const Navigate = useNavigate();
 
+  // useForm centraliza: estado de inputs, submit, fetch y errores.
   const { formData, handleChange, handleSubmit } = useForm({
     valoresIniciales : {
       email : "",
       password : ""
     },
 
+    // VITE_API_URL se reemplaza en build time por la URL del backend.
     urlApi : `${import.meta.env.VITE_API_URL}/Auth/Login`,
 
     eMsg : "Error en las credenciales",
@@ -36,6 +54,8 @@ function Login(){
     onSuccess : (userData) => {
       console.log("Usuario logeado con exito:", userData);
       
+      // Los tokens y el perfil quedan en localStorage para las próximas
+      // peticiones. Es una decisión existente del proyecto (vulnerable a XSS).
       localStorage.setItem('access_token', userData.user_token);
       localStorage.setItem('refresh_token', userData.refresh_token);
       localStorage.setItem('usuario', JSON.stringify(userData.user));
@@ -48,6 +68,7 @@ function Login(){
     onFailure : (response) => {
       setEnviando(false);
       console.error("Error en la solicitud:", response);
+      // 401 = credenciales inválidas; cualquier otro = error inesperado.
       if (response.status === 401) {
         setMensajeError("Error en las credenciales");
       } else {
@@ -55,6 +76,8 @@ function Login(){
       }
     }
   });
+  // Chequeo visual: muestra un mensaje si faltan campos, pero no cancela
+  // el submit. La validación real la hace el DTO en el backend.
   const sendInit = () => {
     setEnviando(true);
     setMensajeError('');

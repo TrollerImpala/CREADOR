@@ -1,3 +1,19 @@
+/**
+ * user.controller.ts — Rutas HTTP de perfiles.
+ *
+ * Capa: controller.
+ * Base: /api/Users.
+ *
+ * Endpoints:
+ * - GET  /api/Users/Usuario/:user_id  → perfil público (sin token)
+ * - POST /api/Users/Perfil            → perfil propio completo (con token)
+ * - PUT  /api/Users/ActualizarPerfil  → editar perfil + avatar (con token)
+ *
+ * Diferencia importante:
+ * - El perfil público no expone datos sensibles.
+ * - El perfil propio se identifica por el token, no por un id del body:
+ *   así nadie puede leer el perfil privado de otro cambiando la URL.
+ */
 import {
   Controller,
   Post,
@@ -22,11 +38,13 @@ import { UserDto } from '../DTO/user.dto';
 export class UsersController {
   constructor(private readonly userService: UserService) {}
 
+  // Público: cualquiera puede ver tag, nombre, descripción y avatar.
   @Get('Usuario/:user_id')
   async getUser(@Param('user_id') user_id: string) {
     return await this.userService.getPublicUserData(user_id);
   }
 
+  // Privado: el id sale del token validado por el guard.
   @Post('Perfil')
   @UseGuards(SupabaseAuthGuard)
   async getProfile(@Req() req: any) {
@@ -35,6 +53,9 @@ export class UsersController {
     return this.userService.getUserData(userId);
   }
 
+  // Actualización con archivo opcional.
+  // FileInterceptor('profile_img') procesa multipart/form-data y deja el
+  // archivo en @UploadedFile(). El resto de los campos llega en @Body().
   @Put('ActualizarPerfil')
   @UseGuards(SupabaseAuthGuard)
   @UseInterceptors(FileInterceptor('profile_img'))
@@ -45,6 +66,7 @@ export class UsersController {
   ) {
     const userId = req.user.id;
 
+    // Se arma un payload propio para no pasar el DTO crudo al service.
     const postPayLoad = {
       userTag: body.userTag,
       userName: body.userName,

@@ -1,3 +1,16 @@
+# render.yaml — Blueprint de despliegue en Render.
+#
+# ADVERTENCIA: los nombres 'ecobite-frontend' y 'ecobite-backend' NO parecen
+# corresponder a CREADOR. Antes de la defensa verificá en el dashboard de
+# Render los servicios reales, la rama conectada y las URLs públicas.
+#
+# Este archivo declara dos servicios:
+# - frontend: sitio estático (Vite genera dist/) con rewrite a index.html
+#   para que funcionen las rutas de React Router al recargar.
+# - backend: servicio Node que ejecuta NestJS.
+#
+# Las variables de entorno sensibles (SUPABASE_URL, SUPABASE_ANON_KEY, PORT,
+# VITE_API_URL) se configuran en Render, no en este archivo.
 services:
   - type: web
     runtime: static
