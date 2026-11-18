@@ -23,6 +23,9 @@ import { useForm } from '../../hooks/useForm';
 import { errorMsg } from '../../tools/errorUtils';
 import { refreshToken } from '../../tools/refresh_token';
 
+import ServerErrorMsg from '../../Reusable/serverErrorMsg';
+import { serverErrorHandler } from '../../tools/serverError';
+
 import '../../../styles/Postear.css';
 
 interface JobOfferForm {
@@ -37,8 +40,9 @@ function PostJobOffer() {
   const [enviando, setEnviando] = useState(false);
   const [mensajeError, setMensajeError] = useState('');
 
-  // urlApi vacío y callbacks vacíos: el envío se maneja a mano más abajo.
-  // opc: true habilita handleTextAreaChange (para la descripción).
+  const [serverError, setServerError] = useState<boolean>(false);
+
+
   const { formData, handleChange, handleTextAreaChange } = useForm<JobOfferForm>({
     valoresIniciales: {
       project_title: '',
@@ -56,6 +60,7 @@ function PostJobOffer() {
       } else {
         setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
       }
+      serverErrorHandler(response, setServerError);
     },
     opc: true,
   });
@@ -97,6 +102,7 @@ function PostJobOffer() {
     }
 
     setEnviando(true);
+    setServerError(false);
 
     try {
       let response = await enviarPeticion(localStorage.getItem('access_token')!);
@@ -125,6 +131,7 @@ function PostJobOffer() {
         }
         await errorMsg(response, 'Error al publicar la oferta de trabajo');
         setEnviando(false);
+        serverErrorHandler(response, setServerError);
       }
     } catch (error) {
       // Fallo de red: no hubo respuesta del servidor.
@@ -179,6 +186,7 @@ function PostJobOffer() {
         </button>
       </form>
       {mensajeError && <h2 id="error-message">{mensajeError}</h2>}
+      {serverError && <ServerErrorMsg />}
     </div>
   );
 }

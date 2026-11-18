@@ -15,6 +15,10 @@ import { useNavigate } from "react-router-dom";
 
 import type { JobOfferInfo } from "../tools/types";
 import { errorMsg } from "../tools/errorUtils";
+
+import ServerErrorMsg from "../Reusable/serverErrorMsg";
+import { serverErrorHandler } from "../tools/serverError";
+
 import JobOfferTemplate from "../templates/JobOfferTemplate";
 import Header from "../Reusable/Header";
 import Nav from "../Reusable/Nav";
@@ -27,6 +31,8 @@ function JobOffers() {
   // Lista de ofertas y estado de paginación.
   const [offers, setOffers] = useState<JobOfferInfo[]>([]);
 
+  const [serverError, setServerError] = useState<boolean>(false);
+
   const [page, setPage] = useState<number>(0);
   const limit = 10;
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
@@ -38,6 +44,7 @@ function JobOffers() {
       // response.ok = status 200-299. Si falla, se registra y se corta.
       if (!response.ok) {
         await errorMsg(response, 'Error al cargar las ofertas de trabajo');
+        serverErrorHandler(response, setServerError);
         return;
       }
 
@@ -78,6 +85,8 @@ function JobOffers() {
           Publicar Oferta
         </button>
 
+      { !serverError ? (
+        <>
         <div className="job-offers-grid">
           {offers.length > 0 ? (
             offers.map((offer) => <JobOfferTemplate key={offer.project_id} post={offer} />)
@@ -87,6 +96,10 @@ function JobOffers() {
             <h3 className="cargando-job-offers">Cargando ofertas...</h3>
           )}
         </div>
+        </>
+      ) : <ServerErrorMsg /> 
+      }
+      
       </div>
 
       <div className="pagination">

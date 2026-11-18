@@ -15,6 +15,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
 
+import ServerErrorMsg from "../../Reusable/serverErrorMsg";
+import { serverErrorHandler } from "../../tools/serverError";
+
 import DeletPostsboton from "../../Reusable/DeletPostsboton";
 import { errorMsg } from "../../tools/errorUtils";
 import type { JobOfferInfo } from "../../tools/types";
@@ -24,6 +27,9 @@ import '../../../styles/single-posts-styles/JobOfferPost.css';
 function JobOfferPost() {
     // project_id viene definido en App.tsx como :project_id.
     const { project_id } = useParams();
+
+    
+    const [serverError, setServerError] = useState<boolean>(false);
 
     const [cargando, setCargando] = useState(true);
     // Estado inicial con la forma del tipo para evitar undefined en el render.
@@ -45,7 +51,9 @@ function JobOfferPost() {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/JobOfferPost/${project_id}`);
 
             if (!response.ok) {
+                setCargando(false);
                 await errorMsg(response, 'Error al cargar la oferta de trabajo');
+                serverErrorHandler(response, setServerError);
                 return;
             }
 
@@ -73,7 +81,7 @@ function JobOfferPost() {
         <div className="job-offer-post-page">
             {cargando ? (
                 <h3 className="cargando-texto">Cargando oferta...</h3>
-            ) : (
+            ) : !serverError ? (
                 <div className="job-offer-post-container">
                     {/* Bloque de Usuario Creador: enlaza al perfil público.
                         USERS viene de la relación anidada del backend. */}
@@ -139,7 +147,8 @@ function JobOfferPost() {
                         <button type="submit" className="btn-submit-contact">Enviar solicitud</button>
                     </form>
                 </div>
-            )}
+            ) : <ServerErrorMsg />
+            }
         </div>
     );
 }

@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Reusable/Header";
 import Nav from "../Reusable/Nav";
+
+import ServerErrorMsg from "../Reusable/serverErrorMsg";
+import { serverErrorHandler } from "../tools/serverError";
+
 import type { ArtInfo } from "../tools/types";
 import { errorMsg } from "../tools/errorUtils";
 import ArtPostPrev from "../templates/ArtTemplate";
@@ -19,25 +23,33 @@ function GaleriaArte() {
   const limit = 10;
   const [hasNextPage, setHasNextPage] = useState<boolean>(true);
 
+  const [serverError, setServerError] = useState<boolean>(false);
+
   const obtenerPosts = async () => {
     try{
       const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPosts?from=${page * limit}&limit=${limit}`);
-      if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
-      
-      const data = await response.json();
-      
-      if (data.art.length > limit){
-        //console.log('hay mas songs q limite');
-        setHasNextPage(true);
-        data.art.pop();
-
-      } else{
-        //console.log('hasta ahi');
-        setHasNextPage(false);
+      if (!response.ok) {
+        await errorMsg(response, 'Error al cargar el Arte');
+        serverErrorHandler(response, setServerError);
       }
+      if (response.ok){
+        setServerError(false);
+        const data = await response.json();
+        
+        if (data.art.length > limit){
+          //console.log('hay mas songs q limite');
+          setHasNextPage(true);
+          data.art.pop();
 
-      setPosts(data.art);
-    
+        } else{
+          //console.log('hasta ahi');
+          setHasNextPage(false);
+        }
+
+        setPosts(data.art);
+      
+      }
+      
     }catch (error){
       throw new Error('No se han podido cargar los posts de arte');
     }
@@ -52,13 +64,16 @@ function GaleriaArte() {
       
       <div className="galeria-content">
         <button className="btn-postear" onClick={() => Navigate('PostearArte')}>Postear Arte</button>
+        {!serverError ? (
+          <div className="posts-container">
+            {posts.map((post) =>
+              <ArtPostPrev post={post} />
+            )}
+          </div>
         
-        <div className="posts-container">
-          {posts.map((post) =>
-            <ArtPostPrev post={post} />
-          )}
-        </div>
-
+        ) : <ServerErrorMsg />
+        
+        }
         { (posts.length == 0) && <h3 className="cargando-texto">Cargando...</h3>}
       </div>
       <div className="pagination">

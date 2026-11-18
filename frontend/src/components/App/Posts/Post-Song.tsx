@@ -5,6 +5,9 @@ import { useForm } from '../../hooks/useForm';
 import { errorMsg } from '../../tools/errorUtils';
 import { refreshToken } from '../../tools/refresh_token';
 
+import ServerErrorMsg from '../../Reusable/serverErrorMsg';
+import { serverErrorHandler } from '../../tools/serverError';
+
 import '../../../styles/Postear.css';
 
 interface SongPostForm {
@@ -20,6 +23,8 @@ function PostSong() {
   const [songCoverFile, setSongCoverFile] = useState<File | null>(null);
   const [enviando, setEnviando] = useState(false);
   const [mensajeError, setMensajeError] = useState('');
+  const [serverError, setServerError] = useState<boolean>(false);
+
 
   const { formData, handleChange, handleTextAreaChange, handleSelectChange } = useForm<SongPostForm>({
     valoresIniciales: {
@@ -39,6 +44,7 @@ function PostSong() {
       } else {
         setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
       }
+      serverErrorHandler(response, setServerError);
     },
     opc: true,
   });
@@ -94,6 +100,7 @@ function PostSong() {
     }
 
     setEnviando(true);
+    setServerError(false);
 
     try {
       let response = await enviarPeticion(localStorage.getItem('access_token')!);
@@ -119,6 +126,7 @@ function PostSong() {
         }
         await errorMsg(response, 'Error al publicar la canción');
         setEnviando(false);
+        serverErrorHandler(response, setServerError);
       }
     } catch (error) {
       console.error('Error de conexión:', error);
@@ -187,6 +195,7 @@ function PostSong() {
         </button>
       </form>
         {mensajeError && <h2 id="error-message">{mensajeError}</h2>}
+        {serverError && <ServerErrorMsg />}
     </div>
   );
 }

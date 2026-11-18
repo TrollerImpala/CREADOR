@@ -1,6 +1,9 @@
 import { useNavigate, useParams, Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 
+import ServerErrorMsg from "../../Reusable/serverErrorMsg";
+import { serverErrorHandler } from "../../tools/serverError";
+
 import { errorMsg } from "../../tools/errorUtils";
 import type { ArtInfo } from "../../tools/types";
 import DeletPostsboton from "../../Reusable/DeletPostsboton";
@@ -14,6 +17,9 @@ function ArtPost(){
     const [cargando, setCargando] = useState(true);
     const [menuAbierto, setMenuAbierto] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
+
+
+    const [serverError, setServerError] = useState<boolean>(false);
 
     const [post, setPost] = useState<ArtInfo>(
         {
@@ -35,8 +41,11 @@ function ArtPost(){
     const obtenerPost = async () => {
         try{
             const response = await fetch(`${import.meta.env.VITE_API_URL}/Art/ArtPost/${artpost_id}`);
-            if (!response.ok) await errorMsg(response, 'Error al cargar el Arte');
-     
+            if (!response.ok){
+                setCargando(false);
+                await errorMsg(response, 'Error al cargar el Arte');
+                serverErrorHandler(response, setServerError);
+            }
             const data = await response.json();
      
             setPost(data.art);
@@ -73,7 +82,7 @@ function ArtPost(){
                 <>
                     <h3>Cargando Post...</h3>
                 </>
-            ) : (
+            ) : !serverError ? (
                 <>
                     <div className="main-post-container">
                         {/* Bloque de Usuario Agregado */}
@@ -137,7 +146,7 @@ function ArtPost(){
                         </div>
                     </div> 
                 </>
-            )}
+            ) : <ServerErrorMsg />}
         </>
     );
 }
