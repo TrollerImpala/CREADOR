@@ -145,6 +145,29 @@ export class JobOfferService {
     };
   }
 
+  async editJobOfferPost(body : any){
+    const { jobOffer_id, project_title, project_info, email, tags } = body;
+
+    const { data, error } = await this.supabase
+    .from('PROJECTPOSTS')
+    .update({
+      project_title,
+      project_info,
+      email,
+      tags
+    })
+    .eq('project_id', jobOffer_id)
+    .select()
+    .single();
+
+    if ( error ) throw new BadRequestException('Error al actualizar la oferta', error.message);
+
+    return {
+      mensaje : 'Oferta actualizada',
+      job_offer : data
+    };
+  }
+
   /**
    * Borra una oferta por project_id y devuelve la fila eliminada.
    *

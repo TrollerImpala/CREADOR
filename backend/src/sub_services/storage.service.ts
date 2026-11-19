@@ -56,11 +56,20 @@ export class StorageService {
     return this.getPublicUrl(bucket, path);
   }
 
-  /**
-   * Construye la URL pública de un archivo ya subido.
-   * No hace una petición HTTP: solo arma la ruta según el bucket.
-   */
-  getPublicUrl(bucket: string, path: string): string {
+  async updateFile(bucket : string, path : string, file : UploadedFileDto) : Promise<void> {
+    const { data, error } = await this.supabase
+    .storage
+    .from(bucket)
+    .update(path, file.buffer, {
+      contentType: file.mimetype,
+      upsert: false
+    });
+
+    if (error) throw new BadRequestException(`Error al actualizar el archivo: ${error.message}`);
+  }
+
+  getPublicUrl(bucket : string, path : string): string {
+
     const { data } = this.supabase.storage.from(bucket).getPublicUrl(path);
 
     return data.publicUrl;

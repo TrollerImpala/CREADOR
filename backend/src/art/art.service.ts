@@ -189,4 +189,29 @@ export class ArtService {
       art: data,
     };
   }
+
+    async editArtPost(body : any){
+        const {artpost_id, title, description, tags, rating} = body;
+
+        const { data, error } = await this.supabase
+        .from('ARTPOSTS')
+        .update({
+            title,
+            description,
+            tags,
+            rating
+        })
+        .eq('artpost_id', artpost_id)
+        .select()
+        .single();
+
+        if ( error ) throw new BadRequestException('Error al actualizar post de arte: ', error.message);
+
+        return {
+            mensaje : 'Post de Arte actualizado',
+            art : data
+        };
+    }
+
+
 }

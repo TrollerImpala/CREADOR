@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Put,
   Body,
   Param,
   UseGuards,
@@ -12,6 +13,7 @@ import {
   UploadedFiles,
   HttpStatus,
   ParseFilePipeBuilder,
+  UploadedFile,
 } from '@nestjs/common';
 
 import 'multer';
@@ -32,6 +34,7 @@ import {
 import { SupabaseAuthGuard } from '../guards/auth.guard';
 import { MusicService } from './music.service';
 import { CreateMusicPostDto } from '../DTO/music.dto';
+import multer from 'multer';
 
 @ApiTags('Music Posts')
 @Controller('Music')
@@ -156,5 +159,19 @@ export class MusicController {
     };
 
     return await this.musicService.postSong(user_id, postPayload);
+  }
+
+  @Put('EditSongPost')
+  @UseGuards(SupabaseAuthGuard)
+  async editSongPost(
+    @Body() body : any,
+    @UploadedFile() file : Express.Multer.File,
+  ){
+    const postPayload = {
+      ...body,
+      cover_song_img : file,
+    }
+
+    return await this.musicService.updateSongPost(postPayload);
   }
 }

@@ -139,6 +139,35 @@ export class MusicService {
     };
   }
 
+  async updateSongPost(body : any){
+    const {song_id, song_name, song_description, song_cover_url, song_cover_img, tags, rating} = body;
+
+    if (song_cover_img){
+      const coverFilePath = song_cover_url.split('/MUSIC/').pop();
+
+      await this.storageService.updateFile('MUSIC', coverFilePath, song_cover_img);
+    }
+
+    const { data, error } = await this.supabase
+    .from('MUSICPOSTS')
+    .update({
+        song_name,
+        song_description,
+        tags,
+        rating
+    })
+    .eq('song_id', song_id)
+    .select()
+    .single();
+
+    if (error) throw new BadRequestException('Error al actualizar la info de la cancion: ', error.message);
+
+    return {
+        mensaje : 'Cancion actualizada',
+        song : data
+    };
+  }
+
   async deletePost(song_id: string) {
     const { data, error } = await this.supabase
 

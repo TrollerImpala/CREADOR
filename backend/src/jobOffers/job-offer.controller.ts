@@ -19,6 +19,7 @@ import {
   Controller,
   Post,
   Get,
+  Put,
   Body,
   Param,
   UseGuards,
@@ -130,5 +131,11 @@ export class JobOfferController {
     // req.user.id lo setea SupabaseAuthGuard tras validar el token.
     const user_id = req.user.id;
     return await this.jobOfferService.postJobOffer(user_id, body);
+  }
+
+  @Put('EditJobOffer')
+  @UseGuards(SupabaseAuthGuard)
+  async editJobOffer( @Body() body : any){
+    return await this.jobOfferService.editJobOfferPost(body);
   }
 }

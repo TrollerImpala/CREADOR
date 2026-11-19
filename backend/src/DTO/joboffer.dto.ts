@@ -59,3 +59,15 @@ export class CreateJobOfferPostDto {
   @IsOptional()
   tags?: string[];
 }
+
+export class EditJobOfferDto {
+  jobOffer_id!: string;
+
+  project_title!: string;
+
+  project_info!: string;
+
+  email!: string;
+
+  tags?: string[];
+}

@@ -16,6 +16,7 @@ import {
   Controller,
   Post,
   Get,
+  Put,
   Body,
   Param,
   UseGuards,
@@ -147,4 +148,11 @@ export class ArtController {
 
     return this.artService.postArt(userId, postPayload);
   }
+
+  @Put('EditArtPost')
+  @UseGuards(SupabaseAuthGuard)
+  async editArtPost( @Body() body : any ){
+    return await this.artService.editArtPost(body);
+  }
+
 }
