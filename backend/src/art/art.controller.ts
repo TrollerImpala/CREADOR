@@ -48,7 +48,7 @@ import { RolesGuard } from '../guards/roles.guard';
 
 import { ArtService } from './art.service';
 
-import { CreateArtPostDto } from '../DTO/art.dto';
+import { CreateArtPostDto, EditArtPostDto } from '../DTO/art.dto';
 //import type { UploadedFileDto } from "../DTO/file.dto";
 
 @ApiTags('Art Posts')
@@ -149,10 +149,28 @@ export class ArtController {
     return this.artService.postArt(userId, postPayload);
   }
 
+  @ApiOperation({ summary: 'Editar una publicación de arte' })
+  @ApiBearerAuth()
+  @ApiBody({ type: EditArtPostDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Publicación de arte actualizada exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'El usuario no es propietario del post',
+  })
   @Put('EditArtPost')
   @UseGuards(SupabaseAuthGuard)
-  async editArtPost( @Body() body : any ){
-    return await this.artService.editArtPost(body);
+  async editArtPost(
+    @Req() req: any,
+    @Body() body: EditArtPostDto,
+  ) {
+    const currentUser_id = req.user.id;
+    return await this.artService.editArtPost(body, currentUser_id);
   }
-
 }

@@ -36,7 +36,7 @@ import { SupabaseAuthGuard } from '../guards/auth.guard';
 
 import { JobOfferService } from './job-offer.service';
 
-import { CreateJobOfferPostDto } from '../DTO/joboffer.dto';
+import { CreateJobOfferPostDto, EditJobOfferDto } from '../DTO/joboffer.dto';
 
 import { UploadedFileDto } from '../DTO/file.dto';
 
@@ -133,9 +133,28 @@ export class JobOfferController {
     return await this.jobOfferService.postJobOffer(user_id, body);
   }
 
+  @ApiOperation({ summary: 'Editar una publicación de oferta de trabajo' })
+  @ApiBearerAuth()
+  @ApiBody({ type: EditJobOfferDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Oferta de trabajo actualizada exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'El usuario no es propietario del post',
+  })
   @Put('EditJobOffer')
   @UseGuards(SupabaseAuthGuard)
-  async editJobOffer( @Body() body : any){
-    return await this.jobOfferService.editJobOfferPost(body);
+  async editJobOffer(
+    @Req() req: any,
+    @Body() body: EditJobOfferDto,
+  ) {
+    const currentUser_id = req.user.id;
+    return await this.jobOfferService.editJobOfferPost(body, currentUser_id);
   }
 }

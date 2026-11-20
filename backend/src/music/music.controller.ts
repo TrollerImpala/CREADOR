@@ -33,7 +33,7 @@ import {
 
 import { SupabaseAuthGuard } from '../guards/auth.guard';
 import { MusicService } from './music.service';
-import { CreateMusicPostDto } from '../DTO/music.dto';
+import { CreateMusicPostDto, EditMusicPostDto } from '../DTO/music.dto';
 import multer from 'multer';
 
 @ApiTags('Music Posts')
@@ -161,17 +161,62 @@ export class MusicController {
     return await this.musicService.postSong(user_id, postPayload);
   }
 
+  @ApiOperation({ summary: 'Editar una publicación de música' })
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        song_id: {
+          type: 'string',
+          example: '123e4567-e89b-12d3-a456-426614174000',
+        },
+        song_name: { type: 'string', example: 'Mi canción editada' },
+        song_description: {
+          type: 'string',
+          example: 'Una descripción actualizada',
+        },
+        song_cover_url: {
+          type: 'string',
+          example: 'https://example.com/covers/song.jpg',
+        },
+        song_cover_img: { type: 'string', format: 'binary'},
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          example: ['rock', 'alternativo'],
+        },
+        rating: { type: 'string', example: 'G' },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Publicación de música actualizada exitosamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Datos inválidos',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'El usuario no es propietario del post',
+  })
   @Put('EditSongPost')
   @UseGuards(SupabaseAuthGuard)
   async editSongPost(
-    @Body() body : any,
+    @Req() req : any,
+    @Body() body : EditMusicPostDto,
     @UploadedFile() file : Express.Multer.File,
   ){
+    const currentUser_id = req.user.id;
+
     const postPayload = {
       ...body,
-      cover_song_img : file,
+      song_cover_img : file,
     }
 
-    return await this.musicService.updateSongPost(postPayload);
+    return await this.musicService.editSongPost(postPayload, currentUser_id);
   }
 }

@@ -13,7 +13,7 @@
  * Ese rollback es clave para explicar "manejo de fallas": si una operación
  * posterior falla, no se deben dejar datos ni archivos huérfanos.
  */
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../sub_services/supabaseClient';
@@ -190,8 +190,12 @@ export class ArtService {
     };
   }
 
-    async editArtPost(body : any){
+    async editArtPost(body : any, currentUser_id : string){
         const {artpost_id, title, description, tags, rating} = body;
+        
+        const { art } = await this.getArtPost(artpost_id);
+        
+        if (art.user_id !== currentUser_id) throw new ForbiddenException('No eres dueño del post para editarlo');
 
         const { data, error } = await this.supabase
         .from('ARTPOSTS')

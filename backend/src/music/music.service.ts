@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../sub_services/supabaseClient';
@@ -139,8 +139,13 @@ export class MusicService {
     };
   }
 
-  async updateSongPost(body : any){
+  async editSongPost(body : any, currentUser_id : string){
     const {song_id, song_name, song_description, song_cover_url, song_cover_img, tags, rating} = body;
+
+    const { song } = await this.getMusicPost(song_id);
+
+    if (song.user_id !== currentUser_id) throw new ForbiddenException('No eres dueño del post para editarlo');
+
 
     if (song_cover_img){
       const coverFilePath = song_cover_url.split('/MUSIC/').pop();

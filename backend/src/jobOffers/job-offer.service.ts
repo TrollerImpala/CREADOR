@@ -10,7 +10,7 @@
  *
  * Este service es la mejor plantilla para copiar cuando pidan un CRUD nuevo.
  */
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, ForbiddenException } from '@nestjs/common';
 
 import { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../sub_services/supabaseClient';
@@ -145,8 +145,13 @@ export class JobOfferService {
     };
   }
 
-  async editJobOfferPost(body : any){
+  async editJobOfferPost(body : any, currentUser_id : string){
     const { jobOffer_id, project_title, project_info, email, tags } = body;
+
+    const { job_offer } = await this.getJobOfferPost(jobOffer_id);
+
+    if (job_offer.user_id !== currentUser_id) throw new ForbiddenException('No eres dueño del post para editarlo');
+
 
     const { data, error } = await this.supabase
     .from('PROJECTPOSTS')
