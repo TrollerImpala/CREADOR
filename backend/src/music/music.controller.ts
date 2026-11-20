@@ -20,6 +20,7 @@ import 'multer';
 
 import {
   FileFieldsInterceptor,
+  FileInterceptor,
 } from '@nestjs/platform-express';
 
 import {
@@ -205,10 +206,21 @@ export class MusicController {
   })
   @Put('EditSongPost')
   @UseGuards(SupabaseAuthGuard)
+  @UseInterceptors(FileInterceptor('song_cover_img'))
   async editSongPost(
     @Req() req : any,
     @Body() body : EditMusicPostDto,
-    @UploadedFile() file : Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+      .addFileTypeValidator({
+        fileType: 'image/(jpg|jpeg|png|gif|pdf)',
+        skipMagicNumbersValidation: process.env.NODE_ENV === 'test',
+      })
+      .build({
+        fileIsRequired: false,
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      }),
+    ) file : Express.Multer.File,
   ){
     const currentUser_id = req.user.id;
 
@@ -216,7 +228,7 @@ export class MusicController {
       ...body,
       song_cover_img : file,
     }
-
+    //console.log('Payload para editar post de música:', postPayload);
     return await this.musicService.editSongPost(postPayload, currentUser_id);
   }
 }

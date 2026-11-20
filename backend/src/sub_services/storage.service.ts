@@ -62,8 +62,11 @@ export class StorageService {
     .from(bucket)
     .update(path, file.buffer, {
       contentType: file.mimetype,
-      upsert: false
+      cacheControl: '0',
+      upsert: true
     });
+
+    console.log(data, error);
 
     if (error) throw new BadRequestException(`Error al actualizar el archivo: ${error.message}`);
   }

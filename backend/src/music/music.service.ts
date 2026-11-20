@@ -148,7 +148,9 @@ export class MusicService {
 
 
     if (song_cover_img){
+      console.log(song_cover_url);
       const coverFilePath = song_cover_url.split('/MUSIC/').pop();
+      console.log(coverFilePath);
 
       await this.storageService.updateFile('MUSIC', coverFilePath, song_cover_img);
     }
