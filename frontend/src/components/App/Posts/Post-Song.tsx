@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm } from '../../hooks/useForm';
-import { errorMsg } from '../../tools/errorUtils';
-import { refreshToken } from '../../tools/refresh_token';
 
 import ServerErrorMsg from '../../Reusable/serverErrorMsg';
 import { serverErrorHandler } from '../../tools/serverError';
@@ -21,32 +19,40 @@ function PostSong() {
   const navigate = useNavigate();
   const [songFile, setSongFile] = useState<File | null>(null);
   const [songCoverFile, setSongCoverFile] = useState<File | null>(null);
-  const [enviando, setEnviando] = useState(false);
   const [mensajeError, setMensajeError] = useState('');
   const [serverError, setServerError] = useState<boolean>(false);
 
-
-  const { formData, handleChange, handleTextAreaChange, handleSelectChange } = useForm<SongPostForm>({
+  const {
+    formData,
+    handleChange,
+    handleTextAreaChange,
+    handleSelectChange,
+    handleSubmit,
+    loading,
+  } = useForm<SongPostForm>({
     valoresIniciales: {
       song_name: '',
       song_description: '',
       tags: '',
       rating: 'G',
     },
-    urlApi: '',
-    eMsg: '',
-    onSuccess: () => {},
-    onFailure: (response : Response) => {
-      setEnviando(false);
+    urlApi: `${import.meta.env.VITE_API_URL}/Music/PostMusic`,
+    eMsg: 'Error al publicar la canción',
+    method: 'POST',
+    contentType: 'none',
+    authorization: true,
+    opc: true,
+    onSuccess: (data) => {
+      navigate(`/Musica/${data.song.song_id}`);
+    },
+    onFailure: (response: Response) => {
       if (response.status === 400 || response.status === 422) {
-        setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
-        console.log('se seteo el mensaje de error');
+        setMensajeError('Error en los datos ingresados. Por favor, verifique la información proporcionada.');
       } else {
-        setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
+        setMensajeError('Error en la solicitud. Por favor, inténtelo de nuevo más tarde.');
       }
       serverErrorHandler(response, setServerError);
     },
-    opc: true,
   });
 
   const handleSongFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +67,16 @@ function PostSong() {
     }
   };
 
-  const enviarPeticion = async (token: string) => {
+  const onFormSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMensajeError('');
+    setServerError(false);
+
+    if (!songFile || !songCoverFile) {
+      setMensajeError('Debes seleccionar la canción y la portada');
+      return;
+    }
+
     const dataForm = new FormData();
     dataForm.append('song_name', formData.song_name);
     dataForm.append('song_description', formData.song_description);
@@ -73,72 +88,16 @@ function PostSong() {
       .filter((tag) => tag !== '');
 
     arrayTags.forEach((tag) => dataForm.append('tags[]', tag));
+    dataForm.append('song_file', songFile);
+    dataForm.append('song_cover_img', songCoverFile);
 
-    if (songFile) {
-      dataForm.append('song_file', songFile);
-    }
-
-    if (songCoverFile) {
-      dataForm.append('song_cover_img', songCoverFile);
-    }
-
-    return await fetch(`${import.meta.env.VITE_API_URL}/Music/PostMusic`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: dataForm,
-    });
-  };
-
-  const handleSubmitCustom = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!songFile || !songCoverFile) {
-      setMensajeError('Debes seleccionar la canción y la portada');
-      return;
-    }
-
-    setEnviando(true);
-    setServerError(false);
-
-    try {
-      let response = await enviarPeticion(localStorage.getItem('access_token')!);
-
-      if (response.status === 401) {
-        const refreshed = await refreshToken();
-        
-        if (refreshed) {
-          const newAccessToken = localStorage.getItem('access_token');
-
-          if (newAccessToken) response = await enviarPeticion(newAccessToken);
-        } else return;
-      }
-
-      if (response.ok) {
-        const data = await response.json();
-        navigate(`/Musica/${data.song.song_id}`);
-      } else {
-        if (response.status === 400 || response.status === 422) {
-          setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
-        } else {
-          setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
-        }
-        await errorMsg(response, 'Error al publicar la canción');
-        setEnviando(false);
-        serverErrorHandler(response, setServerError);
-      }
-    } catch (error) {
-      console.error('Error de conexión:', error);
-    } finally {
-      setEnviando(false);
-    }
+    await handleSubmit(e, dataForm);
   };
 
   return (
     <div className="postear-form-wrapper">
       <h2>Publicar Canción</h2>
-      <form onSubmit={handleSubmitCustom} className="postear-form">
+      <form onSubmit={onFormSubmit} className="postear-form">
         <label>Nombre de la canción:</label>
         <input
           type="text"
@@ -190,12 +149,12 @@ function PostSong() {
           <option value="NC">NC</option>
         </select>
 
-        <button type="submit" disabled={enviando} className="btn-postear-submit">
-          {enviando ? 'Publicando...' : 'Publicar Canción'}
+        <button type="submit" disabled={loading} className="btn-postear-submit">
+          {loading ? 'Publicando...' : 'Publicar Canción'}
         </button>
       </form>
-        {mensajeError && <h2 id="error-message">{mensajeError}</h2>}
-        {serverError && <ServerErrorMsg />}
+      {mensajeError && <h2 id="error-message">{mensajeError}</h2>}
+      {serverError && <ServerErrorMsg />}
     </div>
   );
 }

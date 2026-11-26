@@ -20,8 +20,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useForm } from '../../hooks/useForm';
-import { errorMsg } from '../../tools/errorUtils';
-import { refreshToken } from '../../tools/refresh_token';
 
 import ServerErrorMsg from '../../Reusable/serverErrorMsg';
 import { serverErrorHandler } from '../../tools/serverError';
@@ -32,114 +30,69 @@ interface JobOfferForm {
   project_title: string;
   project_info: string;
   email: string;
-  tags: string; // En el formulario es un string; se transforma antes de enviar.
+  tags: string;
 }
 
 function PostJobOffer() {
   const navigate = useNavigate();
-  const [enviando, setEnviando] = useState(false);
   const [mensajeError, setMensajeError] = useState('');
-
   const [serverError, setServerError] = useState<boolean>(false);
 
-
-  const { formData, handleChange, handleTextAreaChange } = useForm<JobOfferForm>({
+  const {
+    formData,
+    handleChange,
+    handleTextAreaChange,
+    handleSubmit,
+    loading,
+  } = useForm<JobOfferForm>({
     valoresIniciales: {
       project_title: '',
       project_info: '',
       email: '',
       tags: '',
     },
-    urlApi: '',
-    eMsg: '',
-    onSuccess: () => {},
-    onFailure: (response : Response) => {
-      setEnviando(false);
-      if (response.status === 400) {
-        setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
+    urlApi: `${import.meta.env.VITE_API_URL}/JobOffer/PostJobOffer`,
+    eMsg: 'Error al publicar la oferta de trabajo',
+    method: 'POST',
+    contentType: 'json',
+    authorization: true,
+    opc: true,
+    onSuccess: (data) => {
+      navigate(`/JobOffers/${data.job_offer.project_id}`);
+    },
+    onFailure: (response: Response) => {
+      if (response.status === 400 || response.status === 422) {
+        setMensajeError('Error en los datos ingresados. Por favor, verifique la información proporcionada.');
       } else {
-        setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
+        setMensajeError('Error en la solicitud. Por favor, inténtelo de nuevo más tarde.');
       }
       serverErrorHandler(response, setServerError);
     },
-    opc: true,
   });
-
-  /**
-   * Hace la petición con el token recibido.
-   * Separa esta función para poder reintentar tras un refresh.
-   */
-  const enviarPeticion = async (token: string) => {
-    // "react, node, remoto" → ['react', 'node', 'remoto']
-    // filter elimina elementos vacíos si el usuario deja comas de más.
-    const tagsArray = formData.tags
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== '');
-
-    return await fetch(`${import.meta.env.VITE_API_URL}/JobOffer/PostJobOffer`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        project_title: formData.project_title,
-        project_info: formData.project_info,
-        email: formData.email,
-        tags: tagsArray,
-      }),
-    });
-  };
 
   const handleSubmitCustom = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setMensajeError('');
+    setServerError(false);
 
-    // Validación de UX. El backend vuelve a validar con el DTO.
     if (!formData.project_title || !formData.email) {
       setMensajeError('Completa al menos el título y el email de contacto');
       return;
     }
 
-    setEnviando(true);
-    setServerError(false);
+    const tags = formData.tags
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== '');
 
-    try {
-      let response = await enviarPeticion(localStorage.getItem('access_token')!);
+    const customBody = JSON.stringify({
+      project_title: formData.project_title,
+      project_info: formData.project_info,
+      email: formData.email,
+      tags,
+    });
 
-      // Token vencido: se renueva y se reintenta UNA vez.
-      if (response.status === 401) {
-        const refreshed = await refreshToken();
-        
-        if (refreshed) {
-          const newAccessToken = localStorage.getItem('access_token');
-          
-          if (newAccessToken) response = await enviarPeticion(newAccessToken);
-        } else return;
-      }
-
-      if (response.ok) {
-        //alert('¡Oferta publicada con éxito!');
-        const data = await response.json();
-        // El backend devuelve { job_offer: {...} }; se navega con su id.
-        navigate(`/JobOffers/${data.job_offer.project_id}`);
-      } else {
-        if (response.status === 400 || response.status === 422) {
-          setMensajeError("Error en los datos ingresados. Por favor, verifique la información proporcionada.");
-        } else {
-          setMensajeError("Error en la solicitud. Por favor, inténtelo de nuevo más tarde.");
-        }
-        await errorMsg(response, 'Error al publicar la oferta de trabajo');
-        setEnviando(false);
-        serverErrorHandler(response, setServerError);
-      }
-    } catch (error) {
-      // Fallo de red: no hubo respuesta del servidor.
-      console.error('Error de conexión:', error);
-    } finally {
-      // Se ejecute bien o mal, se vuelve a habilitar el botón.
-      setEnviando(false);
-    }
+    await handleSubmit(e, customBody);
   };
 
   return (
@@ -181,8 +134,8 @@ function PostJobOffer() {
           placeholder="ej: react, node, remoto"
         />
 
-        <button type="submit" disabled={enviando} className="btn-postear-submit">
-          {enviando ? 'Publicando...' : 'Publicar Oferta'}
+        <button type="submit" disabled={loading} className="btn-postear-submit">
+          {loading ? 'Publicando...' : 'Publicar Oferta'}
         </button>
       </form>
       {mensajeError && <h2 id="error-message">{mensajeError}</h2>}

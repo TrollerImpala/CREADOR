@@ -87,7 +87,7 @@ export function useForm<T>({
 
       const bodyToSend: BodyInit =
         contentType === 'json'
-          ? JSON.stringify(formData)
+          ? (customBody ?? JSON.stringify(formData))
           : (customBody ?? (formData as unknown as BodyInit));
 
       return await fetch(urlApi, {
