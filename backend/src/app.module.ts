@@ -17,37 +17,12 @@ import { ConfigModule } from '@nestjs/config';
 
 import * as path from 'path';
 
-import { SupabaseService } from './sub_services/supabaseClient';
-
-import { StatsCreatorService } from './sub_services/stats_creator';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { AuthService } from './auth/auth.service';
-import { AuthController } from './auth/auth.controller';
-
-import { UserService } from './users/user.service';
-import { UsersController } from './users/user.controller';
-
-import { ArtService } from './art/art.service';
-import { ArtController } from './art/art.controller';
-
-import { MusicService } from './music/music.service';
-import { MusicController } from './music/music.controller';
-
-import { FilmService } from './films/film.service';
-import { FilmController } from './films/film.controller';
-
-import { GameService } from './games/game.service';
-import { GameController } from './games/game.controller';
-
-import { JobOfferService } from './jobOffers/job-offer.service';
-import { JobOfferController } from './jobOffers/job-offer.controller';
-
-import { StorageService } from './sub_services/storage.service';
-import { GeneralPostsService } from './general_posts/general_posts.service';
-import { generalPostscontroller } from './general_posts/general_posts.controller';
+import { SupabaseModule } from './modules/supabase.module';
+import { PostsModule } from './modules/posts.module';
+import { UserModule } from './modules/user.module';
 
 @Module({
   imports: [
@@ -57,43 +32,19 @@ import { generalPostscontroller } from './general_posts/general_posts.controller
       isGlobal: true,
       envFilePath: path.resolve(process.cwd(), '.env'),
     }),
+    SupabaseModule,
+
+    UserModule,
+
+    PostsModule,
   ],
   // Cada controller declara un conjunto de rutas HTTP.
-  // Se listan todos los dominios: auth, usuarios, posts generales, arte,
-  // música, films, games y ofertas de trabajo.
   controllers: [
     AppController,
-    AuthController,
-    UsersController,
-
-    generalPostscontroller,
-
-    ArtController,
-    MusicController,
-    FilmController,
-    GameController,
-
-    JobOfferController,
   ],
   // Providers = clases que Nest instancia y puede inyectar por constructor.
-  // Acá viven los services de cada dominio y los servicios de infraestructura
-  // (Supabase, storage, stats).
   providers: [
     AppService,
-    SupabaseService,
-    StatsCreatorService,
-
-    AuthService,
-    UserService,
-
-    StorageService,
-
-    ArtService,
-    MusicService,
-    FilmService,
-    GameService,
-    JobOfferService,
-    GeneralPostsService,
   ],
 })
 export class AppModule {}
