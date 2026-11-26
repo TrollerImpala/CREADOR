@@ -1,135 +1,148 @@
-/**
- * useForm.tsx — Hook reutilizable para formularios.
- *
- * Capa: hook de React (estado + fetch).
- * Lo usan Login, Register, PostJobOffer, PostearArte, etc.
- *
- * Qué centraliza:
- * - formData: un objeto con todos los campos.
- * - handleChange: actualiza un campo por su atributo name.
- * - handleSubmit: hace POST JSON a urlApi y llama onSuccess/onFailure.
- * - handleTextAreaChange / handleSelectChange: variantes por tipo de input.
- *
- * Limitación importante:
- * handleSubmit siempre envía JSON y NO agrega el header Authorization.
- * Por eso las pantallas que suben archivos o requieren token (arte, ofertas)
- * arman su propio fetch con FormData y Bearer en lugar de usar handleSubmit.
- */
 import { useState } from 'react';
 import type { ChangeEvent, SyntheticEvent } from 'react';
 
 import { errorMsg } from '../tools/errorUtils';
+import { refreshToken } from '../tools/refresh_token';
 
-// Configuración que recibe el hook. <T> es el tipo del objeto del formulario.
+type HttpMethod = 'POST' | 'PUT' | 'PATCH';
+type ContentTypeOption = 'json' | 'none';
+
 interface UseFormConfig<T> {
-  valoresIniciales : T;
-  urlApi : string;
-  eMsg : string;
+  valoresIniciales: T;
+  urlApi: string;
+  eMsg: string;
   onSuccess: (data: any) => void;
   onFailure: (response: Response) => void;
-  opc ?: boolean;
+  opc?: boolean;
+  method?: HttpMethod;
+  contentType?: ContentTypeOption;
+  authorization?: boolean;
 }
 
-export function useForm<T>({ valoresIniciales, urlApi, eMsg, onSuccess, onFailure, opc = false }: UseFormConfig<T>) {
-  // Estado del formulario: un solo objeto, no un useState por campo.
+export function useForm<T>({
+  valoresIniciales,
+  urlApi,
+  eMsg,
+  onSuccess,
+  onFailure,
+  opc = false,
+  method = 'POST',
+  contentType = 'json',
+  authorization = false,
+}: UseFormConfig<T>) {
   const [formData, setFormData] = useState<T>(valoresIniciales);
-  //const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  /**
-   * Actualiza el campo cuyo name coincide con el input.
-   * Limpia caracteres conflictivos para evitar inyección básica de HTML.
-   * Ojo: esta limpieza solo aplica a <input>, no a textarea ni select.
-   */
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
-    const cleanValue = value.replace(/["'<>;/#$-]/g, "");
+    const cleanValue = value.replace(/["'<>;/#$-]/g, '');
 
-    // Spread: conserva los demás campos y reemplaza solo el que cambió.
-    setFormData( (prev) => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: cleanValue
+      [name]: cleanValue,
     }));
   };
 
   const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
-    setFormData( (prev) => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    console.log(formData);
   };
 
   const handleSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
-    setFormData( (prev) => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    console.log(formData);
   };
 
   /**
    * Envío del formulario.
-   *
-   * e.preventDefault() evita que el navegador recargue la página.
-   * fetch(urlApi, ...) hace la petición y response.ok indica 2xx.
-   * Si la respuesta es ok, parsea el JSON y llama onSuccess.
-   * Si no, llama onFailure y registra el error con errorMsg.
+   * Acepta un `customBody` opcional (por ejemplo, un FormData construido antes de enviar).
+   * Si no se pasa `customBody`, envía `formData` como JSON.
    */
-  const handleSubmit = async (e: SyntheticEvent<HTMLFormElement>) => {
-    
+  const handleSubmit = async (
+    e: SyntheticEvent<HTMLFormElement>,
+    customBody?: BodyInit
+  ) => {
     e.preventDefault();
-    //setLoading(true);
-    try {
+    setLoading(true);
 
-      const response = await fetch(urlApi, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+    // Función lambda reutilizable para el intento inicial y el reintento tras refresh
+    const enviarPeticion = async (token?: string | null): Promise<Response> => {
+      const headers: Record<string, string> = {};
+
+      if (contentType === 'json') {
+        headers['Content-Type'] = 'application/json';
+      }
+
+      if (authorization && token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const bodyToSend: BodyInit =
+        contentType === 'json'
+          ? JSON.stringify(formData)
+          : (customBody ?? (formData as unknown as BodyInit));
+
+      return await fetch(urlApi, {
+        method,
+        headers,
+        body: bodyToSend,
       });
-      
+    };
+
+    try {
+      const initialToken = authorization ? localStorage.getItem('access_token') : null;
+      let response = await enviarPeticion(initialToken);
+
+      // Si requiere autorización y devuelve 401, refresca el token y reintenta una vez
+      if (authorization && response.status === 401) {
+        const refreshed = await refreshToken();
+        if (refreshed) {
+          const newAccessToken = localStorage.getItem('access_token');
+          response = await enviarPeticion(newAccessToken);
+        } else {
+          return; // refreshToken() ya limpia storage y redirige a /Login
+        }
+      }
+
       if (response.ok) {
         const data = await response.json();
         onSuccess(data);
-    
       } else {
         onFailure(response);
         await errorMsg(response, eMsg);
       }
     } catch (error) {
-      // Error de red: el servidor no respondió.
-      console.error("Error de conexión:", error);
-    }/* finally {
+      console.error('Error de conexión:', error);
+    } finally {
       setLoading(false);
-    }*/
+    }
   };
 
-  // opc = false devuelve el set básico (Login, Register).
-  if (!opc){
+  if (!opc) {
     return {
       setFormData,
       formData,
       handleChange,
-      handleSubmit
+      handleSubmit,
+      loading,
     };
   }
-  
-  // opc = true agrega los handlers de textarea y select.
+
   return {
     setFormData,
     formData,
-    
     handleChange,
     handleTextAreaChange,
     handleSelectChange,
-
     handleSubmit,
-    //loading
+    loading,
   };
 }
